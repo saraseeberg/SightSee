@@ -1,19 +1,14 @@
 import React from 'react';
 import { Icon } from '@iconify/react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
-function Navbar(){
-    const navigate = useNavigate();
+function Navbar() {
     const [searchQuery, setSearchQuery] = React.useState('');
     const [isDarkMode, setIsDarkMode] = React.useState(false);
 
     const handleSearch = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         console.log(searchQuery);
-    };
-
-    const browse = () => {  
-        navigate('/') 
     };
 
     const toggleIcon = () => {
@@ -54,7 +49,7 @@ function Navbar(){
                 </form>
             </nav>
         </header>
-    )
+    );
 }
 
 export default Navbar;
