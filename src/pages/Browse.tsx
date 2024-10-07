@@ -2,10 +2,8 @@ import Navbar from "../components/Navbar";
 import { Card, CardContent } from "@/components/ui/card";
 import CategoryButton from "@/components/CategoryButton";
 import { Icon } from "@iconify/react";
-
-type CategoryButtonProps = {
-  category: string;
-};
+import { useEffect, useState } from "react";
+import { CategoryButtonProps } from "@/components/CategoryButton";
 
 type CardDataProps = {
   imagePath: string;
@@ -17,7 +15,10 @@ type CardDataProps = {
   startRating: number;
 };
 
-const categoryButtonData: CategoryButtonProps[] = [
+const categoryButtonData: Omit<
+  CategoryButtonProps,
+  "onClick" | "isSelected"
+>[] = [
   {
     category: "Activities",
   },
@@ -37,6 +38,7 @@ const categoryButtonData: CategoryButtonProps[] = [
     category: "Sights",
   },
 ];
+
 const browseCardData: CardDataProps[] = [
   {
     imagePath: "../src/assets/browse/disney.jpg",
@@ -95,6 +97,36 @@ const browseCardData: CardDataProps[] = [
 ];
 
 const Browse = () => {
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+
+  useEffect(() => {
+    const storedCategories = sessionStorage.getItem("selectedCategories");
+    if (storedCategories) {
+      setSelectedCategories(JSON.parse(storedCategories));
+    }
+  }, []);
+
+  const handleCategoryClick = (category: string) => {
+    let updatedCategories: string[];
+    if (selectedCategories.includes(category)) {
+      updatedCategories = selectedCategories.filter((c) => c !== category);
+    } else {
+      updatedCategories = [...selectedCategories, category];
+    }
+
+    setSelectedCategories(updatedCategories);
+    sessionStorage.setItem(
+      "selectedCategories",
+      JSON.stringify(updatedCategories)
+    );
+  };
+
+  const filteredCards = selectedCategories.length
+    ? browseCardData.filter((card) =>
+        selectedCategories.includes(card.category)
+      )
+    : browseCardData;
+
   return (
     <div>
       <Navbar />
@@ -102,12 +134,17 @@ const Browse = () => {
         <div className="flex w-full p-4 justify-center items-center ">
           <div className="flex flex-wrap gap-4">
             {categoryButtonData.map((item, index) => (
-              <CategoryButton key={index} category={item.category} />
+              <CategoryButton
+                key={index}
+                category={item.category}
+                isSelected={selectedCategories.includes(item.category)}
+                onClick={() => handleCategoryClick(item.category)}
+              />
             ))}
           </div>
         </div>
         <div className="flex flex-wrap gap-4 justify-center">
-          {browseCardData.map((item, index) => (
+          {filteredCards.map((item, index) => (
             <Card
               key={index}
               className="rounded-lg shadow-lg overflow-hidden w-64 xl:w-80 xl:mb-6 p-0"
