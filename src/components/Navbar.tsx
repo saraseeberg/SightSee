@@ -1,3 +1,13 @@
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuPortal,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import { Icon } from "@iconify/react"
 import React from "react"
 import { Link } from "react-router-dom"
@@ -16,39 +26,83 @@ function Navbar() {
   }
 
   return (
-    <header className="sticky top-0  w-full flex h-20 items-center px-4 md-max:px-1  md:px-4">
-      <nav className="flex items-center justify-between flex-grow ">
-        <Icon icon="ion:earth" className="ml-10 w-7 h-7 " />
-        <h1 className="text-xl ml-0.1 md:text-2xl ml-0.3">SeightSee</h1>
-        <Link to="/Browse" className="transition-colors hover:text-lightmodeGreen ml-28 font-bold md:ml">
-          Browse
-        </Link>
-        <Link to="/Reviews" className="transition-colors hover:text-lightmodeGreen ml-12 font-bold">
-          Reviews
-        </Link>
-        <div className="flex items-center ml-auto">
-          <div className="flex items-start mr-2">
-            <Icon
-              icon={isDarkMode ? "ic:baseline-dark-mode" : "ic:round-wb-sunny"}
-              className="h-6 w-6 text-black cursor-pointer"
-              onClick={toggleIcon}
-            />
+    <>
+      <nav className="flex gap-2 m-2 sticky top-0  w-full  h-20  bg-white items-center z-50">
+        <h1 className="flex flex-row items-center ml-12 text-3xl max-md:text-2xl">
+          {" "}
+          <span>
+            <Icon icon="ion:earth" className="self-center mr-1" />{" "}
+          </span>{" "}
+          SeightSee
+        </h1>
+        <div className="flex flex-1 justify-around items-center max-md:hidden">
+          <div className="flex items-center justify-around  gap-2">
+            <Link
+              to="/Browse"
+              className=" self-center mx-8 transition-colors text-xl hover:text-lightmodeGreen font-bold"
+            >
+              Browse
+            </Link>
+            <Link
+              to="/Reviews"
+              className="self-center mx-4 transition-colors text-xl hover:text-lightmodeGreen font-bold"
+            >
+              Reviews
+            </Link>
           </div>
+          <Icon
+            icon={isDarkMode ? "ic:baseline-dark-mode" : "ic:round-wb-sunny"}
+            className="flex mx-2 h-6 w-6 text-black cursor-pointer ml-auto"
+            onClick={toggleIcon}
+          />
+          <form onSubmit={handleSearch} className="flex justify-end md:mr-16 ">
+            <div className="relative">
+              <Icon icon="ic:baseline-search" className="absolute text-muted-foreground left-2.5 top-2.5 h-4 w-4 m-1" />
+              <input
+                type="search"
+                placeholder="Search..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="flex h-10 w-full rounded-md border bg-background text-sm focus-visible:outline-none px-6 py-2 md:px-8 max-sm: text-xs px-0 py-0 "
+              />
+            </div>
+          </form>
         </div>
-        <form onSubmit={handleSearch} className="flex items-center ml-0.5">
-          <div className="relative">
-            <Icon icon="ic:baseline-search" className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-            <input
-              type="search"
-              placeholder="Search..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="flex h-10 w-full rounded-md border bg-background px-6 py-2 text-sm focus-visible:outline-none md:px-8  "
-            />
-          </div>
-        </form>
+        <div className="ml-auto md:hidden flex justify-end mr-16">
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              <Icon icon="ic:round-menu" width="24" height="24" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem>Browse</DropdownMenuItem>
+              <DropdownMenuItem>Reviews</DropdownMenuItem>
+              <DropdownMenuSub>
+                <DropdownMenuSubTrigger>
+                  <span>Theme</span>
+                </DropdownMenuSubTrigger>
+                <DropdownMenuPortal>
+                  <DropdownMenuSubContent>
+                    <DropdownMenuItem>
+                      <span className="flex-row flex">
+                        {" "}
+                        <Icon icon={"ic:baseline-dark-mode"} className="m-0.5" />
+                        Dark
+                      </span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <span className="flex-row flex">
+                        {" "}
+                        <Icon icon={"ic:round-wb-sunny"} className="m-0.5" /> Light
+                      </span>
+                    </DropdownMenuItem>
+                  </DropdownMenuSubContent>
+                </DropdownMenuPortal>
+              </DropdownMenuSub>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </nav>
-    </header>
+    </>
   )
 }
 
