@@ -2,39 +2,64 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel"
 
 type CarouselData = {
-  label: string
   imagePath: string
+}
+type CardData = {
+  imagePath: string
+  title: string
 }
 
 const carouselData: CarouselData[] = [
   {
-    label: "Discover your travels",
     imagePath: "../src/assets/Italy.jpg",
   },
   {
-    label: "Discover your travels",
     imagePath: "../src/assets/France.jpg",
   },
   {
-    label: "Discover your travels",
     imagePath: "../src/assets/greece.jpg",
+  },
+]
+const cardData: CardData[] = [
+  {
+    imagePath: "../src/assets/Mallorca.jpg",
+    title: "Swim in Spain?",
+  },
+  {
+    imagePath: "../src/assets/Italy.jpg",
+    title: "Dinner in Italy?",
+  },
+  {
+    imagePath: "../src/assets/France.jpg",
+    title: "Party in France?",
   },
 ]
 
 const Home = () => {
   return (
     <div className="flex flex-col gap-8 my-12">
-      <div className="flex w-full p-16 justify-center items-center">
+      <div className="flex w-full p-16 justify-center items-center ">
         <Carousel
+          orientation="horizontal"
           opts={{
             loop: true,
           }}
         >
           <CarouselContent>
             {carouselData.map((item, index) => (
-              <CarouselItem key={index}>
-                <img src={item.imagePath} alt={item.label} className="w-full h-96 object-cover rounded-md shadow-md" />
-                <p className="text-white text-4xl font-bold absolute bottom-4 left-4">{item.label}</p>
+              <CarouselItem
+                key={index}
+                className="relative flex justify-center items-center rounded-xl overflow-hidden"
+              >
+                <img
+                  src={item.imagePath}
+                  alt={`Image of a destination`}
+                  className="w-full h-96 object-cover rounded-xl m-0 lg:min-h-[500px] "
+                />
+                <div className="absolute inset-0 bg-black/20 z-10 rounded-xl overflow-hidden"></div>
+                <p className="text-white text-lg absolute font-bold md:text-2xl lg:text-6xl z-20">
+                  Discover your travels
+                </p>
               </CarouselItem>
             ))}
           </CarouselContent>
@@ -53,37 +78,17 @@ const Home = () => {
         </h1>
 
         <div className="flex justify-center items-center gap-3 max-sm:flex-col xl:space-x-10 xl:flex-wrap mb-4">
-          <Card className="rounded-lg shadow-lg overflow-hidden w-64 xl:w-80 xl:mb-6 p-0">
-            <CardContent className="relative p-0">
-              <div className="relative">
-                <img src="../src/assets/Mallorca.jpg" alt="Swim in Spain" className="w-full h-70 object-cover" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-90"></div>
-                <p className="absolute bottom-4 left-4 ml-2 text-white font-bold text-lg shadow-2xl">Swim in Spain?</p>
-              </div>
-            </CardContent>
-          </Card>
-          <Card className="rounded-lg shadow-lg overflow-hidden w-64 xl:w-80 xl:mb-6 p-0">
-            <CardContent className="relative p-0">
-              <div className="relative">
-                <img src="../src/assets/Italy.jpg" alt="Dinner in Italy" className="w-full h-70 object-cover" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-90"></div>
-                <p className="absolute bottom-4 left-4 ml-2 text-white font-bold text-lg shadow-2xl">
-                  Dinner in Italy?
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-          <Card className="rounded-lg shadow-lg overflow-hidden w-64 xl:w-80 xl:mb-6 p-0">
-            <CardContent className="relative p-0">
-              <div className="relative">
-                <img src="../src/assets/France.jpg" alt="Party in France" className="w-full h-70 object-cover" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-90"></div>
-                <p className="absolute bottom-4 left-4 ml-2 text-white font-bold text-lg shadow-2xl">
-                  Party in France?
-                </p>
-              </div>
-            </CardContent>
-          </Card>
+          {cardData.map((item, index) => (
+            <Card key={index} className="rounded-lg shadow-lg overflow-hidden w-64 xl:w-80 xl:mb-6 p-0">
+              <CardContent className="relative p-0">
+                <div className="relative">
+                  <img src={item.imagePath} alt={item.title} className="w-full h-70 object-cover" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-90"></div>
+                  <p className="absolute bottom-4 left-4 ml-2 text-white font-bold text-lg shadow-2xl">{item.title}</p>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
         </div>
         <footer className="background: #0D7C66"> </footer>
       </div>
