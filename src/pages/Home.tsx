@@ -41,8 +41,7 @@ const Home = () => {
   return (
     <div>
       <Navbar />
-
-      <div className="flex flex-col gap-8 my-12">
+      <div className="flex flex-col gap-8 my-14">
         <div className="flex w-full p-16 justify-center items-center ">
           <Carousel
             orientation="horizontal"
