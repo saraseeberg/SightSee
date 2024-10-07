@@ -74,8 +74,8 @@ function Navbar() {
               <Icon icon="ic:round-menu" width="24" height="24" />
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              <DropdownMenuItem>Browse</DropdownMenuItem>
-              <DropdownMenuItem>Reviews</DropdownMenuItem>
+              <DropdownMenuItem> <Link to="/Browse">Browse</Link></DropdownMenuItem>
+              <DropdownMenuItem> <Link to="/Reviews">Reviews</Link></DropdownMenuItem>
               <DropdownMenuSub>
                 <DropdownMenuSubTrigger>
                   <span>Theme</span>
