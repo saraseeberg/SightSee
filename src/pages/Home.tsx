@@ -64,7 +64,7 @@ const Home = () => {
                     alt={`Image of a destination`}
                     className="w-full h-96 object-cover rounded-xl m-0 lg:min-h-[500px] "
                   />
-                  <div className="absolute inset-0 bg-black/20 z-10 rounded-xl overflow-hidden"></div>
+                  <div className="absolute inset-0 bg-black/20 z-10 rounded-xl overflow-hidden ml-4"></div>
                   <p className="text-white text-lg absolute font-bold md:text-2xl lg:text-6xl z-20">
                     Discover your travels
                   </p>
@@ -88,21 +88,16 @@ const Home = () => {
           <div className="flex justify-center flex-wrap items-center gap-3 max-sm:flex-col xl:space-x-10 xl: mb-4">
             {cardData.map((item, index) => (
               <Card key={index} className="rounded-lg shadow-lg overflow-hidden w-64 xl:w-80 xl:mb-6 p-0">
-              <CardContent className="relative p-0">
-                <div className="relative">
-                  <img
-                    src={item.imagePath}
-                    alt={item.title}
-                    className="w-full h-96 object-cover"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-90"></div>
-                  <p className="absolute bottom-4 left-4 ml-2 text-white font-bold text-lg shadow-2xl">
-                    {item.title}
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-            
+                <CardContent className="relative p-0">
+                  <div className="relative">
+                    <img src={item.imagePath} alt={item.title} className="w-full h-96 object-cover" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-90"></div>
+                    <p className="absolute bottom-4 left-4 ml-2 text-white font-bold text-lg shadow-2xl">
+                      {item.title}
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
             ))}
           </div>
           <footer className="background: #0D7C66"> </footer>
