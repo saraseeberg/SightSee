@@ -6,12 +6,12 @@ export default {
     extend: {
       colors: {
         background: "hsl(var(--background))",
-        foreground: "hsl(var(--foreground))",
-        content: "hsl(var(--content))",
-        grey: "var(--grey)",
+        foreground: 'hsl(var(--foreground))',
+        content: 'hsl(var(--content))',
+        grey: 'var(--grey)',
         accent: {
-          1: "var(--accent-1)",
-          2: "var(--accent-2)",
+          1: 'var(--accent-1)',
+          2: 'var(--accent-2)',
         },
         card: {
           DEFAULT: 'hsl(var(--card))',
