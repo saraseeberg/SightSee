@@ -1,6 +1,6 @@
-import { useLocation } from "react-router-dom";
+import { useLocation } from 'react-router-dom'
 import CategoryButton, { CategoryButtonProps } from '@/components/CategoryButton'
-import CountryDropdown from '@/components/CountryDropDown'
+import CountryDropdown from '@/components/CountryDropdown'
 import { Card, CardContent } from '@/components/ui/card'
 import { Icon } from '@iconify/react'
 import { useEffect, useState } from 'react'
@@ -95,7 +95,7 @@ const browseCardData: CardDataProps[] = [
 ]
 
 const Browse = () => {
-  const location = useLocation();
+  const location = useLocation()
   const [selectedCategories, setSelectedCategories] = useState<string[]>([])
   const [selectedCountry, setSelectedCountry] = useState<string>('World')
 
@@ -106,13 +106,10 @@ const Browse = () => {
     }
 
     if (location.state?.category) {
-      setSelectedCategories([location.state.category]);
-      sessionStorage.setItem(
-        "selectedCategories",
-        JSON.stringify([location.state.category])
-      );
+      setSelectedCategories([location.state.category])
+      sessionStorage.setItem('selectedCategories', JSON.stringify([location.state.category]))
     }
-  }, [location.state]);
+  }, [location.state])
 
   const handleCategoryClick = (category: string) => {
     let updatedCategories: string[]
