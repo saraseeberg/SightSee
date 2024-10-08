@@ -1,7 +1,7 @@
-import { HashRouter, Route, Routes } from "react-router-dom";
-import Home from "./pages/Home";
-import Error404 from "./pages/Error404";
-import Browse from "./pages/Browse";
+import { HashRouter, Route, Routes } from 'react-router-dom'
+import Home from './pages/Home'
+import Error404 from './pages/Error404'
+import Browse from './pages/Browse'
 
 // The app uses a hashrouter, therefore navigating to different routes use /#/Browse or /#/Search
 function App() {
@@ -13,7 +13,7 @@ function App() {
         <Route path="/Browse" element={<Browse />} />
       </Routes>
     </HashRouter>
-  );
+  )
 }
 
-export default App;
+export default App

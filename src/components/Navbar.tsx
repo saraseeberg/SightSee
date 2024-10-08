@@ -1,7 +1,7 @@
-import { Icon } from "@iconify/react/dist/iconify.js"
-import { Link } from "react-router-dom"
-import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet"
-import React from "react"
+import { Icon } from '@iconify/react/dist/iconify.js'
+import React from 'react'
+import { Link } from 'react-router-dom'
+import { Sheet, SheetContent, SheetTrigger } from './ui/sheet'
 
 function Navbar() {
   const [isDarkMode, setIsDarkMode] = React.useState(false)
@@ -14,7 +14,7 @@ function Navbar() {
     <>
       <nav className="flex gap-2 m-2 sticky top-0 w-full h-20 bg-white items-center z-50">
         <div className="cursor-pointer">
-          <Link to={"/"}>
+          <Link to={'/'}>
             <h1 className="flex flex-row items-center ml-12 text-3xl max-md:text-2xl">
               <Icon icon="ion:earth" className="self-center mr-1" />
               SeightSee
@@ -37,7 +37,7 @@ function Navbar() {
             </Link>
           </div>
           <Icon
-            icon={isDarkMode ? "ic:baseline-dark-mode" : "ic:round-wb-sunny"}
+            icon={isDarkMode ? 'ic:baseline-dark-mode' : 'ic:round-wb-sunny'}
             className="flex justify-end md:mr-16 mx-2 h-6 w-6 text-black cursor-pointer ml-auto  hover:text-lightmodeGreen"
             onClick={toggleIcon}
           />
@@ -57,15 +57,9 @@ function Navbar() {
                 <Link to="/Reviews" className="text-xl  hover:text-lightmodeGreen">
                   Reviews
                 </Link>
-                <button
-                  className="flex items-center hover:text-lightmodeGreen text-xl"
-                  onClick={toggleIcon}
-                >
-                  {isDarkMode ? "Dark Mode" : "Light Mode"}
-                  <Icon
-                    icon={isDarkMode ? "ic:baseline-dark-mode" : "ic:round-wb-sunny"}
-                    className="h-6 w-6  ml-2 "
-                  />
+                <button className="flex items-center hover:text-lightmodeGreen text-xl" onClick={toggleIcon}>
+                  {isDarkMode ? 'Dark Mode' : 'Light Mode'}
+                  <Icon icon={isDarkMode ? 'ic:baseline-dark-mode' : 'ic:round-wb-sunny'} className="h-6 w-6  ml-2 " />
                 </button>
               </nav>
             </SheetContent>
