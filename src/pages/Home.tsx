@@ -1,7 +1,7 @@
-import Navbar from "../components/Navbar"
+import Navbar from '../components/Navbar'
 
-import { Card, CardContent } from "@/components/ui/card"
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel"
+import { Card, CardContent } from '@/components/ui/card'
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel'
 
 type CarouselData = {
   imagePath: string
@@ -13,31 +13,31 @@ type CardData = {
 
 const carouselData: CarouselData[] = [
   {
-    imagePath: "../src/assets/Italy.jpg",
+    imagePath: '../src/assets/Italy.jpg',
   },
   {
-    imagePath: "../src/assets/France.jpg",
+    imagePath: '../src/assets/France.jpg',
   },
   {
-    imagePath: "../src/assets/greece.jpg",
+    imagePath: '../src/assets/greece.jpg',
   },
 ]
 const cardData: CardData[] = [
   {
-    imagePath: "../src/assets/Mallorca.jpg",
-    title: "Swim in Spain?",
+    imagePath: '../src/assets/Mallorca.jpg',
+    title: 'Swim in Spain?',
   },
   {
-    imagePath: "../src/assets/Italy.jpg",
-    title: "Dinner in Italy?",
+    imagePath: '../src/assets/Italy.jpg',
+    title: 'Dinner in Italy?',
   },
   {
-    imagePath: "../src/assets/France.jpg",
-    title: "Party in France?",
+    imagePath: '../src/assets/France.jpg',
+    title: 'Party in France?',
   },
   {
-    imagePath: "../src/assets/alpene.jpg",
-    title: "Ski in the alps?",
+    imagePath: '../src/assets/alpene.jpg',
+    title: 'Ski in the alps?',
   },
 ]
 
