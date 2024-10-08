@@ -13,13 +13,7 @@ import React from "react"
 import { Link } from "react-router-dom"
 
 function Navbar() {
-  const [searchQuery, setSearchQuery] = React.useState("")
   const [isDarkMode, setIsDarkMode] = React.useState(false)
-
-  const handleSearch = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    console.log(searchQuery)
-  }
 
   const toggleIcon = () => {
     setIsDarkMode(!isDarkMode)
