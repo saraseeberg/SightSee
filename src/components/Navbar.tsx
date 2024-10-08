@@ -22,6 +22,8 @@ function Navbar() {
   return (
     <>
       <nav className="flex gap-2 m-2 sticky top-0  w-full  h-20  bg-white items-center z-50">
+        <div className="cursor-pointer">
+          <Link to={"/"} > 
         <h1 className="flex flex-row items-center ml-12 text-3xl max-md:text-2xl">
           {" "}
           <span>
@@ -29,6 +31,8 @@ function Navbar() {
           </span>{" "}
           SeightSee
         </h1>
+        </Link>
+        </div>
         <div className="flex flex-1 justify-around items-center max-md:hidden">
           <div className="flex items-center justify-around  gap-2">
             <Link

@@ -1,9 +1,9 @@
-import Navbar from "../components/Navbar";
+import CategoryButton, { CategoryButtonProps } from "@/components/CategoryButton";
+import CountryDropdown from "@/components/CountryDropDown";
 import { Card, CardContent } from "@/components/ui/card";
-import CategoryButton from "@/components/CategoryButton";
 import { Icon } from "@iconify/react";
 import { useEffect, useState } from "react";
-import { CategoryButtonProps } from "@/components/CategoryButton";
+import Navbar from "../components/Navbar";
 
 type CardDataProps = {
   imagePath: string;
@@ -44,7 +44,7 @@ const browseCardData: CardDataProps[] = [
     imagePath: "../src/assets/browse/disney.jpg",
     title: "Disneyland",
     category: "Activities",
-    country: "USA",
+    country: "United States",
     region: "California",
     description: "A magical place for kids and adults alike",
     startRating: 3.5,
@@ -62,7 +62,7 @@ const browseCardData: CardDataProps[] = [
     imagePath: "../src/assets/browse/omnia-nightclub.jpg",
     title: "Omnia Nightclub",
     category: "Nightlife",
-    country: "USA",
+    country: "United States",
     region: "Las Vegas",
     description: "A popular nightclub in Las Vegas",
     startRating: 4.0,
@@ -80,7 +80,7 @@ const browseCardData: CardDataProps[] = [
     imagePath: "../src/assets/browse/mall-emirates.jpg",
     title: "Mall of the Emirates",
     category: "Shopping",
-    country: "UAE",
+    country: "United Arab Emirates",
     region: "Dubai",
     description: "A large shopping mall in Dubai",
     startRating: 4.5,
@@ -98,6 +98,7 @@ const browseCardData: CardDataProps[] = [
 
 const Browse = () => {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [selectedCountry, setSelectedCountry] = useState<string>("World");
 
   useEffect(() => {
     const storedCategories = sessionStorage.getItem("selectedCategories");
@@ -121,11 +122,18 @@ const Browse = () => {
     );
   };
 
-  const filteredCards = selectedCategories.length
-    ? browseCardData.filter((card) =>
-        selectedCategories.includes(card.category)
-      )
-    : browseCardData;
+  const handleCountrySelect = (country: string) => {
+    setSelectedCountry(country);
+  };
+
+  const filteredCards = browseCardData.filter((card) => {
+    const matchesCategory =
+      selectedCategories.length === 0 ||
+      selectedCategories.includes(card.category);
+    const matchesCountry =
+      selectedCountry === "World" || card.country === selectedCountry;
+    return matchesCategory && matchesCountry;
+  });
 
   return (
     <div>
@@ -141,6 +149,7 @@ const Browse = () => {
                 onClick={() => handleCategoryClick(item.category)}
               />
             ))}
+            <CountryDropdown onSelectCountry={handleCountrySelect} />
           </div>
         </div>
         <div className="flex flex-wrap gap-4 justify-center">
