@@ -1,4 +1,3 @@
-import Navbar from '../components/Navbar'
 import { Card, CardContent } from '@/components/ui/card'
 import CategoryButton from '@/components/CategoryButton'
 import { Icon } from '@iconify/react'
@@ -121,7 +120,6 @@ const Browse = () => {
 
   return (
     <div>
-      <Navbar />
       <div className="flex flex-col gap-8">
         <div className="flex w-full p-4 justify-center items-center ">
           <div className="flex flex-wrap gap-4">
