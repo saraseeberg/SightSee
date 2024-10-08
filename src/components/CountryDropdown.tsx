@@ -1,40 +1,26 @@
-import { Button } from "@/components/ui/button";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Icon } from "@iconify/react/dist/iconify.js";
-import React from "react";
+import { Button } from '@/components/ui/button'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import { Icon } from '@iconify/react/dist/iconify.js'
+import React from 'react'
 
-const countries = [
-  "World",
-  "Denmark",
-  "Italy",
-  "Norway",
-  "United Arab Emirates",
-  "United States",
-];
+const countries = ['World', 'Denmark', 'Italy', 'Norway', 'United Arab Emirates', 'United States']
 
 type CountryDropdownProps = {
-  onSelectCountry: (country: string) => void;
-};
+  onSelectCountry: (country: string) => void
+}
 
 const CountryDropdown: React.FC<CountryDropdownProps> = ({ onSelectCountry }) => {
-  const [selectedCountry, setSelectedCountry] = React.useState("World");
+  const [selectedCountry, setSelectedCountry] = React.useState('World')
 
   const handleSelect = (country: string) => {
-    setSelectedCountry(country);
-    onSelectCountry(country);
-  };
+    setSelectedCountry(country)
+    onSelectCountry(country)
+  }
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button
-          className="border border-black text-black font-bold rounded-full px-4 py-2 shadow-md bg-white hover:bg-lightmodeGreen hover:text-white hover:border-lightmodeGreen"
-        >
+        <Button className="border border-black text-black font-bold rounded-full px-4 py-2 shadow-md bg-white hover:bg-lightmodeGreen hover:text-white hover:border-lightmodeGreen">
           {selectedCountry} <Icon icon="iconamoon:arrow-down-2-light" width="24" height="24" />
         </Button>
       </DropdownMenuTrigger>
@@ -45,7 +31,7 @@ const CountryDropdown: React.FC<CountryDropdownProps> = ({ onSelectCountry }) =>
             key={country}
             onSelect={() => handleSelect(country)}
             className={`cursor-pointer p-2 hover:bg-lightmodeGreen hover:text-white ${
-              selectedCountry === country ? "bg-lightmodeGreen text-white" : ""
+              selectedCountry === country ? 'bg-lightmodeGreen text-white' : ''
             }`}
           >
             {country}
@@ -53,7 +39,7 @@ const CountryDropdown: React.FC<CountryDropdownProps> = ({ onSelectCountry }) =>
         ))}
       </DropdownMenuContent>
     </DropdownMenu>
-  );
-};
+  )
+}
 
-export default CountryDropdown;
+export default CountryDropdown
