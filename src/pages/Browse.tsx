@@ -157,7 +157,7 @@ const Browse = () => {
           {filteredCards.map((item, index) => (
             <Card
               key={index}
-              className="rounded-lg shadow-lg overflow-hidden w-64 xl:w-80 xl:mb-6 p-0"
+              className="cursor-pointer rounded-lg shadow-lg overflow-hidden w-64 xl:w-80 xl:mb-6 p-0 transform transition-transform duration-300 hover:scale-105"
             >
               <CardContent className="relative p-0">
                 <div className="relative">
