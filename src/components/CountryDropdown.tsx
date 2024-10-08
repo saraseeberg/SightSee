@@ -10,14 +10,11 @@ import React from "react";
 
 const countries = [
   "World",
-  "United States",
-  "France",
-  "Greece",
-  "Italy",
-  "Spain",
-  "United Kingdom",
-  "United Arab Emirates",
   "Denmark",
+  "Italy",
+  "Norway",
+  "United Arab Emirates",
+  "United States",
 ];
 
 type CountryDropdownProps = {
