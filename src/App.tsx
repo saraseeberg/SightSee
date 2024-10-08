@@ -11,9 +11,9 @@ function App() {
       <Routes>
         <Route path="/" element={<MainLayout />}>
           <Route index element={<Home />} />
-          <Route path="*" element={<Error404 />} />
+          <Route path="/Browse" element={<Browse />} />
         </Route>
-        <Route path="/Browse" element={<Browse />} />
+        <Route path="*" element={<Error404 />} />
       </Routes>
     </HashRouter>
   )
