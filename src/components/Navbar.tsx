@@ -52,21 +52,9 @@ function Navbar() {
           </div>
           <Icon
             icon={isDarkMode ? "ic:baseline-dark-mode" : "ic:round-wb-sunny"}
-            className="flex mx-2 h-6 w-6 text-black cursor-pointer ml-auto"
+            className="flex justify-end md:mr-16 mx-2 h-6 w-6 text-black cursor-pointer ml-auto"
             onClick={toggleIcon}
           />
-          <form onSubmit={handleSearch} className="flex justify-end md:mr-16 ">
-            <div className="relative">
-              <Icon icon="ic:baseline-search" className="absolute text-muted-foreground left-2.5 top-2.5 h-4 w-4 m-1" />
-              <input
-                type="search"
-                placeholder="Search..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="flex h-10 w-full rounded-md border bg-background text-sm focus-visible:outline-none px-6 py-2 md:px-8 max-sm: text-xs px-0 py-0 "
-              />
-            </div>
-          </form>
         </div>
         <div className="ml-auto md:hidden flex justify-end mr-16">
           <DropdownMenu>
