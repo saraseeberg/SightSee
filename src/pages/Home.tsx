@@ -61,7 +61,7 @@ const Home = () => {
                     alt={`Image of a destination`}
                     className="w-full h-96 object-cover rounded-xl m-0 lg:min-h-[500px] "
                   />
-                  <div className="absolute inset-0 bg-black/20 z-10 rounded-xl overflow-hidden"></div>
+                  <div className="absolute inset-0 bg-black/20 z-10 rounded-xl overflow-hidden ml-4"></div>
                   <p className="text-white text-lg absolute font-bold md:text-2xl lg:text-6xl z-20">
                     Discover your travels
                   </p>
