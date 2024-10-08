@@ -1,3 +1,4 @@
+import { useLocation } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { Card, CardContent } from "@/components/ui/card";
 import CategoryButton from "@/components/CategoryButton";
@@ -97,6 +98,7 @@ const browseCardData: CardDataProps[] = [
 ];
 
 const Browse = () => {
+  const location = useLocation();
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
   useEffect(() => {
@@ -104,7 +106,15 @@ const Browse = () => {
     if (storedCategories) {
       setSelectedCategories(JSON.parse(storedCategories));
     }
-  }, []);
+
+    if (location.state?.category) {
+      setSelectedCategories([location.state.category]);
+      sessionStorage.setItem(
+        "selectedCategories",
+        JSON.stringify([location.state.category])
+      );
+    }
+  }, [location.state]);
 
   const handleCategoryClick = (category: string) => {
     let updatedCategories: string[];
