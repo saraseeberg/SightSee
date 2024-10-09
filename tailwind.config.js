@@ -5,7 +5,7 @@ export default {
   theme: {
     extend: {
       colors: {
-        background: "hsl(var(--background))",
+        background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
         content: 'hsl(var(--content))',
         grey: 'var(--grey)',
