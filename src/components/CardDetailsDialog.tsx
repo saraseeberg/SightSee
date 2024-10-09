@@ -53,7 +53,7 @@ const CardDetailsDialog: React.FC<CardDetailsDialogProps> = ({
           {/* Rating and description on the right */}
           <div className="flex flex-col justify-between ml-4">
             <div>
-              <DialogTitle className="text-xl">{selectedCard.title}</DialogTitle>
+              <DialogTitle className="text-xl text-content">{selectedCard.title}</DialogTitle>
               <DialogDescription className="text-base">
                 {selectedCard.country}, {selectedCard.region}
               </DialogDescription>
@@ -64,7 +64,7 @@ const CardDetailsDialog: React.FC<CardDetailsDialogProps> = ({
             </div>
 
             {/* Description */}
-            <p className="mt-4 text-sm">{selectedCard.description}</p>
+            <p className="mt-4 text-sm text-content">{selectedCard.description}</p>
           </div>
         </article>
 

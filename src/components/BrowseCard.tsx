@@ -1,27 +1,20 @@
-import { Card, CardContent } from "@components/ui/card";
-import { Icon } from '@iconify/react';
+import { Card, CardContent } from '@components/ui/card'
+import { Icon } from '@iconify/react'
 
 export type CardDataProps = {
-  imagePath: string;
-  title: string;
-  category: string;
-  country: string;
-  region: string;
-  description: string;
-  startRating: number;
-  onClick?: () => void;
-};
+  imagePath: string
+  title: string
+  category: string
+  country: string
+  region: string
+  description: string
+  startRating: number
+  onClick?: () => void
+}
 
-const BrowseCard: React.FC<CardDataProps> = ({
-  imagePath,
-  title,
-  country,
-  region,
-  startRating,
-  onClick,
-}) => {
+const BrowseCard: React.FC<CardDataProps> = ({ imagePath, title, country, region, startRating, onClick }) => {
   return (
-    <article className="rounded-lg shadow-lg w-64 xl:w-80 xl:mb-6" onClick={onClick}>
+    <article className="rounded-lg shadow-lg  w-64 xl:w-80 xl:mb-6" onClick={onClick}>
       <Card className="overflow-hidden p-0">
         <CardContent className="relative p-0">
           <figure className="relative">
@@ -44,8 +37,7 @@ const BrowseCard: React.FC<CardDataProps> = ({
         </CardContent>
       </Card>
     </article>
-  );
-};
+  )
+}
 
-export default BrowseCard;
-
+export default BrowseCard
