@@ -1,4 +1,3 @@
-import Navbar from '../components/Navbar'
 import CategoryButton from '@/components/CategoryButton'
 import { useEffect, useState } from 'react'
 import { CategoryButtonProps } from '@/components/CategoryButton'
@@ -122,7 +121,6 @@ const Browse = () => {
 
   return (
     <>
-      <Navbar />
       <main className="flex flex-col gap-8">
         {/* Section for category buttons */}
         <section aria-labelledby="category-section" className="flex w-full p-4 justify-center items-center">
