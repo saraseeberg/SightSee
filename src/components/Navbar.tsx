@@ -33,10 +33,7 @@ function Navbar() {
         </Link>
         <div className="flex flex-1 justify-around items-center max-md:hidden">
           <div className="flex items-center justify-around gap-2">
-            <Link
-              to="/Browse"
-              className="self-center mx-8 transition-colors text-xl font-bold"
-            >
+            <Link to="/Browse" className="self-center mx-8 transition-colors text-xl font-bold">
               Browse
             </Link>
           </div>
@@ -48,12 +45,12 @@ function Navbar() {
         </div>
         <div className="ml-auto md:hidden flex justify-end mr-16 text-content">
           <Sheet>
-            <SheetTrigger asChild >
+            <SheetTrigger asChild>
               <button>
                 <Icon icon="ic:round-menu" width="24" height="24" />
               </button>
             </SheetTrigger>
-            <SheetContent side="left"  className="text-content">
+            <SheetContent side="left" className="text-content">
               <nav className="flex flex-col items-start gap-4 p-4 mb-3">
                 <Link to="/" className="transition-colors text-xl text-content  ">
                   Home
@@ -61,15 +58,9 @@ function Navbar() {
                 <Link to="/Browse" className="transition-colors text-xl text-content  ">
                   Browse
                 </Link>
-                <button
-                  className="flex items-center text-xl text-content"
-                  onClick={toggleIcon}
-                >
-                  { isDarkMode ? "Light Mode" : "Dark Mode"}
-                  <Icon
-                    icon={isDarkMode ? 'ic:round-wb-sunny' : 'ic:baseline-dark-mode'}
-                    className="h-6 w-6  ml-2  "
-                  />
+                <button className="flex items-center text-xl text-content" onClick={toggleIcon}>
+                  {isDarkMode ? 'Light Mode' : 'Dark Mode'}
+                  <Icon icon={isDarkMode ? 'ic:round-wb-sunny' : 'ic:baseline-dark-mode'} className="h-6 w-6  ml-2  " />
                 </button>
               </nav>
             </SheetContent>
