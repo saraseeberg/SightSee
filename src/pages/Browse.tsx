@@ -6,6 +6,7 @@ import { CardDataProps } from '@/components/BrowseCard'
 import CardDetailsDialog from '@/components/CardDetailsDialog'
 import { useLocation } from 'react-router-dom'
 import CountryDropdown from '@/components/CountryDropdown'
+import CategoryDropdown from '@/components/CategoryDropdown'
 
 const categoryButtonData: Omit<CategoryButtonProps, 'onClick' | 'isSelected'>[] = [
   {
@@ -120,6 +121,15 @@ const Browse = () => {
     setSelectedCountry(country)
   }
 
+  const handleCategorySelect = (category: string) => {
+    if (category === 'All') {
+      setSelectedCategories([])
+    } else {
+      setSelectedCategories([category])
+    }
+    sessionStorage.setItem('selectedCategories', JSON.stringify(category === 'All' ? [] : [category]))
+  }
+
   const handleCardClick = (card: CardDataProps) => {
     setSelectedCard(card)
     setOpenDialog(true)
@@ -141,20 +151,30 @@ const Browse = () => {
         {/* Section for category buttons */}
         <section aria-labelledby="category-section" className="flex w-full p-4 justify-center items-center">
           <div className="flex flex-wrap gap-4">
-            {categoryButtonData.map((item, index) => (
-              <CategoryButton
-                key={index}
-                category={item.category}
-                isSelected={selectedCategories.includes(item.category)}
-                onClick={() => handleCategoryClick(item.category)}
-              />
-            ))}
+            {/* CategoryButton is hidden on mobile screens (below md breakpoint) */}
+            <div className="hidden md:flex flex-wrap gap-4">
+              {categoryButtonData.map((item, index) => (
+                <CategoryButton
+                  key={index}
+                  category={item.category}
+                  isSelected={selectedCategories.includes(item.category)}
+                  onClick={() => handleCategoryClick(item.category)}
+                />
+              ))}
+            </div>
+
+            {/* Show CategoryDropdown on mobile screens (below md breakpoint) */}
+            <div className="block md:hidden">
+              <CategoryDropdown onSelectCategory={handleCategorySelect} />
+            </div>
+
+            {/* CountryDropdown is always visible */}
             <CountryDropdown onSelectCountry={handleCountrySelect} />
           </div>
         </section>
 
         {/* Section for listing cards */}
-        <section aria-labelledby="browse-section" className="flex flex-wrap gap-4 justify-center">
+        <section aria-labelledby="browse-section" className="flex flex-wrap gap-2 sm:gap-4 justify-center">
           <h2 id="browse-section" className="sr-only">
             Browse Cards
           </h2>
@@ -169,6 +189,7 @@ const Browse = () => {
               onClick={() => handleCardClick(item)}
               description={item.description}
               category={item.category}
+              className="w-[46%] sm:w-1/3 md:w-1/3 lg:w-1/4 shrink-0"
             />
           ))}
         </section>
