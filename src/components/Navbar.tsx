@@ -1,5 +1,5 @@
 import { Icon } from '@iconify/react/dist/iconify.js'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { Sheet, SheetContent, SheetTrigger } from './ui/sheet'
 
@@ -8,11 +8,25 @@ function Navbar() {
 
   const toggleIcon = () => {
     setIsDarkMode(!isDarkMode)
+    if (isDarkMode) {
+      document.documentElement.classList.remove('dark')
+      localStorage.setItem('theme', 'light')
+    } else {
+      document.documentElement.classList.add('dark')
+      localStorage.setItem('theme', 'dark')
+    }
   }
 
+  useEffect(() => {
+    const theme = localStorage.getItem('theme')
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark')
+      setIsDarkMode(true)
+    }
+  }, [])
   return (
     <>
-      <nav className="flex gap-2 m-2 sticky top-0 w-full h-20 bg-white items-center z-50">
+      <nav className="flex gap-2 m-2 sticky top-0 w-full h-20 items-center z-50">
         <div className="cursor-pointer">
           <Link to={'/'}>
             <h1 className="flex flex-row items-center ml-12 text-3xl max-md:text-2xl">
@@ -37,8 +51,8 @@ function Navbar() {
             </Link>
           </div>
           <Icon
-            icon={isDarkMode ? 'ic:baseline-dark-mode' : 'ic:round-wb-sunny'}
-            className="flex justify-end md:mr-16 mx-2 h-6 w-6 text-black cursor-pointer ml-auto  hover:text-lightmodeGreen"
+            icon={isDarkMode ? 'ic:round-wb-sunny' : 'ic:baseline-dark-mode'}
+            className="flex justify-end md:mr-16 mx-2 h-6 w-6 text-content cursor-pointer ml-auto  hover:text-lightmodeGreen"
             onClick={toggleIcon}
           />
         </div>
