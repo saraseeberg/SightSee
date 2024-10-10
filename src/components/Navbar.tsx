@@ -1,17 +1,8 @@
 import Logo from '@/assets/Logo'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuPortal,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
 import { Icon } from '@iconify/react'
 import React, { useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import { Sheet, SheetContent, SheetTrigger } from './ui/sheet'
 
 function Navbar() {
   const [isDarkMode, setIsDarkMode] = React.useState(false)
@@ -36,7 +27,7 @@ function Navbar() {
   }, [])
   return (
     <>
-      <nav className="flex gap-2 sticky top-0  w-full h-20 items-center z-50">
+      <nav className="flex gap-2 sticky top-0  w-full h-20 items-center bg-background  z-50">
         <Link to="/">
           <Logo />
         </Link>
@@ -44,15 +35,9 @@ function Navbar() {
           <div className="flex items-center justify-around gap-2">
             <Link
               to="/Browse"
-              className="self-center mx-8 transition-colors text-xl hover:text-lightmodeGreen font-bold"
+              className="self-center mx-8 transition-colors text-xl font-bold"
             >
               Browse
-            </Link>
-            <Link
-              to="/Reviews"
-              className="self-center mx-4 transition-colors text-xl hover:text-lightmodeGreen font-bold"
-            >
-              Reviews
             </Link>
           </div>
           <Icon
@@ -61,42 +46,34 @@ function Navbar() {
             onClick={toggleIcon}
           />
         </div>
-        <div className="ml-auto md:hidden flex justify-end mr-16">
-          <DropdownMenu>
-            <DropdownMenuTrigger>
-              <Icon icon="ic:round-menu" width="24" height="24" />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuItem>
-                {' '}
-                <Link to="/Browse">Browse</Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                {' '}
-                <Link to="/Reviews">Reviews</Link>
-              </DropdownMenuItem>
-              <DropdownMenuSub>
-                <DropdownMenuSubTrigger>
-                  <span>Theme</span>
-                </DropdownMenuSubTrigger>
-                <DropdownMenuPortal>
-                  <DropdownMenuSubContent>
-                    <DropdownMenuItem>
-                      <span className="flex-row flex">
-                        <Icon icon={'ic:baseline-dark-mode'} className="m-0.5" />
-                        Dark
-                      </span>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>
-                      <span className="flex-row flex">
-                        <Icon icon={'ic:round-wb-sunny'} className="m-0.5" /> Light
-                      </span>
-                    </DropdownMenuItem>
-                  </DropdownMenuSubContent>
-                </DropdownMenuPortal>
-              </DropdownMenuSub>
-            </DropdownMenuContent>
-          </DropdownMenu>
+        <div className="ml-auto md:hidden flex justify-end mr-16 text-content">
+          <Sheet>
+            <SheetTrigger asChild >
+              <button>
+                <Icon icon="ic:round-menu" width="24" height="24" />
+              </button>
+            </SheetTrigger>
+            <SheetContent side="left"  className="text-content">
+              <nav className="flex flex-col items-start gap-4 p-4 mb-3">
+                <Link to="/" className="transition-colors text-xl text-content  ">
+                  Home
+                </Link>
+                <Link to="/Browse" className="transition-colors text-xl text-content  ">
+                  Browse
+                </Link>
+                <button
+                  className="flex items-center text-xl text-content"
+                  onClick={toggleIcon}
+                >
+                  { isDarkMode ? "Light Mode" : "Dark Mode"}
+                  <Icon
+                    icon={isDarkMode ? 'ic:round-wb-sunny' : 'ic:baseline-dark-mode'}
+                    className="h-6 w-6  ml-2  "
+                  />
+                </button>
+              </nav>
+            </SheetContent>
+          </Sheet>
         </div>
       </nav>
     </>
