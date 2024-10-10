@@ -4,6 +4,8 @@ import { CategoryButtonProps } from '@/components/CategoryButton'
 import BrowseCard from '@/components/BrowseCard'
 import { CardDataProps } from '@/components/BrowseCard'
 import CardDetailsDialog from '@/components/CardDetailsDialog'
+import { useLocation } from 'react-router-dom'
+import CountryDropdown from '@/components/CountryDropdown'
 
 const categoryButtonData: Omit<CategoryButtonProps, 'onClick' | 'isSelected'>[] = [
   {
@@ -31,7 +33,7 @@ const browseCardData: CardDataProps[] = [
     imagePath: '../src/assets/browse/disney.jpg',
     title: 'Disneyland',
     category: 'Activities',
-    country: 'USA',
+    country: 'United States',
     region: 'California',
     description: 'A magical place for kids and adults alike',
     startRating: 3.5,
@@ -49,10 +51,9 @@ const browseCardData: CardDataProps[] = [
     imagePath: '../src/assets/browse/omnia-nightclub.jpg',
     title: 'Omnia Nightclub',
     category: 'Nightlife',
-    country: 'USA',
+    country: 'United States',
     region: 'Las Vegas',
-    description:
-      'A popular nightclub in Las Vegas. Known for its celebrity appearances and performances. A popular nightclub in Las Vegas. Known for its celebrity appearances and performances',
+    description: 'A popular nightclub in Las Vegas',
     startRating: 4.0,
   },
   {
@@ -68,7 +69,7 @@ const browseCardData: CardDataProps[] = [
     imagePath: '../src/assets/browse/mall-emirates.jpg',
     title: 'Mall of the Emirates',
     category: 'Shopping',
-    country: 'UAE',
+    country: 'United Arab Emirates',
     region: 'Dubai',
     description: 'A large shopping mall in Dubai',
     startRating: 4.5,
@@ -85,7 +86,9 @@ const browseCardData: CardDataProps[] = [
 ]
 
 const Browse = () => {
+  const location = useLocation()
   const [selectedCategories, setSelectedCategories] = useState<string[]>([])
+  const [selectedCountry, setSelectedCountry] = useState<string>('World')
   const [openDialog, setOpenDialog] = useState(false)
   const [selectedCard, setSelectedCard] = useState<CardDataProps | null>(null)
   const [userRating, setUserRating] = useState<number>(0)
@@ -95,15 +98,26 @@ const Browse = () => {
     if (storedCategories) {
       setSelectedCategories(JSON.parse(storedCategories))
     }
-  }, [])
+
+    if (location.state?.category) {
+      setSelectedCategories([location.state.category])
+      sessionStorage.setItem('selectedCategories', JSON.stringify([location.state.category]))
+    }
+  }, [location.state])
 
   const handleCategoryClick = (category: string) => {
-    const updatedCategories = selectedCategories.includes(category)
-      ? selectedCategories.filter((c) => c !== category)
-      : [...selectedCategories, category]
+    let updatedCategories: string[]
+    if (selectedCategories.includes(category)) {
+      updatedCategories = selectedCategories.filter((c) => c !== category)
+    } else {
+      updatedCategories = [...selectedCategories, category]
+    }
 
     setSelectedCategories(updatedCategories)
     sessionStorage.setItem('selectedCategories', JSON.stringify(updatedCategories))
+  }
+  const handleCountrySelect = (country: string) => {
+    setSelectedCountry(country)
   }
 
   const handleCardClick = (card: CardDataProps) => {
@@ -115,18 +129,17 @@ const Browse = () => {
     setUserRating(rating)
   }
 
-  const filteredCards = selectedCategories.length
-    ? browseCardData.filter((card) => selectedCategories.includes(card.category))
-    : browseCardData
+  const filteredCards = browseCardData.filter((card) => {
+    const matchesCategory = selectedCategories.length === 0 || selectedCategories.includes(card.category)
+    const matchesCountry = selectedCountry === 'World' || card.country === selectedCountry
+    return matchesCategory && matchesCountry
+  })
 
   return (
     <>
       <main className="flex flex-col gap-8">
         {/* Section for category buttons */}
         <section aria-labelledby="category-section" className="flex w-full p-4 justify-center items-center">
-          <h2 id="category-section" className="sr-only">
-            Category Filter
-          </h2>
           <div className="flex flex-wrap gap-4">
             {categoryButtonData.map((item, index) => (
               <CategoryButton
@@ -136,6 +149,7 @@ const Browse = () => {
                 onClick={() => handleCategoryClick(item.category)}
               />
             ))}
+            <CountryDropdown onSelectCountry={handleCountrySelect} />
           </div>
         </section>
 

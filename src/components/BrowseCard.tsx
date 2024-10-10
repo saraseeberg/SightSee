@@ -2,6 +2,7 @@ import { Card, CardContent } from '@components/ui/card'
 import { Icon } from '@iconify/react'
 
 export type CardDataProps = {
+  className?: string
   imagePath: string
   title: string
   category: string
@@ -12,9 +13,12 @@ export type CardDataProps = {
   onClick?: () => void
 }
 
-const BrowseCard: React.FC<CardDataProps> = ({ imagePath, title, country, region, startRating, onClick }) => {
+const BrowseCard: React.FC<CardDataProps> = ({ imagePath, title, country, region, startRating, onClick, ...props }) => {
   return (
-    <article className="rounded-lg shadow-lg  w-64 xl:w-80 xl:mb-6" onClick={onClick}>
+    <article
+      className={`rounded-lg shadow-lg  w-64 xl:w-80 xl:mb-6 cursor-pointer hover:scale-105 transition-all duration-300 ${props.className}`}
+      onClick={onClick}
+    >
       <Card className="overflow-hidden p-0">
         <CardContent className="relative p-0">
           <figure className="relative">

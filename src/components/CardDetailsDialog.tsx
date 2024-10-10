@@ -59,7 +59,7 @@ const CardDetailsDialog: React.FC<CardDetailsDialogProps> = ({
               </DialogDescription>
 
               {/* Display current rating (with fractional stars) */}
-              <p className="text-sm mt-1">Current rating:</p>
+              <p className="text-sm text-content mt-1">Current rating:</p>
               {renderStarRating(selectedCard.startRating)}
             </div>
 
@@ -70,7 +70,7 @@ const CardDetailsDialog: React.FC<CardDetailsDialogProps> = ({
 
         {/* User can rate */}
         <section aria-labelledby="rate-this-place" className="mt-4">
-          <h2 id="rate-this-place" className="font-semibold">
+          <h2 id="rate-this-place" className="font-semibold text-content">
             Rate this place:
           </h2>
           <div className="flex items-center mt-1">

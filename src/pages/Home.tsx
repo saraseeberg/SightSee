@@ -1,5 +1,6 @@
 import { Card, CardContent } from '@/components/ui/card'
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel'
+import { useNavigate } from 'react-router-dom'
 
 type CarouselData = {
   imagePath: string
@@ -7,6 +8,7 @@ type CarouselData = {
 type CardData = {
   imagePath: string
   title: string
+  category: string
 }
 
 const carouselData: CarouselData[] = [
@@ -24,22 +26,32 @@ const cardData: CardData[] = [
   {
     imagePath: '../src/assets/Mallorca.jpg',
     title: 'Swim in Spain?',
+    category: 'Activities',
   },
   {
     imagePath: '../src/assets/Italy.jpg',
     title: 'Dinner in Italy?',
+    category: 'Restaurants',
   },
   {
     imagePath: '../src/assets/France.jpg',
     title: 'Party in France?',
+    category: 'Nightlife',
   },
   {
     imagePath: '../src/assets/alpene.jpg',
     title: 'Ski in the alps?',
+    category: 'Sights',
   },
 ]
 
 const Home = () => {
+  const navigate = useNavigate()
+
+  const suggestionClick = (category: string) => {
+    navigate('/browse', { state: { category } })
+  }
+
   return (
     <div>
       <div className="flex flex-col gap-8 my-14">
@@ -82,9 +94,13 @@ const Home = () => {
             Where to next?
           </h1>
 
-          <div className="flex justify-center flex-wrap items-center gap-3 max-sm:flex-col xl:space-x-10 xl: mb-4">
+          <div className="flex justify-center flex-wrap items-center gap-3 max-sm:flex-col xl: mb-4">
             {cardData.map((item, index) => (
-              <Card key={index} className="rounded-lg shadow-lg overflow-hidden w-64 xl:w-80 xl:mb-6 p-0">
+              <Card
+                key={index}
+                className="cursor-pointer rounded-lg shadow-lg overflow-hidden w-64 xl:w-80 xl:mb-6 p-0 transform transition-transform duration-300 hover:scale-105"
+                onClick={() => suggestionClick(item.category)}
+              >
                 <CardContent className="relative p-0">
                   <div className="relative">
                     <img src={item.imagePath} alt={item.title} className="w-full h-96 object-cover" />
