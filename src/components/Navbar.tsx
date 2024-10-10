@@ -56,7 +56,7 @@ function Navbar() {
             </Link>
           </div>
           <Icon
-            icon={isDarkMode ? 'ic:baseline-dark-mode' : 'ic:round-wb-sunny'}
+            icon={isDarkMode ? 'ic:round-wb-sunny' : 'ic:baseline-dark-mode'}
             className="flex justify-end md:mr-16 mx-2 h-6 w-6 text-content cursor-pointer ml-auto"
             onClick={toggleIcon}
           />
