@@ -1,5 +1,3 @@
-import Navbar from '../components/Navbar'
-
 import { Card, CardContent } from '@/components/ui/card'
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel'
 import { useNavigate } from 'react-router-dom'
@@ -56,7 +54,6 @@ const Home = () => {
 
   return (
     <div>
-      <Navbar />
       <div className="flex flex-col gap-8 my-14">
         <div className="flex w-full p-16 justify-center items-center ">
           <Carousel
@@ -89,11 +86,11 @@ const Home = () => {
         </div>
 
         <div className="px-6 pb-8 mt-14">
-          <p className=" flex text-gray-500 mb-1  ml-10 md:font-bold max-sm: items-center sm: justify-start">
+          <p className=" flex text-grey mb-1 md:font-bold max-sm: items-center sm: justify-start">
             Discover your next destination
           </p>
 
-          <h1 className="flex font-extrabold ml-10 mb-6 bg-clip-text text-transparent bg-gradient-to-r from-[#000000] via-[#0D7C66] to-[#4FB38C] max-sm:text-4xl max-md:text-6xl md:text-7xl ">
+          <h1 className="flex font-extrabold  mb-6 bg-clip-text text-transparent bg-gradient-to-r from-content via-[#0D7C66] to-accent-1 max-sm:text-4xl max-md:text-6xl md:text-7xl ">
             Where to next?
           </h1>
 

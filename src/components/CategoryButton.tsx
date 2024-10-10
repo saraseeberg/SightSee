@@ -10,10 +10,10 @@ const CategoryButton: React.FC<CategoryButtonProps> = ({ category, onClick, isSe
   return (
     <Button
       onClick={onClick}
-      className={`border border-black text-black font-bold rounded-full px-4 py-2 shadow-md bg-white
-        hover:bg-lightmodeGreen hover:text-white hover:border-lightmodeGreen
-        active:bg-black active:text-white active:border-black ${
-          isSelected ? 'bg-lightmodeGreen text-white border-lightmodeGreen' : ''
+      className={`border border-content text-content font-bold rounded-full px-4 py-2 shadow-md bg-background
+        hover:bg-accent-1 hover:text-white hover:border-accent-1
+        active:bg-content active:text-background active:border-content ${
+          isSelected ? 'bg-content text-background border-content' : ''
         }`}
     >
       {category}

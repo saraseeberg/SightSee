@@ -1,20 +1,11 @@
-import { useLocation } from 'react-router-dom'
-import CategoryButton, { CategoryButtonProps } from '@/components/CategoryButton'
-import CountryDropdown from '@/components/CountryDropdown'
-import { Card, CardContent } from '@/components/ui/card'
-import { Icon } from '@iconify/react'
+import CategoryButton from '@/components/CategoryButton'
 import { useEffect, useState } from 'react'
-import Navbar from '../components/Navbar'
-
-type CardDataProps = {
-  imagePath: string
-  title: string
-  category: string
-  country: string
-  region: string
-  description: string
-  startRating: number
-}
+import { CategoryButtonProps } from '@/components/CategoryButton'
+import BrowseCard from '@/components/BrowseCard'
+import { CardDataProps } from '@/components/BrowseCard'
+import CardDetailsDialog from '@/components/CardDetailsDialog'
+import { useLocation } from 'react-router-dom'
+import CountryDropdown from '@/components/CountryDropdown'
 
 const categoryButtonData: Omit<CategoryButtonProps, 'onClick' | 'isSelected'>[] = [
   {
@@ -98,6 +89,9 @@ const Browse = () => {
   const location = useLocation()
   const [selectedCategories, setSelectedCategories] = useState<string[]>([])
   const [selectedCountry, setSelectedCountry] = useState<string>('World')
+  const [openDialog, setOpenDialog] = useState(false)
+  const [selectedCard, setSelectedCard] = useState<CardDataProps | null>(null)
+  const [userRating, setUserRating] = useState<number>(0)
 
   useEffect(() => {
     const storedCategories = sessionStorage.getItem('selectedCategories')
@@ -122,9 +116,17 @@ const Browse = () => {
     setSelectedCategories(updatedCategories)
     sessionStorage.setItem('selectedCategories', JSON.stringify(updatedCategories))
   }
-
   const handleCountrySelect = (country: string) => {
     setSelectedCountry(country)
+  }
+
+  const handleCardClick = (card: CardDataProps) => {
+    setSelectedCard(card)
+    setOpenDialog(true)
+  }
+
+  const handleStarClick = (rating: number) => {
+    setUserRating(rating)
   }
 
   const filteredCards = browseCardData.filter((card) => {
@@ -134,10 +136,10 @@ const Browse = () => {
   })
 
   return (
-    <div>
-      <Navbar />
-      <div className="flex flex-col gap-8">
-        <div className="flex w-full p-4 justify-center items-center ">
+    <>
+      <main className="flex flex-col gap-8">
+        {/* Section for category buttons */}
+        <section aria-labelledby="category-section" className="flex w-full p-4 justify-center items-center">
           <div className="flex flex-wrap gap-4">
             {categoryButtonData.map((item, index) => (
               <CategoryButton
@@ -149,36 +151,38 @@ const Browse = () => {
             ))}
             <CountryDropdown onSelectCountry={handleCountrySelect} />
           </div>
-        </div>
-        <div className="flex flex-wrap gap-4 justify-center">
+        </section>
+
+        {/* Section for listing cards */}
+        <section aria-labelledby="browse-section" className="flex flex-wrap gap-4 justify-center">
+          <h2 id="browse-section" className="sr-only">
+            Browse Cards
+          </h2>
           {filteredCards.map((item, index) => (
-            <Card
+            <BrowseCard
               key={index}
-              className="cursor-pointer rounded-lg shadow-lg overflow-hidden w-64 xl:w-80 xl:mb-6 p-0 transform transition-transform duration-300 hover:scale-105"
-            >
-              <CardContent className="relative p-0">
-                <div className="relative">
-                  <img src={item.imagePath} alt={item.title} className="w-full h-96 object-cover" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-90"></div>
-                  <div className="absolute bottom-2 w-full pl-2 pr-2 text-white">
-                    <p className=" font-bold text-2xl shadow-2xl">{item.title}</p>
-                    <div className="flex w-full justify-between">
-                      <p className="font-bold italic text-base">
-                        {item.country}, {item.region}
-                      </p>
-                      <div className="flex pt-0.5">
-                        <Icon icon="ic:round-star" className="size-6" />
-                        <p className="font-bold text-s">{item.startRating}</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+              imagePath={item.imagePath}
+              title={item.title}
+              country={item.country}
+              region={item.region}
+              startRating={item.startRating}
+              onClick={() => handleCardClick(item)}
+              description={item.description}
+              category={item.category}
+            />
           ))}
-        </div>
-      </div>
-    </div>
+        </section>
+      </main>
+
+      {/* Dialog for Card Details */}
+      <CardDetailsDialog
+        selectedCard={selectedCard}
+        openDialog={openDialog}
+        setOpenDialog={setOpenDialog}
+        userRating={userRating}
+        handleStarClick={handleStarClick}
+      />
+    </>
   )
 }
 
