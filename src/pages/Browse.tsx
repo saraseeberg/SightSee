@@ -1,11 +1,9 @@
-import CategoryButton from '@/components/CategoryButton'
-import { useEffect, useState } from 'react'
-import { CategoryButtonProps } from '@/components/CategoryButton'
-import BrowseCard from '@/components/BrowseCard'
-import { CardDataProps } from '@/components/BrowseCard'
+import BrowseCard, { CardDataProps } from '@/components/BrowseCard'
 import CardDetailsDialog from '@/components/CardDetailsDialog'
-import { useLocation } from 'react-router-dom'
+import CategoryButton, { CategoryButtonProps } from '@/components/CategoryButton'
 import CountryDropdown from '@/components/CountryDropdown'
+import { useEffect, useState } from 'react'
+import { useLocation } from 'react-router-dom'
 import CategoryDropdown from '@/components/CategoryDropdown'
 
 const categoryButtonData: Omit<CategoryButtonProps, 'onClick' | 'isSelected'>[] = [
@@ -84,6 +82,60 @@ const browseCardData: CardDataProps[] = [
     description: 'A large music festival in Denmark',
     startRating: 4.0,
   },
+  {
+    imagePath: '../src/assets/browse/calaMacarelleta.jpg',
+    title: 'Cala Macarelleta',
+    category: 'Activities',
+    country: 'Spain',
+    region: 'Menorca',
+    description: 'A beautiful beach in Menorca',
+    startRating: 4.5,
+  },
+  {
+    imagePath: '../src/assets/browse/swissAlps.jpg',
+    title: 'Swiss Alps',
+    category: 'Sights',
+    country: 'Switzerland',
+    region: 'Zermatt',
+    description: 'A beautiful mountain range in Switzerland',
+    startRating: 4.0,
+  },
+  {
+    imagePath: '../src/assets/browse/frenchAlps.jpg',
+    title: 'French Alps',
+    category: 'Sights',
+    country: 'France',
+    region: 'Chamonix',
+    description: 'A beautiful mountain range in France',
+    startRating: 3.5,
+  },
+  {
+    imagePath: '../src/assets/browse/frenchNightlife.jpg',
+    title: 'Pachamama Paris',
+    category: 'Nightlife',
+    country: 'France',
+    region: 'Paris',
+    description: 'A vibrant nightlife at Pachamama Paris',
+    startRating: 2.6,
+  },
+  {
+    imagePath: '../src/assets/browse/ParisShopping.jpg',
+    title: 'Galeries Lafayette',
+    category: 'Shopping',
+    country: 'France',
+    region: 'Paris',
+    description: 'A beautiful shopping mall in Paris',
+    startRating: 4.0,
+  },
+  {
+    imagePath: 'src/assets/browse/tivoliDenmark.jpg',
+    title: 'Tivoli Gardens',
+    category: 'Activities',
+    country: 'Denmark',
+    region: 'Copenhagen',
+    description: 'A magical tivoli in Copenhagen',
+    startRating: 3.8,
+  },
 ]
 
 const Browse = () => {
@@ -99,10 +151,13 @@ const Browse = () => {
     if (storedCategories) {
       setSelectedCategories(JSON.parse(storedCategories))
     }
-
     if (location.state?.category) {
       setSelectedCategories([location.state.category])
       sessionStorage.setItem('selectedCategories', JSON.stringify([location.state.category]))
+    }
+    if (location.state?.country) {
+      setSelectedCountry(location.state.country)
+      sessionStorage.setItem('selectedCountry', location.state.country)
     }
   }, [location.state])
 
@@ -169,7 +224,7 @@ const Browse = () => {
             </div>
 
             {/* CountryDropdown is always visible */}
-            <CountryDropdown onSelectCountry={handleCountrySelect} />
+            <CountryDropdown onSelectCountry={handleCountrySelect}selectedCountry={selectedCountry}/>
           </div>
         </section>
 

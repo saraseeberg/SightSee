@@ -9,17 +9,21 @@ type CardData = {
   imagePath: string
   title: string
   category: string
+  country: string
 }
 
 const carouselData: CarouselData[] = [
   {
-    imagePath: '../src/assets/Italy.jpg',
-  },
-  {
-    imagePath: '../src/assets/France.jpg',
+    imagePath: 'src/assets/browse/turtle.jpg',
   },
   {
     imagePath: '../src/assets/greece.jpg',
+  },
+  {
+    imagePath: 'src/assets/browse/bakery.jpg',
+  },
+  {
+    imagePath: 'src/assets/browse/greecePink.jpg',
   },
 ]
 const cardData: CardData[] = [
@@ -27,34 +31,38 @@ const cardData: CardData[] = [
     imagePath: '../src/assets/Mallorca.jpg',
     title: 'Swim in Spain?',
     category: 'Activities',
+    country: 'Spain',
   },
   {
     imagePath: '../src/assets/Italy.jpg',
     title: 'Dinner in Italy?',
     category: 'Restaurants',
+    country: 'Italy',
   },
   {
     imagePath: '../src/assets/France.jpg',
     title: 'Party in France?',
     category: 'Nightlife',
+    country: 'France',
   },
   {
     imagePath: '../src/assets/alpene.jpg',
     title: 'Ski in the alps?',
     category: 'Sights',
+    country: 'Switzerland',
   },
 ]
 
 const Home = () => {
   const navigate = useNavigate()
 
-  const suggestionClick = (category: string) => {
-    navigate('/browse', { state: { category } })
+  const suggestionClick = (category: string, country: string) => {
+    navigate('/browse', { state: { category, country } })
   }
 
   return (
     <div>
-      <div className="flex flex-col gap-8 my-14">
+      <div className="flex flex-col gap-8 my-6">
         <div className="flex w-full p-16 justify-center items-center ">
           <Carousel
             orientation="horizontal"
@@ -99,7 +107,7 @@ const Home = () => {
               <Card
                 key={index}
                 className="cursor-pointer rounded-lg shadow-lg overflow-hidden w-64 xl:w-80 xl:mb-6 p-0 transform transition-transform duration-300 hover:scale-105"
-                onClick={() => suggestionClick(item.category)}
+                onClick={() => suggestionClick(item.category, item.country)}
               >
                 <CardContent className="relative p-0">
                   <div className="relative">
