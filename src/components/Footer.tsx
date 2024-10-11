@@ -17,7 +17,7 @@ const Footer = () => {
   }
 
   return (
-    <footer className="w-full bg-accent-1 flex max-md:flex-col px-16 py-12 gap-10 text-white ">
+    <footer className="w-full bg-accent-1 flex max-md:flex-col px-16 py-12 gap-10 text-white mt-4">
       <section className="flex-1 space-y-5">
         <p className="text-accent-2">IT'S FREE</p>
         <h1 className="text-2xl font-bold">Don't miss out on our newsletter</h1>
