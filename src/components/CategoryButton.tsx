@@ -9,11 +9,12 @@ export type CategoryButtonProps = {
 const CategoryButton: React.FC<CategoryButtonProps> = ({ category, onClick, isSelected }) => {
   return (
     <Button
+      variant={'ghost'}
       onClick={onClick}
-      className={`border border-content text-content font-bold rounded-full px-4 py-2 shadow-md bg-background
-        hover:bg-accent-1 hover:text-white hover:border-accent-1
+      className={`border border-content text-content font-bold rounded-full px-4 py-2 shadow-md bg-background cursor-pointer
+        hover:scale-105 duration-300 transition-all
         active:bg-content active:text-background active:border-content ${
-          isSelected ? 'bg-content text-background border-content' : ''
+          isSelected ? 'bg-accent-1 text-white border-accent-1' : ''
         }`}
     >
       {category}
