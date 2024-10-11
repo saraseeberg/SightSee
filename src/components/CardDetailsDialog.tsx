@@ -1,10 +1,10 @@
 import React from 'react'
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog'
 import { Icon } from '@iconify/react'
-import { CardDataProps } from '@/components/BrowseCard'
+import { Location } from '@/lib/types/Location'
 
 type CardDetailsDialogProps = {
-  selectedCard: CardDataProps | null
+  selectedCard: Location | null
   openDialog: boolean
   setOpenDialog: (open: boolean) => void
   userRating: number
@@ -48,7 +48,7 @@ const CardDetailsDialog: React.FC<CardDetailsDialogProps> = ({
       <DialogContent>
         <article className="flex">
           {/* Image on the left */}
-          <img src={selectedCard.imagePath} alt={selectedCard.title} className="w-48 h-64 object-cover" />
+          <img src={selectedCard.image} alt={selectedCard.title} className="w-48 h-64 object-cover" />
 
           {/* Rating and description on the right */}
           <div className="flex flex-col justify-between ml-4">
@@ -60,7 +60,7 @@ const CardDetailsDialog: React.FC<CardDetailsDialogProps> = ({
 
               {/* Display current rating (with fractional stars) */}
               <p className="text-sm text-content mt-1">Current rating:</p>
-              {renderStarRating(selectedCard.startRating)}
+              {renderStarRating(selectedCard.rating)}
             </div>
 
             {/* Description */}
