@@ -1,15 +1,10 @@
 import { Card, CardContent } from '@/components/ui/card'
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel'
+import LocationsData from '@/lib/data/locationsData'
 import { useNavigate } from 'react-router-dom'
 
 type CarouselData = {
   imagePath: string
-}
-type CardData = {
-  imagePath: string
-  title: string
-  category: string
-  country: string
 }
 
 const carouselData: CarouselData[] = [
@@ -24,32 +19,6 @@ const carouselData: CarouselData[] = [
   },
   {
     imagePath: 'src/assets/browse/greecePink.jpg',
-  },
-]
-const cardData: CardData[] = [
-  {
-    imagePath: '../src/assets/Mallorca.jpg',
-    title: 'Swim in Spain?',
-    category: 'Activities',
-    country: 'Spain',
-  },
-  {
-    imagePath: '../src/assets/Italy.jpg',
-    title: 'Dinner in Italy?',
-    category: 'Restaurants',
-    country: 'Italy',
-  },
-  {
-    imagePath: '../src/assets/France.jpg',
-    title: 'Party in France?',
-    category: 'Nightlife',
-    country: 'France',
-  },
-  {
-    imagePath: '../src/assets/alpene.jpg',
-    title: 'Ski in the alps?',
-    category: 'Sights',
-    country: 'Switzerland',
   },
 ]
 
@@ -103,18 +72,18 @@ const Home = () => {
           </h1>
 
           <div className="flex justify-center flex-wrap items-center gap-3 max-sm:flex-col xl: mb-4">
-            {cardData.map((item, index) => (
+            {LocationsData.filter((loc) => loc.titleQuestion).map((item, index) => (
               <Card
                 key={index}
                 className="cursor-pointer rounded-lg shadow-lg overflow-hidden w-64 xl:w-80 xl:mb-6 p-0 transform transition-transform duration-300 hover:scale-105"
-                onClick={() => suggestionClick(item.category, item.country)}
+                onClick={() => suggestionClick(item.categories[0], item.country)}
               >
                 <CardContent className="relative p-0">
                   <div className="relative">
-                    <img src={item.imagePath} alt={item.title} className="w-full h-96 object-cover" />
+                    <img src={item.image} alt={item.alt} className="w-full h-96 object-cover" />
                     <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-90"></div>
                     <p className="absolute bottom-4 left-4 ml-2 text-white font-bold text-lg shadow-2xl">
-                      {item.title}
+                      {item.titleQuestion}
                     </p>
                   </div>
                 </CardContent>
