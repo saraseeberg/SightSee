@@ -13,7 +13,7 @@ const Home = () => {
   return (
     <>
       <main className="flex flex-col gap-8 my-6">
-        <section className="flex w-full px-16 justify-center items-center ">
+        <section className="flex w-full px-2 justify-center items-center ">
           <HeroCarousel />
         </section>
 
