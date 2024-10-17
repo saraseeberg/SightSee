@@ -2,30 +2,7 @@ import { useEffect, useState } from 'react'
 import { Carousel, CarouselApi, CarouselContent, CarouselItem } from './ui/carousel'
 import AutoPlay from 'embla-carousel-autoplay'
 import { Link } from 'react-router-dom'
-
-const carouselData = [
-  {
-    imagePath: 'src/assets/browse/turtle.jpg',
-    title: 'Adventure into the unknown',
-    titleReavel: 'Greece?',
-  },
-  {
-    imagePath: '../src/assets/greece.jpg',
-    title: 'Discover your next adventure',
-    titleReavel: 'Maldives?',
-  },
-  {
-    imagePath: 'src/assets/browse/bakery.jpg',
-    title: 'Who knows what you might discover',
-    titleReavel: 'Japan?',
-  },
-  {
-    imagePath: 'src/assets/browse/greecePink.jpg',
-    title: 'Make memories that last a lifetime',
-    titleReavel: 'Gonorrhoea?',
-  },
-]
-
+import { carouselData } from '@/lib/data/heroCarouselData'
 const CarouselIndicator = ({ api, current, total }: { api: CarouselApi; current: number; total: number }) => {
   return (
     <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-1">
@@ -70,15 +47,15 @@ const HeroCarousel = () => {
           <CarouselItem key={index} className="relative flex justify-center items-center group rounded-xl">
             <Link to="/browse" className="w-full relative flex justify-center items-center rounded-xl">
               <img
-                src={item.imagePath}
+                src={item.image}
                 alt={`Image of a destination`}
                 className="w-full object-cover h-96 rounded-xl blur-sm lg:min-h-[500px] hover:blur-none duration-300"
               />
               <div className="absolute inset-0 bg-black/20 rounded-xl overflow-hidden pointer-events-none"></div>
-              <p className="absolute text-white font-bold max-md:text-3xl px-2 text-6xl pointer-events-none transition-all transform duration-100 group-hover:animate-squeeze-x group-hover:delay-1000">
+              <p className="absolute text-center text-white font-bold max-sm:text-2xl max-md:text-3xl px-2 text-6xl pointer-events-none transition-all transform duration-100 group-hover:animate-squeeze-x group-hover:delay-1000">
                 {item.title}
               </p>
-              <p className="hidden absolute text-white font-bold max-md:text-3xl px-2 text-6xl pointer-events-none group-hover:block group-hover:animate-stretch-x group-hover:delay-1000 transition-all duration-100">
+              <p className="hidden absolute text-white font-bold max-sm:text-md max-md:text-3xl px-2 text-6xl pointer-events-none group-hover:block group-hover:animate-stretch-x group-hover:delay-1000 transition-all duration-100">
                 {item.titleReavel}
               </p>
             </Link>
