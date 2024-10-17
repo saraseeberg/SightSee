@@ -1,26 +1,7 @@
 import { Card, CardContent } from '@/components/ui/card'
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel'
 import LocationsData from '@/lib/data/locationsData'
 import { useNavigate } from 'react-router-dom'
-
-type CarouselData = {
-  imagePath: string
-}
-
-const carouselData: CarouselData[] = [
-  {
-    imagePath: 'src/assets/browse/turtle.jpg',
-  },
-  {
-    imagePath: '../src/assets/greece.jpg',
-  },
-  {
-    imagePath: 'src/assets/browse/bakery.jpg',
-  },
-  {
-    imagePath: 'src/assets/browse/greecePink.jpg',
-  },
-]
+import HeroCarousel from '@/components/HeroCarousel'
 
 const Home = () => {
   const navigate = useNavigate()
@@ -30,39 +11,13 @@ const Home = () => {
   }
 
   return (
-    <div>
-      <div className="flex flex-col gap-8 my-6">
-        <div className="flex w-full p-16 justify-center items-center ">
-          <Carousel
-            orientation="horizontal"
-            opts={{
-              loop: true,
-            }}
-          >
-            <CarouselContent>
-              {carouselData.map((item, index) => (
-                <CarouselItem
-                  key={index}
-                  className="relative flex justify-center items-center rounded-xl overflow-hidden"
-                >
-                  <img
-                    src={item.imagePath}
-                    alt={`Image of a destination`}
-                    className="w-full h-96 object-cover rounded-xl m-0 lg:min-h-[500px] "
-                  />
-                  <div className="absolute inset-0 bg-black/20 z-10 rounded-xl overflow-hidden ml-4"></div>
-                  <p className="text-white text-lg absolute font-bold md:text-2xl lg:text-6xl z-20">
-                    Discover your travels
-                  </p>
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-            <CarouselPrevious />
-            <CarouselNext />
-          </Carousel>
-        </div>
+    <>
+      <main className="flex flex-col gap-8 my-6">
+        <section className="flex w-full px-2 justify-center items-center ">
+          <HeroCarousel />
+        </section>
 
-        <div className="px-6 pb-8 mt-14">
+        <section className="px-6 pb-8 mt-14">
           <p className=" flex text-grey mb-1 md:font-bold max-sm: items-center sm: justify-start">
             Discover your next destination
           </p>
@@ -90,10 +45,9 @@ const Home = () => {
               </Card>
             ))}
           </div>
-          <footer className="background: #0D7C66"> </footer>
-        </div>
-      </div>
-    </div>
+        </section>
+      </main>
+    </>
   )
 }
 
