@@ -1,14 +1,19 @@
 {
     "compilerOptions": {
       "target": "ES2020",
-      "module": "CommonJS",           // For Node.js modules
+      "module": "CommonJS",
       "lib": ["ES2020"],
       "moduleResolution": "Node",
-      "outDir": "./dist",             // Output directory for compiled JS
-      "rootDir": "./src",             // Your source directory
+      "outDir": "./dist",
+      "rootDir": "./src",
       "strict": true,
       "esModuleInterop": true,
-      "skipLibCheck": true
+      "skipLibCheck": true,
+      "baseUrl": ".",
+      "paths": {
+        "@/*": ["./src/*"]
+      }
     },
     "include": ["src"]
+
   }
