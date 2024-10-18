@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+      "target": "ES2020",
+      "module": "CommonJS",           // For Node.js modules
+      "lib": ["ES2020"],
+      "moduleResolution": "Node",
+      "outDir": "./dist",             // Output directory for compiled JS
+      "rootDir": "./src",             // Your source directory
+      "strict": true,
+      "esModuleInterop": true,
+      "skipLibCheck": true
+    },
+    "include": ["src"]
+  }
