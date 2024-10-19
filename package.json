@@ -1,16 +1,22 @@
 {
-    "name": "t33-project-2",
-    "private": true,
-    "workspaces": [
-        "frontend",
-        "backend"
-    ],
-    "scripts": {
-        "dev:frontend": "npm run dev --workspace frontend",
-        "dev:backend": "npm run dev --workspace backend",
-        "build": "npm run build --workspace frontend"
-    },
-    "dependencies": {
-        "dotenv": "^16.4.5"
-    }
+  "name": "t33-project-2",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "dev:frontend": "npm run dev --workspace frontend",
+    "dev:backend": "npm run dev --workspace backend",
+    "build": "npm run build --workspace frontend",
+    "lint": "eslint . && npx prettier --write ."
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5"
+  },
+  "lint-staged": {
+    "*.js": "eslint --cache --fix",
+    "*.{ts, tsx}": "prettier --write"
+  },
+  "type": "module"
 }
