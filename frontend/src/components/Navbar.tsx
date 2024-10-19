@@ -1,4 +1,4 @@
-import Logo from '@/assets/Logo'
+import Logo from '@/components/atoms/Logo'
 import { Icon } from '@iconify/react'
 import React, { useEffect } from 'react'
 import { Link } from 'react-router-dom'
