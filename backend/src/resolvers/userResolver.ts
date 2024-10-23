@@ -38,6 +38,38 @@ const UserResolver = {
         throw new Error(error as string)
       }
     },
+
+    updateUser: async (_: unknown, { user }: { user: User }) => {
+      try {
+        const query =
+          'UPDATE users SET name = $2, username = $3, hashedpassword = $4, reviews = $5, favorites = $6 WHERE id = $1 RETURNING *'
+        console.log('Updating user with id: ', user.id)
+        const { rows } = await db.query(query, [
+          user.id,
+          user.name,
+          user.username,
+          user.hashedpassword,
+          user.reviews,
+          user.favorites,
+        ])
+        console.log('Updated user: ', user.id)
+        return rows[0]
+      } catch (error) {
+        throw new Error(error as string)
+      }
+    },
+
+    deleteUser: async (_: unknown, { id }: User) => {
+      try {
+        const query = 'DELETE FROM users WHERE id = $1 RETURNING *'
+        console.log('Deleting user with id: ', id)
+        const { rows } = await db.query(query, [id])
+        console.log('Deleted user: ', id)
+        return rows[0]
+      } catch (error) {
+        throw new Error(error as string)
+      }
+    },
   },
 }
 
