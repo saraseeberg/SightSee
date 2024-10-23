@@ -19,6 +19,15 @@ const UserDB = gql`
     favorites: [Int]
   }
 
+  input inputUser {
+    id: ID!
+    name: String!
+    username: String!
+    hashedpassword: String!
+    reviews: [Int]
+    favorites: [Int]
+  }
+
   type Query {
     getUsers: [User]
     getUsersByID(ids: [ID]): [User]
@@ -27,8 +36,8 @@ const UserDB = gql`
 
   type Mutation {
     createUser(name: String!, username: String!, hashedpassword: String!): User
-    updateUser(id: Int!, data: String!): User
-    deleteUser(id: Int!): User
+    updateUser(user: inputUser!): User
+    deleteUser(id: ID!): User
   }
 `
 
