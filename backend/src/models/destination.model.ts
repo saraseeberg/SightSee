@@ -6,7 +6,19 @@ const Destination = gql`
         title: String!
         titleQuestion: String
         description: String!
-        categories: [String!]!
+        categories: [String]!
+        country: String!
+        region: String
+        image: String!
+        alt: String!
+        rating: Float!
+    }
+
+    input DestinationInput {
+        title: String!
+        titleQuestion: String
+        description: String!
+        categories: [String]!
         country: String!
         region: String
         image: String!
@@ -20,17 +32,10 @@ const Destination = gql`
     }
 
     type Mutation {
-        createDestination(
-            title: String!
-            titleQuestion: String
-            description: String!
-            categories: [String!]!
-            country: String!
-            region: String
-            image: String!
-            alt: String!
-            rating: Float!
-        ): Destination
+        createDestination(destination: DestinationInput): Destination
+
+        createDestinations(destinations: [DestinationInput!]!): [Destination!]!
+        
         deleteDestination(id: Int!): Destination
     }
 `
