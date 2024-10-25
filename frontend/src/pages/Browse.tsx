@@ -7,6 +7,8 @@ import { useLocation } from 'react-router-dom'
 import CategoryDropdown from '@/components/CategoryDropdown'
 import LocationsData from '@/lib/data/locationsData'
 import { Location } from '@/lib/types/Location'
+import { useQuery } from '@apollo/client'
+import { GET_ALL_DESTINATIONS } from '@/graphql/queries'
 
 const categoryButtonData: Omit<CategoryButtonProps, 'onClick' | 'isSelected'>[] = [
   {
@@ -31,11 +33,18 @@ const categoryButtonData: Omit<CategoryButtonProps, 'onClick' | 'isSelected'>[] 
 
 const Browse = () => {
   const location = useLocation()
+  const {loading, error, data} = useQuery<{ locations : Location[] }>(GET_ALL_DESTINATIONS);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([])
   const [selectedCountry, setSelectedCountry] = useState<string>('World')
   const [openDialog, setOpenDialog] = useState(false)
   const [selectedCard, setSelectedCard] = useState<Location | null>(null)
   const [userRating, setUserRating] = useState<number>(0)
+
+  useEffect(() => {
+    if (error) {
+      console.error('Apollo Client Error:', error);
+    }
+  }, [error]);
 
   useEffect(() => {
     const storedCategories = sessionStorage.getItem('selectedCategories')
@@ -63,6 +72,13 @@ const Browse = () => {
     setSelectedCategories(updatedCategories)
     sessionStorage.setItem('selectedCategories', JSON.stringify(updatedCategories))
   }
+
+  if (loading) return <p>Loading...</p>
+  if (error) return <p>Error :(</p>
+  if (!data) return <p>No data</p>
+
+  console.log(data)
+
   const handleCountrySelect = (country: string) => {
     setSelectedCountry(country)
   }
@@ -85,12 +101,12 @@ const Browse = () => {
     setUserRating(rating)
   }
 
-  const filteredCards = LocationsData.filter((card) => {
+  const filteredCards: Location[] = data?.locations ? data.locations.filter((card: Location) => {
     const matchesCategory =
       selectedCategories.length === 0 || selectedCategories.some((category) => card.categories.includes(category))
     const matchesCountry = selectedCountry === 'World' || card.country === selectedCountry
     return matchesCategory && matchesCountry
-  })
+  }) : []
 
   return (
     <>
@@ -125,7 +141,7 @@ const Browse = () => {
           <h2 id="browse-section" className="sr-only">
             Browse Cards
           </h2>
-          {filteredCards.map((card, index) => (
+          {filteredCards.map((card: Location, index: number) => (
             <BrowseCard
               key={index}
               onClick={() => handleCardClick(card)}
