@@ -62,7 +62,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ data }) => {
               </div>
             ))
           ) : (
-            <div className="px-4 py-4 text-sm hover:text-white hover:border-accent-1">No results found 🤕</div>
+            <div className="px-4 py-4  bg-background text-sm">No results found 🤕</div>
           )}
         </div>
       )}
