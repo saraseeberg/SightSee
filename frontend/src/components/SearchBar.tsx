@@ -1,5 +1,6 @@
 import { Icon } from '@iconify/react/dist/iconify.js'
 import React, { useState } from 'react'
+import { Link } from 'react-router-dom'
 
 interface Locations {
   title: string
@@ -49,6 +50,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ data }) => {
         <div className="absolute  left-0 w-56 bg-background shadow-lg rounded-md max-h-80 overflow-scroll z-10 mt-0.5">
           {filteredResults.length > 0 ? (
             filteredResults.map((result, index) => (
+              <Link to={"/Review"}>
               <div
                 key={index}
                 className="px-4 py-2 cursor-pointer bg-background hover:bg-accent-1  hover:text-white hover:border-accent-1"
@@ -60,6 +62,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ data }) => {
                 <p className="text-xs hover:text-white hover:border-accent-1">{result.description}</p>
                 <p className='text-xs italic'>{result.categories} </p>
               </div>
+              </Link>
             ))
           ) : (
             <div className="px-4 py-4  bg-background text-sm">No results found 🤕</div>
