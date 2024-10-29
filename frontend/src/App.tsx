@@ -5,7 +5,7 @@ import MainLayout from './layouts/MainLayout'
 import Browse from './pages/Browse'
 import Login from './pages/Login'
 import Register from './pages/Register'
-import ReviewPage from './components/ReviewPage'
+import ReviewPage from './pages/ReviewPage'
 
 // The app uses a hashrouter, therefore navigating to different routes use /#/Browse or /#/Search
 function App() {
