@@ -1,30 +1,22 @@
 import { Icon } from '@iconify/react/dist/iconify.js'
 import React, { useState, useRef, useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import { useQuery } from '@apollo/client'
+import { GET_ALL_DESTINATIONS } from '../graphql/queries'
 
-interface Locations {
-  title: string
-  categories: string[]
-  country: string
-  description: string
-  region?: string
-}
-
-interface SearchBarProps {
-  data: Locations[]
-}
-
-const SearchBar: React.FC<SearchBarProps> = ({ data }) => {
+const SearchBar: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('')
-  const [filteredResults, setFilteredResults] = useState<Locations[]>([])
+  const [filteredResults, setFilteredResults] = useState<any[]>([])
   const dropdownRef = useRef<HTMLDivElement>(null)
+
+  const { data, loading, error } = useQuery(GET_ALL_DESTINATIONS)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
     setSearchQuery(value)
 
-    if (value) {
-      const results = data.filter((item) =>
+    if (value && data) {
+      const results = data.getAllDestinations.filter((item: any) =>
         Object.values(item).some((field) => field?.toString().toLowerCase().includes(value.toLowerCase())),
       )
       setFilteredResults(results)
@@ -33,7 +25,6 @@ const SearchBar: React.FC<SearchBarProps> = ({ data }) => {
     }
   }
 
-  // Close dropdown when clicking outside of it
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -46,6 +37,9 @@ const SearchBar: React.FC<SearchBarProps> = ({ data }) => {
       document.removeEventListener('mousedown', handleClickOutside)
     }
   }, [])
+
+  if (loading) return <p>Loading...</p>
+  if (error) return <p>Error loading data</p>
 
   return (
     <div className="relative w-full max-w-xs md:max-w-sm lg:max-w-md">
@@ -70,9 +64,9 @@ const SearchBar: React.FC<SearchBarProps> = ({ data }) => {
           className="absolute left-0 w-full md:w-64 bg-background shadow-lg rounded-md max-h-80 overflow-scroll z-10 mt-1"
         >
           {filteredResults.length > 0 ? (
-            filteredResults.map((result, index) => (
-              <Link to="/Review" key={index}>
-                <div className="px-4 py-2 cursor-pointer bg-background hover:bg-accent hover:text-white">
+            filteredResults.map((result: any) => (
+              <Link to={`/Review/${result.id}`} key={result.id}> {/* Link to dynamic route */}
+                <div className="px-4 py-2 cursor-pointer bg-background hover:bg-accent-1 hover:text-white">
                   <p className="font-semibold text-sm md:text-base">{result.title}</p>
                   <p className="text-xs md:text-sm">
                     {result.country} {result.region && `, ${result.region}`}

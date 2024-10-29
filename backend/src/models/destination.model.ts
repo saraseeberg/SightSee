@@ -6,7 +6,7 @@ const Destination = gql`
     title: String!
     titleQuestion: String
     description: String!
-    longDescription: String!
+    longDescription: String
     categories: [String]!
     country: String!
     region: String
