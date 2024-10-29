@@ -2,10 +2,11 @@ import { gql } from 'apollo-server-express'
 
 const Destination = gql`
   type Destination {
-    id: Int!
+    id: ID!
     title: String!
     titleQuestion: String
     description: String!
+    longDescription: String!
     categories: [String]!
     country: String!
     region: String
@@ -18,6 +19,7 @@ const Destination = gql`
     title: String!
     titleQuestion: String
     description: String!
+    longDescription: String!
     categories: [String]!
     country: String!
     region: String
@@ -27,7 +29,7 @@ const Destination = gql`
   }
 
   type Query {
-    getDestination(id: Int!): Destination
+    getDestination(id: ID!): Destination
     getAllDestinations: [Destination]
   }
 
@@ -36,7 +38,7 @@ const Destination = gql`
 
     createDestinations(destinations: [DestinationInput!]!): [Destination!]!
 
-    deleteDestination(id: Int!): Destination
+    deleteDestination(id: ID!): Destination
   }
 `
 
