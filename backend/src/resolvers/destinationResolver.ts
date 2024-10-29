@@ -78,7 +78,7 @@ const DestinationResolver = {
         destination.titleQuestion,
         destination.description,
         destination.longDescription,
-        JSON.stringify(destination.categories),
+        JSON.stringify(destination.categories), 
         destination.country,
         destination.region,
         destination.image,

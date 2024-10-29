@@ -32,7 +32,7 @@ const categoryButtonData: Omit<CategoryButtonProps, 'onClick' | 'isSelected'>[] 
 
 const Browse = () => {
   const location = useLocation()
-  const { loading, error, data } = useQuery<{ getAllDestinations: Location[] }>(GET_ALL_DESTINATIONS)
+  const { loading, error, data } = useQuery<{ getAllDestinations: Location[] }>(GET_ALL_DESTINATIONS);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([])
   const [selectedCountry, setSelectedCountry] = useState<string>('World')
   const [openDialog, setOpenDialog] = useState(false)
@@ -70,14 +70,15 @@ const Browse = () => {
     if (data?.getAllDestinations) {
       const newFilteredCards = data.getAllDestinations.filter((card: Location) => {
         const matchesCategory =
-          selectedCategories.length === 0 || selectedCategories.some((category) => card.categories.includes(category))
-        const matchesCountry = selectedCountry === 'World' || card.country === selectedCountry
-        return matchesCategory && matchesCountry
-      })
-      setFilteredCards(newFilteredCards)
-      console.log('Filtered Cards: ', newFilteredCards)
+          selectedCategories.length === 0 ||
+          selectedCategories.some((category) => card.categories.includes(category));
+        const matchesCountry = selectedCountry === 'World' || card.country === selectedCountry;
+        return matchesCategory && matchesCountry;
+      });
+      setFilteredCards(newFilteredCards);
+      console.log("Filtered Cards: ", newFilteredCards);
     }
-  }, [data, selectedCategories, selectedCountry])
+  }, [data, selectedCategories, selectedCountry]);
 
   if (loading) return <p>Loading...</p>
   if (error) return <p>Error :(</p>

@@ -17,7 +17,7 @@ function App() {
           <Route path="/Browse" element={<Browse />} />
           <Route path="/Login" element={<Login />} />
           <Route path="/Register" element={<Register />} />
-          <Route path="/Review/:id" element={<ReviewPage />} />
+          <Route path="/Review/:id" element={<ReviewPage />} /> 
         </Route>
         <Route path="*" element={<Error404 />} />
       </Routes>
