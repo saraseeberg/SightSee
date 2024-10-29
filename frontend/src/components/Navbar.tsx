@@ -51,6 +51,7 @@ function Navbar() {
         </div>
         <div className="ml-auto md:hidden flex justify-end mr-16 text-content">
           <Sheet>
+            <SearchBar data={searchData} />
             <SheetTrigger asChild>
               <button>
                 <Icon icon="ic:round-menu" width="24" height="24" />
