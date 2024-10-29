@@ -7,6 +7,9 @@ import { useLocation } from 'react-router-dom'
 import CategoryDropdown from '@/components/molecules/CategoryDropdown'
 import LocationsData from '@/lib/data/locationsData'
 import { Location } from '@/lib/types/Location'
+import { useQuery } from '@apollo/client'
+import { GET_ALL_DESTINATIONS } from '@/graphql/queries'
+import * as Dialog from '@radix-ui/react-dialog'
 
 const categoryButtonData: Omit<CategoryButtonProps, 'onClick' | 'isSelected'>[] = [
   {
@@ -31,11 +34,12 @@ const categoryButtonData: Omit<CategoryButtonProps, 'onClick' | 'isSelected'>[] 
 
 const Browse = () => {
   const location = useLocation()
+  const { loading, error, data } = useQuery<{ getAllDestinations: Location[] }>(GET_ALL_DESTINATIONS)
   const [selectedCategories, setSelectedCategories] = useState<string[]>([])
   const [selectedCountry, setSelectedCountry] = useState<string>('World')
   const [openDialog, setOpenDialog] = useState(false)
   const [selectedCard, setSelectedCard] = useState<Location | null>(null)
-  const [userRating, setUserRating] = useState<number>(0)
+  const [filteredCards, setFilteredCards] = useState<Location[]>([])
 
   useEffect(() => {
     const storedCategories = sessionStorage.getItem('selectedCategories')
@@ -63,6 +67,23 @@ const Browse = () => {
     setSelectedCategories(updatedCategories)
     sessionStorage.setItem('selectedCategories', JSON.stringify(updatedCategories))
   }
+
+  useEffect(() => {
+    if (data?.getAllDestinations) {
+      const newFilteredCards = data.getAllDestinations.filter((card: Location) => {
+        const matchesCategory =
+          selectedCategories.length === 0 || selectedCategories.some((category) => card.categories.includes(category))
+        const matchesCountry = selectedCountry === 'World' || card.country === selectedCountry
+        return matchesCategory && matchesCountry
+      })
+      setFilteredCards(newFilteredCards)
+      console.log('Filtered Cards: ', newFilteredCards)
+    }
+  }, [data, selectedCategories, selectedCountry])
+
+  if (loading) return <p>Loading...</p>
+  if (error) return <p>Error :(</p>
+
   const handleCountrySelect = (country: string) => {
     setSelectedCountry(country)
   }
@@ -80,17 +101,6 @@ const Browse = () => {
     setSelectedCard(card)
     setOpenDialog(true)
   }
-
-  const handleStarClick = (rating: number) => {
-    setUserRating(rating)
-  }
-
-  const filteredCards = LocationsData.filter((card) => {
-    const matchesCategory =
-      selectedCategories.length === 0 || selectedCategories.some((category) => card.categories.includes(category))
-    const matchesCountry = selectedCountry === 'World' || card.country === selectedCountry
-    return matchesCategory && matchesCountry
-  })
 
   return (
     <>
@@ -125,7 +135,7 @@ const Browse = () => {
           <h2 id="browse-section" className="sr-only">
             Browse Cards
           </h2>
-          {filteredCards.map((card, index) => (
+          {filteredCards.map((card: Location, index: number) => (
             <BrowseCard
               key={index}
               onClick={() => handleCardClick(card)}
@@ -137,13 +147,19 @@ const Browse = () => {
       </main>
 
       {/* Dialog for Card Details */}
-      <CardDetailsDialog
-        selectedCard={selectedCard}
-        openDialog={openDialog}
-        setOpenDialog={setOpenDialog}
-        userRating={userRating}
-        handleStarClick={handleStarClick}
-      />
+      <Dialog.Root open={openDialog} onOpenChange={setOpenDialog}>
+        <Dialog.Portal>
+          <Dialog.Overlay className="fixed inset-0 bg-black/30" />
+          <Dialog.Content className="fixed inset-0 flex items-center justify-center">
+            <div className="bg-white p-6 rounded-md shadow-md">
+              <Dialog.Title>{selectedCard?.title}</Dialog.Title>
+              <p>{selectedCard?.description}</p>
+              {/* You can add more details or a star rating component here */}
+              <button onClick={() => setOpenDialog(false)}>Close</button>
+            </div>
+          </Dialog.Content>
+        </Dialog.Portal>
+      </Dialog.Root>
     </>
   )
 }
