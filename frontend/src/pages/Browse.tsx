@@ -1,13 +1,13 @@
 import BrowseCard from '@/components/BrowseCard'
 import CategoryButton, { CategoryButtonProps } from '@/components/CategoryButton'
+import CategoryDropdown from '@/components/CategoryDropdown'
 import CountryDropdown from '@/components/CountryDropdown'
+import { GET_ALL_DESTINATIONS } from '@/graphql/queries'
+import { Destination } from '@/lib/types'
+import { useQuery } from '@apollo/client'
+import * as Dialog from '@radix-ui/react-dialog'
 import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
-import CategoryDropdown from '@/components/CategoryDropdown'
-import { Location } from '@/lib/types/Location'
-import { useQuery } from '@apollo/client'
-import { GET_ALL_DESTINATIONS } from '@/graphql/queries'
-import * as Dialog from '@radix-ui/react-dialog'
 
 const categoryButtonData: Omit<CategoryButtonProps, 'onClick' | 'isSelected'>[] = [
   {
@@ -32,12 +32,12 @@ const categoryButtonData: Omit<CategoryButtonProps, 'onClick' | 'isSelected'>[] 
 
 const Browse = () => {
   const location = useLocation()
-  const { loading, error, data } = useQuery<{ getAllDestinations: Location[] }>(GET_ALL_DESTINATIONS);
+  const { loading, error, data } = useQuery<{ getAllDestinations: Destination[] }>(GET_ALL_DESTINATIONS)
   const [selectedCategories, setSelectedCategories] = useState<string[]>([])
   const [selectedCountry, setSelectedCountry] = useState<string>('World')
   const [openDialog, setOpenDialog] = useState(false)
-  const [selectedCard, setSelectedCard] = useState<Location | null>(null)
-  const [filteredCards, setFilteredCards] = useState<Location[]>([])
+  const [selectedCard, setSelectedCard] = useState<Destination | null>(null)
+  const [filteredCards, setFilteredCards] = useState<Destination[]>([])
 
   useEffect(() => {
     const storedCategories = sessionStorage.getItem('selectedCategories')
@@ -68,17 +68,16 @@ const Browse = () => {
 
   useEffect(() => {
     if (data?.getAllDestinations) {
-      const newFilteredCards = data.getAllDestinations.filter((card: Location) => {
+      const newFilteredCards = data.getAllDestinations.filter((card: Destination) => {
         const matchesCategory =
-          selectedCategories.length === 0 ||
-          selectedCategories.some((category) => card.categories.includes(category));
-        const matchesCountry = selectedCountry === 'World' || card.country === selectedCountry;
-        return matchesCategory && matchesCountry;
-      });
-      setFilteredCards(newFilteredCards);
-      console.log("Filtered Cards: ", newFilteredCards);
+          selectedCategories.length === 0 || selectedCategories.some((category) => card.categories.includes(category))
+        const matchesCountry = selectedCountry === 'World' || card.country === selectedCountry
+        return matchesCategory && matchesCountry
+      })
+      setFilteredCards(newFilteredCards)
+      console.log('Filtered Cards: ', newFilteredCards)
     }
-  }, [data, selectedCategories, selectedCountry]);
+  }, [data, selectedCategories, selectedCountry])
 
   if (loading) return <p>Loading...</p>
   if (error) return <p>Error :(</p>
@@ -96,7 +95,7 @@ const Browse = () => {
     sessionStorage.setItem('selectedCategories', JSON.stringify(category === 'All' ? [] : [category]))
   }
 
-  const handleCardClick = (card: Location) => {
+  const handleCardClick = (card: Destination) => {
     setSelectedCard(card)
     setOpenDialog(true)
   }
@@ -134,7 +133,7 @@ const Browse = () => {
           <h2 id="browse-section" className="sr-only">
             Browse Cards
           </h2>
-          {filteredCards.map((card: Location, index: number) => (
+          {filteredCards.map((card: Destination, index: number) => (
             <BrowseCard
               key={index}
               onClick={() => handleCardClick(card)}

@@ -1,5 +1,4 @@
 import Logo from '@/components/atoms/Logo'
-import LocationsData from '@/lib/data/locationsData.ts'
 import { Icon } from '@iconify/react'
 import React, { useEffect } from 'react'
 import { Link } from 'react-router-dom'
@@ -8,7 +7,6 @@ import { Sheet, SheetContent, SheetTrigger } from './ui/sheet'
 
 function Navbar() {
   const [isDarkMode, setIsDarkMode] = React.useState(false)
-  const searchData = LocationsData.map(({ id, ...rest }) => rest)
 
   const toggleIcon = () => {
     setIsDarkMode(!isDarkMode)

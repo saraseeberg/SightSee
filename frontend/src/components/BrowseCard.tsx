@@ -1,10 +1,10 @@
-import { Location } from '@/lib/types/Location'
+import { Destination } from '@/lib/types'
 import { Card, CardContent } from '@components/ui/card'
 import { Icon } from '@iconify/react'
 
 export type CardDataProps = {
   className?: string
-  card: Location
+  card: Destination
   onClick?: () => void
 }
 

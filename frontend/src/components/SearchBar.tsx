@@ -7,7 +7,7 @@ import { GET_ALL_DESTINATIONS } from '../graphql/queries'
 
 const SearchBar: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('')
-  const [filteredResults, setFilteredResults] = useState<any[]>([])
+  const [filteredResults, setFilteredResults] = useState<Destination[]>([])
   const dropdownRef = useRef<HTMLDivElement>(null)
 
   const { data, loading, error } = useQuery(GET_ALL_DESTINATIONS)

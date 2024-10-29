@@ -1,19 +1,31 @@
-import { Location } from '../types/Location'
-import Mallorca from '@/assets/images/browse/Mallorca.jpg'
-import Italy from '@/assets/images/browse/Italy.jpg'
-import France from '@/assets/images/browse/France.jpg'
 import Alps from '@/assets/images/browse/alpene.jpg'
-import Disney from '@/assets/images/browse/disney.jpg'
-import SevenSisters from '@/assets/images/browse/seven-sis.jpg'
-import Omnia from '@/assets/images/browse/omnia-nightclub.jpg'
-import QuattroPassi from '@/assets/images/browse/quattro-passi.jpg'
-import MallEmirates from '@/assets/images/browse/mall-emirates.jpg'
-import Roskilde from '@/assets/images/browse/roskilde.jpg'
 import CalaMacarelleta from '@/assets/images/browse/calaMacarelleta.jpg'
-import SwissAlps from '@/assets/images/browse/swissAlps.jpg'
+import Disney from '@/assets/images/browse/disney.jpg'
+import France from '@/assets/images/browse/France.jpg'
 import PachamamaParis from '@/assets/images/browse/frenchNightlife.jpg'
+import Italy from '@/assets/images/browse/Italy.jpg'
+import MallEmirates from '@/assets/images/browse/mall-emirates.jpg'
+import Mallorca from '@/assets/images/browse/Mallorca.jpg'
+import Omnia from '@/assets/images/browse/omnia-nightclub.jpg'
 import ParisShopping from '@/assets/images/browse/ParisShopping.jpg'
+import QuattroPassi from '@/assets/images/browse/quattro-passi.jpg'
+import Roskilde from '@/assets/images/browse/roskilde.jpg'
+import SevenSisters from '@/assets/images/browse/seven-sis.jpg'
+import SwissAlps from '@/assets/images/browse/swissAlps.jpg'
 import TivoliGardens from '@/assets/images/browse/tivoliDenmark.jpg'
+
+interface Location {
+  id: number
+  title: string
+  titleQuestion?: string
+  description: string
+  categories: string[]
+  country: string
+  region?: string
+  image: string
+  alt: string
+  rating: number
+}
 
 const LocationsData: Location[] = [
   {

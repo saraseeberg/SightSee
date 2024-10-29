@@ -1,12 +1,12 @@
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog'
-import { Location } from '@/lib/types/Location'
+import { Destination } from '@/lib/types'
 import React from 'react'
 import { Link } from 'react-router-dom'
 import StarRating from './CurrentRating'
 import { Button } from './ui/button'
 
 type CardDetailsDialogProps = {
-  selectedCard: Location | null
+  selectedCard: Destination | null
   openDialog: boolean
   setOpenDialog: (open: boolean) => void
   userRating: number
