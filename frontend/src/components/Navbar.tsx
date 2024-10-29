@@ -44,7 +44,7 @@ function Navbar() {
             <SearchBar data={searchData} />
             <Icon
               icon={isDarkMode ? 'ic:round-wb-sunny' : 'ic:baseline-dark-mode'}
-              className="flex justify-end md:mr-16 mx-2 h-6 w-6 text-content cursor-pointer ml-auto"
+              className="flex justify-end md:mr-16 mx-2 h-8 w-8 text-content cursor-pointer ml-auto"
               onClick={toggleIcon}
             />
           </div>
