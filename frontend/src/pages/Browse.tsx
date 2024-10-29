@@ -5,11 +5,9 @@ import CountryDropdown from '@/components/molecules/CountryDropdown'
 import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import CategoryDropdown from '@/components/molecules/CategoryDropdown'
-import LocationsData from '@/lib/data/locationsData'
 import { Location } from '@/lib/types/Location'
 import { useQuery } from '@apollo/client'
 import { GET_ALL_DESTINATIONS } from '@/graphql/queries'
-import * as Dialog from '@radix-ui/react-dialog'
 
 const categoryButtonData: Omit<CategoryButtonProps, 'onClick' | 'isSelected'>[] = [
   {
@@ -147,19 +145,7 @@ const Browse = () => {
       </main>
 
       {/* Dialog for Card Details */}
-      <Dialog.Root open={openDialog} onOpenChange={setOpenDialog}>
-        <Dialog.Portal>
-          <Dialog.Overlay className="fixed inset-0 bg-black/30" />
-          <Dialog.Content className="fixed inset-0 flex items-center justify-center">
-            <div className="bg-white p-6 rounded-md shadow-md">
-              <Dialog.Title>{selectedCard?.title}</Dialog.Title>
-              <p>{selectedCard?.description}</p>
-              {/* You can add more details or a star rating component here */}
-              <button onClick={() => setOpenDialog(false)}>Close</button>
-            </div>
-          </Dialog.Content>
-        </Dialog.Portal>
-      </Dialog.Root>
+      <CardDetailsDialog selectedCard={selectedCard} openDialog={openDialog} setOpenDialog={setOpenDialog} />
     </>
   )
 }
