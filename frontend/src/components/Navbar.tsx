@@ -41,7 +41,7 @@ function Navbar() {
             </Link>
           </div>
           <div className="flex flex-row ml-auto items-center">
-            <SearchBar data={searchData} />
+            <SearchBar />
             <Icon
               icon={isDarkMode ? 'ic:round-wb-sunny' : 'ic:baseline-dark-mode'}
               className="flex justify-end md:mr-16 mx-2 h-8 w-8 text-content cursor-pointer ml-auto"
@@ -51,7 +51,7 @@ function Navbar() {
         </div>
         <div className="ml-auto md:hidden flex justify-end mr-16 text-content">
           <Sheet>
-            <SearchBar data={searchData} />
+            <SearchBar />
             <SheetTrigger asChild>
               <button>
                 <Icon icon="ic:round-menu" width="24" height="24" />
