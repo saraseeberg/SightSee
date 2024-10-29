@@ -5,6 +5,7 @@ type Destination = {
   title: string
   titleQuestion?: string
   description: string
+  longDescription: string
   categories: string[]
   country: string
   region?: string
@@ -37,15 +38,25 @@ const DestinationResolver = {
   },
 
   Mutation: {
-    // Oppretter en ny destinasjon
-    createDestination: async (
-      _: unknown,
-      { title, titleQuestion, description, categories, country, region, image, alt, rating }: Destination,
-    ) => {
+    createDestination: async (_: unknown, { destination }: { destination: Destination }) => {
+      const { title, titleQuestion, description, longDescription, categories, country, region, image, alt, rating } =
+        destination
+
       try {
         const result = await db.query(
-          'INSERT INTO destinations (title, titleQuestion, description, categories, country, region, image, alt, rating) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *',
-          [title, titleQuestion, description, categories, country, region, image, alt, rating],
+          'INSERT INTO destinations (title, titleQuestion, description, longDescription, categories, country, region, image, alt, rating) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *',
+          [
+            title,
+            titleQuestion,
+            description,
+            longDescription,
+            JSON.stringify(categories),
+            country,
+            region,
+            image,
+            alt,
+            rating,
+          ],
         )
         return result.rows[0]
       } catch (error) {
@@ -53,13 +64,12 @@ const DestinationResolver = {
       }
     },
 
-    // Oppretter flere nye destinasjoner
     createDestinations: async (_: unknown, { destinations }: { destinations: Destination[] }) => {
       const query = `
         INSERT INTO destinations 
-          (title, titleQuestion, description, categories, country, region, image, alt, rating) 
+          (title, titleQuestion, description, longDescription, categories, country, region, image, alt, rating) 
         VALUES 
-          ${destinations.map((_, i) => `($${i * 9 + 1}, $${i * 9 + 2}, $${i * 9 + 3}, $${i * 9 + 4}, $${i * 9 + 5}, $${i * 9 + 6}, $${i * 9 + 7}, $${i * 9 + 8}, $${i * 9 + 9})`).join(', ')}
+          ${destinations.map((_, i) => `($${i * 10 + 1}, $${i * 10 + 2}, $${i * 10 + 3}, $${i * 10 + 4}, $${i * 10 + 5}::json, $${i * 10 + 6}, $${i * 10 + 7}, $${i * 10 + 8}, $${i * 10 + 9}, $${i * 10 + 10})`).join(', ')}
         RETURNING *;
       `
 
@@ -67,7 +77,8 @@ const DestinationResolver = {
         destination.title,
         destination.titleQuestion,
         destination.description,
-        destination.categories,
+        destination.longDescription,
+        JSON.stringify(destination.categories), 
         destination.country,
         destination.region,
         destination.image,

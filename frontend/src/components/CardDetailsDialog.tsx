@@ -22,14 +22,12 @@ const CardDetailsDialog: React.FC<CardDetailsDialogProps> = ({ selectedCard, ope
         <article className="flex">
           <img src={selectedCard.image} alt={selectedCard.title} className="w-48 h-64 object-cover" />
           <div className="flex flex-col gap-2 ml-4">
-            <div>
-              <DialogTitle className="text-xl text-content">{selectedCard.title}</DialogTitle>
-              <DialogDescription className="text-base">
-                {selectedCard.country}, {selectedCard.region}
-              </DialogDescription>
-              <p className="text-sm text-content mt-2">Rating:</p>
-              <StarRating rating={selectedCard.rating} />
-            </div>
+            <DialogTitle className="text-xl text-content">{selectedCard.title}</DialogTitle>
+            <DialogDescription className="text-base">
+              {selectedCard.country}, {selectedCard.region}
+            </DialogDescription>
+            <p className="text-sm text-content mt-2">Rating:</p>
+            <StarRating rating={selectedCard.rating} />
             <p className="text-sm text-content">{selectedCard.description}</p>
           </div>
         </article>
