@@ -37,7 +37,6 @@ const Browse = () => {
   const [selectedCountry, setSelectedCountry] = useState<string>('World')
   const [openDialog, setOpenDialog] = useState(false)
   const [selectedCard, setSelectedCard] = useState<Location | null>(null)
-  const [userRating, setUserRating] = useState<number>(0)
   const [filteredCards, setFilteredCards] = useState<Location[]>([])
 
   useEffect(() => {
