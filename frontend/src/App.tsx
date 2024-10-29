@@ -6,6 +6,7 @@ import Browse from './pages/Browse'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import ReviewPage from './components/ReviewPage'
+import Profile from './pages/Profile'
 
 // The app uses a hashrouter, therefore navigating to different routes use /#/Browse or /#/Search
 function App() {
@@ -14,10 +15,11 @@ function App() {
       <Routes>
         <Route path="/" element={<MainLayout />}>
           <Route index element={<Home />} />
-          <Route path="/Browse" element={<Browse />} />
-          <Route path="/Login" element={<Login />} />
-          <Route path="/Register" element={<Register />} />
-          <Route path='/Review' element={<ReviewPage />} />
+          <Route path="/browse" element={<Browse />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/review" element={<ReviewPage />} />
+          <Route path="/profile" element={<Profile />} />
         </Route>
         <Route path="*" element={<Error404 />} />
       </Routes>

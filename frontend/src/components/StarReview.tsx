@@ -1,5 +1,5 @@
 import { Icon } from '@iconify/react'
-import StarRating from './CurrentRating'
+import StarRating from './molecules/CurrentRating'
 
 type ReviewProps = {
   userRating: number
@@ -10,7 +10,7 @@ const StarReview: React.FC<ReviewProps> = ({ userRating, handleStarClick }) => {
   return (
     <>
       {/* User can rate */}
-      <section aria-labelledby="rate-this-place" >
+      <section aria-labelledby="rate-this-place">
         <StarRating rating={userRating} />
         <h2 id="rate-this-place" className="font-semibold text-content">
           Rate this place:

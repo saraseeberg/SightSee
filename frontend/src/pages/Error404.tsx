@@ -13,7 +13,7 @@ const Error404 = () => {
     <main className="w-full h-screen flex flex-col justify-center items-center gap-4 bg-background text-content">
       <h1 className="text-3xl font-bold text-center">Oh no, looks like you've traveled a bit to far</h1>
       <div>
-        <p>Here is a burger for you're troubles:</p>
+        <p>Here is a burger for your troubles:</p>
         {!hasEatenBurger ? (
           <Icon
             icon={'fxemoji:hamburger'}
@@ -25,10 +25,10 @@ const Error404 = () => {
         )}
       </div>
       <span>Now get back in there!</span>
-      <Button href="/" className="group">
+      <Button onClick={() => window.history.back()} className="group">
         <span className="inline-flex items-center">
           <Icon icon={'tabler:arrow-back-up'} className="group-hover:-translate-x-1 duration-500" />
-          To Homepage
+          Go Back
         </span>
       </Button>
     </main>

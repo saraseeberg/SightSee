@@ -1,7 +1,7 @@
 import { Card, CardContent } from '@/components/ui/card'
 import LocationsData from '@/lib/data/locationsData'
 import { useNavigate } from 'react-router-dom'
-import HeroCarousel from '@/components/HeroCarousel'
+import HeroCarousel from '@/components/molecules/HeroCarousel'
 
 const Home = () => {
   const navigate = useNavigate()

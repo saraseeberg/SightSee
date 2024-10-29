@@ -1,11 +1,46 @@
 import Logo from '@/components/atoms/Logo'
 import { Icon } from '@iconify/react'
-import React, { useEffect } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Sheet, SheetContent, SheetTrigger } from './ui/sheet'
+import WordRotate from './ui/word-rotate'
+import { cn } from '@/lib/utils'
+import AvatarDropDownMenu from './molecules/AvatarDropDownMenu'
+
+const NavbarContent = ({ isDarkMode, toggleIcon }: { isDarkMode: boolean; toggleIcon: () => void }) => {
+  const ref = useRef<HTMLDivElement>(null)
+  const handleThemeToggle = () => {
+    toggleIcon()
+    ref.current?.click()
+  }
+  return (
+    <>
+      <div className="md:flex-1 flex justify-start gap-10 md:gap-[15%] md:mx-24 max-md:mb-6 max-md:flex-col">
+        <Link to="/Browse" className="text-xl text-content">
+          Browse
+        </Link>
+      </div>
+      <div className="flex gap-5 md:ml-10 max-md:flex-col max-md:justify-between max-md:flex-1">
+        <button className="flex items-center text-xl text-content gap-2" onClick={handleThemeToggle}>
+          <p className="md:hidden">{isDarkMode ? 'Light Mode' : 'Dark Mode'}</p>
+          <WordRotate
+            ref={ref}
+            animateOnClick
+            hidePointerEvents
+            words={[
+              <Icon icon="ic:round-wb-sunny" className="h-6 w-6" />,
+              <Icon icon="ic:baseline-dark-mode" className="h-6 w-6" />,
+            ]}
+          />
+        </button>
+        <AvatarDropDownMenu />
+      </div>
+    </>
+  )
+}
 
 function Navbar() {
-  const [isDarkMode, setIsDarkMode] = React.useState(false)
+  const [isDarkMode, setIsDarkMode] = useState(false)
 
   const toggleIcon = () => {
     setIsDarkMode(!isDarkMode)
@@ -20,54 +55,34 @@ function Navbar() {
 
   useEffect(() => {
     const theme = localStorage.getItem('theme')
+
     if (theme === 'dark') {
       document.documentElement.classList.add('dark')
       setIsDarkMode(true)
     }
   }, [])
+
   return (
-    <>
-      <nav className="flex gap-2 sticky top-0  w-full h-20 items-center bg-background  z-50">
-        <Link to="/">
-          <Logo />
-        </Link>
-        <div className="flex flex-1 justify-around items-center max-md:hidden">
-          <div className="flex items-center justify-around gap-2">
-            <Link to="/Browse" className="self-center mx-8 transition-colors text-xl font-bold">
-              Browse
-            </Link>
-          </div>
-          <Icon
-            icon={isDarkMode ? 'ic:round-wb-sunny' : 'ic:baseline-dark-mode'}
-            className="flex justify-end md:mr-16 mx-2 h-6 w-6 text-content cursor-pointer ml-auto"
-            onClick={toggleIcon}
-          />
-        </div>
-        <div className="ml-auto md:hidden flex justify-end mr-16 text-content">
-          <Sheet>
-            <SheetTrigger asChild>
-              <button>
-                <Icon icon="ic:round-menu" width="24" height="24" />
-              </button>
-            </SheetTrigger>
-            <SheetContent side="left" className="text-content">
-              <nav className="flex flex-col items-start gap-4 p-4 mb-3">
-                <Link to="/" className="transition-colors text-xl text-content  ">
-                  Home
-                </Link>
-                <Link to="/Browse" className="transition-colors text-xl text-content  ">
-                  Browse
-                </Link>
-                <button className="flex items-center text-xl text-content" onClick={toggleIcon}>
-                  {isDarkMode ? 'Light Mode' : 'Dark Mode'}
-                  <Icon icon={isDarkMode ? 'ic:round-wb-sunny' : 'ic:baseline-dark-mode'} className="h-6 w-6  ml-2  " />
-                </button>
-              </nav>
-            </SheetContent>
-          </Sheet>
-        </div>
-      </nav>
-    </>
+    <nav className={cn('flex gap-2 sticky top-0 h-20 items-center z-50 px-5 lg:px-20 border-b-[1px] backdrop-blur-lg')}>
+      <Link to="/">
+        <Logo />
+      </Link>
+      <section className="max-md:hidden flex w-full items-center ">
+        <NavbarContent isDarkMode={isDarkMode} toggleIcon={toggleIcon} />
+      </section>
+      <section className="md:hidden flex justify-end w-full text-content">
+        <Sheet>
+          <SheetTrigger asChild>
+            <button>
+              <Icon icon="ic:round-menu" width="24" height="24" />
+            </button>
+          </SheetTrigger>
+          <SheetContent side="left" className="text-content py-12 flex flex-col ">
+            <NavbarContent isDarkMode={isDarkMode} toggleIcon={toggleIcon} />
+          </SheetContent>
+        </Sheet>
+      </section>
+    </nav>
   )
 }
 

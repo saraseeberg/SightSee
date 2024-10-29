@@ -1,9 +1,11 @@
-import BrowseCard from '@/components/BrowseCard'
-import CategoryButton, { CategoryButtonProps } from '@/components/CategoryButton'
-import CountryDropdown from '@/components/CountryDropdown'
+import BrowseCard from '@/components/molecules/BrowseCard'
+import CardDetailsDialog from '@/components/molecules/CardDetailsDialog'
+import CategoryButton, { CategoryButtonProps } from '@/components/atoms/CategoryButton'
+import CountryDropdown from '@/components/molecules/CountryDropdown'
 import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
-import CategoryDropdown from '@/components/CategoryDropdown'
+import CategoryDropdown from '@/components/molecules/CategoryDropdown'
+import LocationsData from '@/lib/data/locationsData'
 import { Location } from '@/lib/types/Location'
 import { useQuery } from '@apollo/client'
 import { GET_ALL_DESTINATIONS } from '@/graphql/queries'
@@ -32,7 +34,7 @@ const categoryButtonData: Omit<CategoryButtonProps, 'onClick' | 'isSelected'>[] 
 
 const Browse = () => {
   const location = useLocation()
-  const { loading, error, data } = useQuery<{ getAllDestinations: Location[] }>(GET_ALL_DESTINATIONS);
+  const { loading, error, data } = useQuery<{ getAllDestinations: Location[] }>(GET_ALL_DESTINATIONS)
   const [selectedCategories, setSelectedCategories] = useState<string[]>([])
   const [selectedCountry, setSelectedCountry] = useState<string>('World')
   const [openDialog, setOpenDialog] = useState(false)
@@ -70,15 +72,14 @@ const Browse = () => {
     if (data?.getAllDestinations) {
       const newFilteredCards = data.getAllDestinations.filter((card: Location) => {
         const matchesCategory =
-          selectedCategories.length === 0 ||
-          selectedCategories.some((category) => card.categories.includes(category));
-        const matchesCountry = selectedCountry === 'World' || card.country === selectedCountry;
-        return matchesCategory && matchesCountry;
-      });
-      setFilteredCards(newFilteredCards);
-      console.log("Filtered Cards: ", newFilteredCards);
+          selectedCategories.length === 0 || selectedCategories.some((category) => card.categories.includes(category))
+        const matchesCountry = selectedCountry === 'World' || card.country === selectedCountry
+        return matchesCategory && matchesCountry
+      })
+      setFilteredCards(newFilteredCards)
+      console.log('Filtered Cards: ', newFilteredCards)
     }
-  }, [data, selectedCategories, selectedCountry]);
+  }, [data, selectedCategories, selectedCountry])
 
   if (loading) return <p>Loading...</p>
   if (error) return <p>Error :(</p>
