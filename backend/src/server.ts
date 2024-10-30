@@ -1,13 +1,15 @@
 import { ApolloServer } from 'apollo-server-express'
-import { UserDB } from './models/user.model'
 import express from 'express'
 import UserResolver from './resolvers/userResolver'
 import AdminResolver from './resolvers/adminResolver'
 import DestinationResolver from './resolvers/destinationResolver'
-import adminDB from './models/admin.model'
-import destinationDB from './models/destination.model'
+import { loadFilesSync } from '@graphql-tools/load-files'
+import { mergeTypeDefs } from '@graphql-tools/merge'
 
-export const typeDefs = [UserDB, adminDB, destinationDB]
+const typesArray = loadFilesSync('./models/*.graphql')
+
+
+export const typeDefs = mergeTypeDefs(typesArray)
 export const resolvers = [UserResolver, AdminResolver, DestinationResolver]
 
 const startServer = async () => {
