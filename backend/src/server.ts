@@ -1,16 +1,13 @@
 import { ApolloServer } from 'apollo-server-express'
 import express from 'express'
-import UserResolver from './resolvers/userResolver'
-import AdminResolver from './resolvers/adminResolver'
-import DestinationResolver from './resolvers/destinationResolver'
 import { loadFilesSync } from '@graphql-tools/load-files'
-import { mergeTypeDefs } from '@graphql-tools/merge'
+import { mergeResolvers, mergeTypeDefs } from '@graphql-tools/merge'
 
-const typesArray = loadFilesSync('./models/*.graphql')
-
+const typesArray = loadFilesSync('./src/models/*.graphql')
+const resolversArray = loadFilesSync('./src/resolvers/*.ts')
 
 export const typeDefs = mergeTypeDefs(typesArray)
-export const resolvers = [UserResolver, AdminResolver, DestinationResolver]
+export const resolvers = mergeResolvers(resolversArray)
 
 const startServer = async () => {
   // Because of a type error between express and apollo-server-express, we need to cast express to any

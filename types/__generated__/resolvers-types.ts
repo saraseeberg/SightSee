@@ -1,5 +1,4 @@
 import { GraphQLResolveInfo } from 'graphql';
-import { MyContext } from '../index';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -305,7 +304,7 @@ export type ResolversParentTypes = ResolversObject<{
   UserInput: UserInput;
 }>;
 
-export type DestinationResolvers<ContextType = MyContext, ParentType extends ResolversParentTypes['Destination'] = ResolversParentTypes['Destination']> = ResolversObject<{
+export type DestinationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Destination'] = ResolversParentTypes['Destination']> = ResolversObject<{
   alt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   categories?: Resolver<Array<Maybe<ResolversTypes['String']>>, ParentType, ContextType>;
   country?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -320,7 +319,7 @@ export type DestinationResolvers<ContextType = MyContext, ParentType extends Res
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
-export type MutationResolvers<ContextType = MyContext, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
+export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
   createDestination?: Resolver<Maybe<ResolversTypes['Destination']>, ParentType, ContextType, Partial<MutationCreateDestinationArgs>>;
   createDestinations?: Resolver<Array<ResolversTypes['Destination']>, ParentType, ContextType, RequireFields<MutationCreateDestinationsArgs, 'destinations'>>;
   createReview?: Resolver<Maybe<ResolversTypes['Review']>, ParentType, ContextType, RequireFields<MutationCreateReviewArgs, 'rating' | 'text' | 'title' | 'user'>>;
@@ -334,7 +333,7 @@ export type MutationResolvers<ContextType = MyContext, ParentType extends Resolv
   updateUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<MutationUpdateUserArgs, 'user'>>;
 }>;
 
-export type QueryResolvers<ContextType = MyContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
+export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
   getAllDestinations?: Resolver<Maybe<Array<Maybe<ResolversTypes['Destination']>>>, ParentType, ContextType>;
   getDestination?: Resolver<Maybe<ResolversTypes['Destination']>, ParentType, ContextType, RequireFields<QueryGetDestinationArgs, 'id'>>;
   getReviewByID?: Resolver<Maybe<ResolversTypes['Review']>, ParentType, ContextType, RequireFields<QueryGetReviewByIdArgs, 'id'>>;
@@ -345,7 +344,7 @@ export type QueryResolvers<ContextType = MyContext, ParentType extends Resolvers
   getUsersByID?: Resolver<Maybe<Array<Maybe<ResolversTypes['User']>>>, ParentType, ContextType, Partial<QueryGetUsersByIdArgs>>;
 }>;
 
-export type ReviewResolvers<ContextType = MyContext, ParentType extends ResolversParentTypes['Review'] = ResolversParentTypes['Review']> = ResolversObject<{
+export type ReviewResolvers<ContextType = any, ParentType extends ResolversParentTypes['Review'] = ResolversParentTypes['Review']> = ResolversObject<{
   id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   rating?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   text?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -354,13 +353,13 @@ export type ReviewResolvers<ContextType = MyContext, ParentType extends Resolver
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
-export type TableResolvers<ContextType = MyContext, ParentType extends ResolversParentTypes['Table'] = ResolversParentTypes['Table']> = ResolversObject<{
+export type TableResolvers<ContextType = any, ParentType extends ResolversParentTypes['Table'] = ResolversParentTypes['Table']> = ResolversObject<{
   columns?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
-export type UserResolvers<ContextType = MyContext, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = ResolversObject<{
+export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = ResolversObject<{
   favorites?: Resolver<Maybe<Array<ResolversTypes['Destination']>>, ParentType, ContextType>;
   hashedpassword?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
@@ -370,7 +369,7 @@ export type UserResolvers<ContextType = MyContext, ParentType extends ResolversP
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
-export type Resolvers<ContextType = MyContext> = ResolversObject<{
+export type Resolvers<ContextType = any> = ResolversObject<{
   Destination?: DestinationResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
