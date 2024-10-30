@@ -29,22 +29,22 @@ const ReviewPage = () => {
 
       <section className="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch p-2">
         {/* Left Column: Image and Rating */}
-        <Card className="flex flex-col items-center justify-center w-full h-full p-4">
+        <div className="flex flex-col items-center justify-center w-full h-full p-4">
           <img src={destination.image} alt={destination.title} className="w-full h-auto max-w-md mb-4 rounded-md" />
-          <div className="text-center">
+          <Card className="text-center p-4 px-14">
             <p className="font-semibold mt-2">Rating:</p>
             <StarReview
               userRating={destination.rating}
               handleStarClick={(rating: number) => console.log(`User clicked on rating ${rating}`)}
             />
-          </div>
-        </Card>
+          </Card>
+        </div>
 
         {/* Right Column: Description */}
-        <Card className="w-full h-full p-4 flex flex-col">
+        <div className="w-full h-full p-4 flex flex-col">
           <h3 className="font-bold text-xl mb-4 text-center">Description</h3>
           {destination.longdescription && <p className="flex-grow">{destination.longdescription}</p>}
-        </Card>
+        </div>
       </section>
     </main>
   )
