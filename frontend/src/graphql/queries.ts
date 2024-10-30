@@ -22,7 +22,7 @@ export const GET_DESTINATION_BY_ID = gql`
       region
       rating
       description
-      longDescription
+      longdescription
       image
       alt
       country

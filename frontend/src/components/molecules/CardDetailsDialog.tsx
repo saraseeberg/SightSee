@@ -3,14 +3,12 @@ import { Destination } from '@/lib/types'
 import React from 'react'
 import { Link } from 'react-router-dom'
 import StarRating from './CurrentRating'
-import { Button } from './ui/button'
+import { Button } from '@/components/ui/button'
 
 type CardDetailsDialogProps = {
   selectedCard: Destination | null
   openDialog: boolean
   setOpenDialog: (open: boolean) => void
-  userRating: number
-  handleStarClick: (rating: number) => void
 }
 
 const CardDetailsDialog: React.FC<CardDetailsDialogProps> = ({ selectedCard, openDialog, setOpenDialog }) => {

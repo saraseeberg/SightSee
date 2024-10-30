@@ -1,0 +1,9 @@
+type Table {
+  name: String!
+  columns: [String!]!
+}
+
+type Mutation {
+  createTable(name: String!, columns: [String!]!): Table
+  deleteTable(name: String!): Table
+}

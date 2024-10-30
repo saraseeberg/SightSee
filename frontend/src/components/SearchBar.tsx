@@ -1,6 +1,6 @@
-import { Destination } from '@/lib/types'
 import { useQuery } from '@apollo/client'
 import { Icon } from '@iconify/react/dist/iconify.js'
+import { Destination } from '@types'
 import React, { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { GET_ALL_DESTINATIONS } from '../graphql/queries'
@@ -68,7 +68,7 @@ const SearchBar: React.FC = () => {
         >
           {filteredResults.length > 0 ? (
             filteredResults.map((result) => (
-              <Link to={`/Review/${result.id}`} key={result.id}>
+              <Link to={`/review/${result.id}`} key={result.id}>
                 {' '}
                 {/* Link to dynamic route */}
                 <div className="px-4 py-2 cursor-pointer bg-background hover:bg-accent-1 hover:text-white">

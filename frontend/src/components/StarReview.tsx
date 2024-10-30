@@ -1,5 +1,5 @@
 import { Icon } from '@iconify/react'
-import StarRating from './CurrentRating'
+import StarRating from './molecules/CurrentRating'
 
 type ReviewProps = {
   userRating: number

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Carousel, CarouselApi, CarouselContent, CarouselItem } from './ui/carousel'
+import { Carousel, CarouselApi, CarouselContent, CarouselItem } from '../ui/carousel'
 import AutoPlay from 'embla-carousel-autoplay'
 import { Link } from 'react-router-dom'
 import { carouselData } from '@/lib/data/heroCarouselData'
