@@ -1,9 +1,9 @@
 type Destination {
   id: ID!
   title: String!
-  titleQuestion: String
+  titlequestion: String
   description: String!
-  longDescription: String!
+  longdescription: String!
   categories: [String]!
   country: String!
   region: String
@@ -14,9 +14,9 @@ type Destination {
 
 input DestinationInput {
   title: String!
-  titleQuestion: String
+  titlequestion: String
   description: String!
-  longDescription: String!
+  longdescription: String!
   categories: [String]!
   country: String!
   region: String
