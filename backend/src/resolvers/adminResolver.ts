@@ -1,11 +1,7 @@
+import { Table, TableResolvers } from '@types'
 import db from '../db'
 
-type Table = {
-  name: string
-  columns: string[]
-}
-
-const AdminResolver = {
+const AdminResolver: TableResolvers = {
   Mutation: {
     createTable: async (_: unknown, { name, columns }: Table) => {
       try {

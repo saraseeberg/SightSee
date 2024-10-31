@@ -1,7 +1,7 @@
+import { User, UserResolvers } from '@types'
 import db from '../db'
-import { User } from '@/models/user.model'
 
-const UserResolver = {
+const UserResolver: UserResolvers = {
   Query: {
     getUsers: async () => {
       const query = 'SELECT * FROM users'
