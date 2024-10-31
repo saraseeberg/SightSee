@@ -1,5 +1,5 @@
 import { Dialog, DialogContent } from '@/components/ui/dialog'
-import ReviewCard from './ReviewCard' 
+import ReviewCard from './ReviewCard'
 
 type ReviewDialogProps = {
   open: boolean

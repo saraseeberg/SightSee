@@ -5,7 +5,7 @@ import { Destination } from '@types'
 import { useParams } from 'react-router-dom'
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
-import ReviewDialog from '@/components/molecules/ReviewDialog'
+import ReviewCard from '@/components/molecules/ReviewDialog'
 import StarRating from '@/components/molecules/StarRating'
 
 const ReviewPage = () => {
@@ -53,7 +53,7 @@ const ReviewPage = () => {
       </section>
 
       {/* Review Form */}
-      <ReviewDialog open={isReviewDialogOpen} onClose={closeReviewDialog} />
+      <ReviewCard open={isReviewDialogOpen} onClose={closeReviewDialog} />
     </main>
   )
 }
