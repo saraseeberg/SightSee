@@ -13,12 +13,17 @@ const reviewResolver: ReviewResolvers = {
       const { rows } = await db.query(query, [id])
       return rows[0]
     },
+    getReviewsByDestinationID: async (_: unknown, { destinationid }: Review) => {
+      const query = 'SELECT * FROM reviews WHERE destinationid = $1'
+      const { rows } = await db.query(query, [destinationid])
+      return rows
+    }
   },
 
   Mutation: {
-    createReview: async (_: unknown, { title, text, rating, username }: Review) => {
-      const query = 'INSERT INTO reviews (title, text, rating, username) VALUES ($1, $2, $3, $4) RETURNING *'
-      const { rows } = await db.query(query, [title, text, rating, username])
+    createReview: async (_: unknown, { title, text, rating, username, destinationid }: Review) => {
+      const query = 'INSERT INTO reviews (title, text, rating, username, destinationid) VALUES ($1, $2, $3, $4, $5) RETURNING *'
+      const { rows } = await db.query(query, [title, text, rating, username, destinationid])
       return rows[0]
     },
 
