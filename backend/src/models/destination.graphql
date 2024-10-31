@@ -28,6 +28,7 @@ input DestinationInput {
 type Query {
   getDestination(id: ID!): Destination
   getAllDestinations: [Destination]
+  getFeaturedDestinations: [Destination]
 }
 
 type Mutation {

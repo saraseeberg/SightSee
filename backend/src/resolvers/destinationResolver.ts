@@ -22,6 +22,16 @@ const DestinationResolver: DestinationResolvers = {
         throw new Error(error as string)
       }
     },
+
+    getFeaturedDestinations: async () => {
+      // get all destination with `titlequestion` field
+      try {
+        const result = await db.query('SELECT * FROM destinations WHERE titlequestion IS NOT NULL')
+        return result.rows
+      } catch (error) {
+        throw new Error(error as string)
+      }
+    },
   },
 
   Mutation: {
