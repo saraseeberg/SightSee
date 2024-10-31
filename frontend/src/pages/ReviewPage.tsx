@@ -1,29 +1,30 @@
 import { Card } from '@/components/ui/card'
 import { GET_DESTINATION_BY_ID } from '@/graphql/queries'
 import { useQuery } from '@apollo/client'
-import { Destination } from '@types'
+import { Destination, Review } from '@types'
 import { useParams } from 'react-router-dom'
-import { useState } from 'react'
-import { Button } from '@/components/ui/button'
-import ReviewCard from '@/components/molecules/ReviewDialog'
 import StarRating from '@/components/molecules/StarRating'
+import ReviewDialog from '@/components/molecules/ReviewDialog'
+import { GET_REVIEWS_BY_DESTINATIONID } from '@/graphql/review'
+import ReviewCard from '@/components/molecules/ReviewCard'
 
 const ReviewPage = () => {
   const { id } = useParams<{ id: string }>()
   const { data, loading, error } = useQuery<{ getDestination: Destination }>(GET_DESTINATION_BY_ID, {
     variables: { id },
   })
-  const [isReviewDialogOpen, setIsReviewDialogOpen] = useState(false)
+  const reviewRes = useQuery<{ getReviewsByDestinationID: Review[] }>(GET_REVIEWS_BY_DESTINATIONID, {
+    variables: { destinationid: id },
+  })
 
-  if (loading) return <p>Loading...</p>
-  if (error) return <p>Error loading destination details.</p>
+  if (loading || reviewRes.loading) return <p>Loading... </p>
+  if (error || reviewRes.error) return <p>Error loading destination details. {reviewRes.error?.message}</p>
 
   const destination = data?.getDestination ?? null
+  console.log(data)
+  console.log(reviewRes.data)
 
   if (!destination) return <p>No destination found for the provided ID.</p>
-
-  const openReviewDialog = () => setIsReviewDialogOpen(true)
-  const closeReviewDialog = () => setIsReviewDialogOpen(false)
 
   return (
     <main>
@@ -41,7 +42,7 @@ const ReviewPage = () => {
           <Card className="text-center p-4 px-14">
             <p className="font-semibold mt-2">Current rating:</p>
             <StarRating rating={destination.rating} />
-            <Button onClick={openReviewDialog}>Write a Review</Button>
+            <ReviewDialog destinationId={parseInt(destination.id)} />
           </Card>
         </div>
 
@@ -51,9 +52,9 @@ const ReviewPage = () => {
           {destination.longdescription && <p className="flex-grow">{destination.longdescription}</p>}
         </div>
       </section>
-
-      {/* Review Form */}
-      <ReviewCard open={isReviewDialogOpen} onClose={closeReviewDialog} />
+      <section>
+        {reviewRes.data?.getReviewsByDestinationID.map((review) => <ReviewCard key={review.id} {...review} />)}
+      </section>
     </main>
   )
 }
