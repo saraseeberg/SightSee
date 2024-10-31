@@ -1,15 +1,19 @@
-import StarReview from '@/components/StarReview'
 import { Card } from '@/components/ui/card'
 import { GET_DESTINATION_BY_ID } from '@/graphql/queries'
 import { useQuery } from '@apollo/client'
 import { Destination } from '@types'
 import { useParams } from 'react-router-dom'
+import { useState } from 'react'
+import { Button } from '@/components/ui/button'
+import ReviewDialog from '@/components/molecules/ReviewDialog'
+import StarRating from '@/components/molecules/StarRating'
 
 const ReviewPage = () => {
   const { id } = useParams<{ id: string }>()
   const { data, loading, error } = useQuery<{ getDestination: Destination }>(GET_DESTINATION_BY_ID, {
     variables: { id },
   })
+  const [isReviewDialogOpen, setIsReviewDialogOpen] = useState(false)
 
   if (loading) return <p>Loading...</p>
   if (error) return <p>Error loading destination details.</p>
@@ -17,6 +21,9 @@ const ReviewPage = () => {
   const destination = data?.getDestination ?? null
 
   if (!destination) return <p>No destination found for the provided ID.</p>
+
+  const openReviewDialog = () => setIsReviewDialogOpen(true)
+  const closeReviewDialog = () => setIsReviewDialogOpen(false)
 
   return (
     <main>
@@ -32,11 +39,9 @@ const ReviewPage = () => {
         <div className="flex flex-col items-center justify-center w-full h-full p-4">
           <img src={destination.image} alt={destination.title} className="w-full h-auto max-w-md mb-4 rounded-md" />
           <Card className="text-center p-4 px-14">
-            <p className="font-semibold mt-2">Rating:</p>
-            <StarReview
-              userRating={destination.rating}
-              handleStarClick={(rating: number) => console.log(`User clicked on rating ${rating}`)}
-            />
+            <p className="font-semibold mt-2">Current rating:</p>
+            <StarRating rating={destination.rating} />
+            <Button onClick={openReviewDialog}>Write a Review</Button>
           </Card>
         </div>
 
@@ -46,6 +51,9 @@ const ReviewPage = () => {
           {destination.longdescription && <p className="flex-grow">{destination.longdescription}</p>}
         </div>
       </section>
+
+      {/* Review Form */}
+      <ReviewDialog open={isReviewDialogOpen} onClose={closeReviewDialog} />
     </main>
   )
 }
