@@ -1,26 +1,25 @@
 type Review {
-  id: Int!
+  id: ID!
   title: String!
   text: String!
   rating: Float!
-  user: User!
+  username: String!
+  destinationID: ID!
 }
 
 input ReviewInput {
   title: String!
   text: String!
   rating: Float!
-  user: UserInput!
+  username: String!
 }
 
 type Query {
-  getReviews: [Review]
-  getReviewsByID(ids: [Int]): [Review]
+  getReviews: [Review!]
   getReviewByID(id: Int!): Review
 }
 
 type Mutation {
-  createReview(title: String!, text: String!, rating: Float!, user: UserInput!): Review
-  updateReview(review: ReviewInput!): Review
+  createReview(title: String!, text: String!, rating: Float!, username: String!): Review
   deleteReview(id: Int!): Review
 }
