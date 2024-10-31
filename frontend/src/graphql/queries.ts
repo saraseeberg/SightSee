@@ -30,3 +30,15 @@ export const GET_DESTINATION_BY_ID = gql`
     }
   }
 `
+
+export const GET_FEATURED_DESTINATIONS = gql`
+  query GetFeaturedDestinations {
+    getFeaturedDestinations {
+      id
+      image
+      categories
+      titlequestion
+      country
+    }
+  }
+`
