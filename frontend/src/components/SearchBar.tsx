@@ -19,8 +19,11 @@ const SearchBar: React.FC = () => {
     setSearchQuery(value)
 
     if (value && data) {
-      const results = destinations.filter((item) =>
-        Object.values(item).some((field) => field?.toString().toLowerCase().includes(value.toLowerCase())),
+      const results = destinations.filter(
+        (item) =>
+          item.title.toLowerCase().startsWith(value.toLowerCase()) ||
+          item.country.toLowerCase().startsWith(value.toLowerCase()) ||
+          item.region?.toLowerCase().startsWith(value.toLowerCase()),
       )
       setFilteredResults(results)
     } else {
@@ -31,7 +34,7 @@ const SearchBar: React.FC = () => {
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setSearchQuery('') // Clear the search query to close the dropdown
+        setSearchQuery('') 
       }
     }
 
