@@ -1,11 +1,12 @@
 import Logo from '@/components/atoms/Logo'
+import { cn } from '@/lib/utils'
 import { Icon } from '@iconify/react'
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
+import AvatarDropDownMenu from './molecules/AvatarDropDownMenu'
+import SearchBar from './SearchBar'
 import { Sheet, SheetContent, SheetTrigger } from './ui/sheet'
 import WordRotate from './ui/word-rotate'
-import { cn } from '@/lib/utils'
-import AvatarDropDownMenu from './molecules/AvatarDropDownMenu'
 
 const NavbarContent = ({ isDarkMode, toggleIcon }: { isDarkMode: boolean; toggleIcon: () => void }) => {
   const ref = useRef<HTMLDivElement>(null)
@@ -21,6 +22,9 @@ const NavbarContent = ({ isDarkMode, toggleIcon }: { isDarkMode: boolean; toggle
         </Link>
       </div>
       <div className="flex gap-5 md:ml-10 max-md:flex-col max-md:justify-between max-md:flex-1">
+        <div className="hidden md:flex">
+          <SearchBar />
+        </div>
         <button className="flex items-center text-xl text-content gap-2" onClick={handleThemeToggle}>
           <p className="md:hidden">{isDarkMode ? 'Light Mode' : 'Dark Mode'}</p>
           <WordRotate
@@ -71,6 +75,10 @@ function Navbar() {
         <NavbarContent isDarkMode={isDarkMode} toggleIcon={toggleIcon} />
       </section>
       <section className="md:hidden flex justify-end w-full text-content">
+        <div className="flex w-auto">
+          <SearchBar />
+        </div>
+
         <Sheet>
           <SheetTrigger asChild>
             <button>

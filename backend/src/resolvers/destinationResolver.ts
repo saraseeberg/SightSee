@@ -26,7 +26,7 @@ const DestinationResolver: DestinationResolvers = {
 
   Mutation: {
     createDestination: async (_: unknown, { destination }: { destination: Destination }) => {
-      const { title, titleQuestion, description, longDescription, categories, country, region, image, alt, rating } =
+      const { title, titlequestion, description, longdescription, categories, country, region, image, alt, rating } =
         destination
 
       try {
@@ -34,9 +34,9 @@ const DestinationResolver: DestinationResolvers = {
           'INSERT INTO destinations (title, titleQuestion, description, longDescription, categories, country, region, image, alt, rating) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *',
           [
             title,
-            titleQuestion,
+            titlequestion,
             description,
-            longDescription,
+            longdescription,
             JSON.stringify(categories),
             country,
             region,
@@ -62,9 +62,9 @@ const DestinationResolver: DestinationResolvers = {
 
       const values = destinations.flatMap((destination) => [
         destination.title,
-        destination.titleQuestion,
+        destination.titlequestion,
         destination.description,
-        destination.longDescription,
+        destination.longdescription,
         JSON.stringify(destination.categories),
         destination.country,
         destination.region,
