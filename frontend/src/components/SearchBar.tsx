@@ -64,7 +64,7 @@ const SearchBar: React.FC = () => {
       {searchQuery && (
         <div
           ref={dropdownRef}
-          className="absolute left-0 w-full md:w-64 bg-background shadow-lg rounded-md max-h-80 overflow-scroll z-10 mt-1"
+          className="absolute left-0 w-full md:w-64 bg-background shadow-lg rounded-md max-h-[348px] overflow-y-scroll z-10 mt-1"
         >
           {filteredResults.length > 0 ? (
             filteredResults.map((result) => (
