@@ -8,6 +8,7 @@ import CategoryDropdown from '@/components/molecules/CategoryDropdown'
 import { useQuery } from '@apollo/client'
 import { GET_ALL_DESTINATIONS } from '@/graphql/queries'
 import { Destination } from '@types'
+import SortingDropdown from '@/components/molecules/SortingDropdown'
 
 const categoryButtonData: Omit<CategoryButtonProps, 'onClick' | 'isSelected'>[] = [
   {
@@ -35,9 +36,14 @@ const Browse = () => {
   const { loading, error, data } = useQuery<{ getAllDestinations: Destination[] }>(GET_ALL_DESTINATIONS)
   const [selectedCategories, setSelectedCategories] = useState<string[]>([])
   const [selectedCountry, setSelectedCountry] = useState<string>('World')
+  const [selectedSorting, setSelectedSorting] = useState<string>('Best Rated')
   const [openDialog, setOpenDialog] = useState(false)
   const [selectedCard, setSelectedCard] = useState<Destination | null>(null)
   const [filteredCards, setFilteredCards] = useState<Destination[]>([])
+
+  const handleSortingSelect = (sorting: string) => {
+    setSelectedSorting(sorting)
+  }
 
   useEffect(() => {
     const storedCategories = sessionStorage.getItem('selectedCategories')
@@ -74,10 +80,20 @@ const Browse = () => {
         const matchesCountry = selectedCountry === 'World' || card.country === selectedCountry
         return matchesCategory && matchesCountry
       })
+      if (selectedSorting === 'Best Rated') {
+        newFilteredCards.sort((a, b) => b.rating - a.rating)
+      } else if (selectedSorting === 'Worst Rated') {
+        newFilteredCards.sort((a, b) => a.rating - b.rating)
+      } else if (selectedSorting === 'A - Z') {
+        newFilteredCards.sort((a, b) => a.title.localeCompare(b.title))
+      } else if (selectedSorting === 'Z - A') {
+        newFilteredCards.sort((a, b) => b.title.localeCompare(a.title))
+      }
+
       setFilteredCards(newFilteredCards)
       console.log('Filtered Cards: ', newFilteredCards)
     }
-  }, [data, selectedCategories, selectedCountry])
+  }, [data, selectedCategories, selectedCountry, selectedSorting])
 
   if (loading) return <p>Loading...</p>
   if (error) return <p>Error :(</p>
@@ -125,6 +141,8 @@ const Browse = () => {
 
             {/* CountryDropdown is always visible */}
             <CountryDropdown onSelectCountry={handleCountrySelect} selectedCountry={selectedCountry} />
+
+            <SortingDropdown onSelectedSorting={handleSortingSelect} />
           </div>
         </section>
 
