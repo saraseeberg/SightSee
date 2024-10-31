@@ -1,7 +1,7 @@
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog'
 import React from 'react'
 import { Link } from 'react-router-dom'
-import StarRating from './CurrentRating'
+import StarRating from './StarRating'
 import { Button } from '@/components/ui/button'
 import { Destination } from '@types'
 
