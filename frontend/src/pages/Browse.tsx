@@ -40,11 +40,10 @@ const Browse = () => {
   const [openDialog, setOpenDialog] = useState(false)
   const [selectedCard, setSelectedCard] = useState<Destination | null>(null)
   const [filteredCards, setFilteredCards] = useState<Destination[]>([])
-  
+
   const handleSortingSelect = (sorting: string) => {
     setSelectedSorting(sorting)
   }
-  
 
   useEffect(() => {
     const storedCategories = sessionStorage.getItem('selectedCategories')
@@ -90,12 +89,11 @@ const Browse = () => {
       } else if (selectedSorting === 'Z - A') {
         newFilteredCards.sort((a, b) => b.title.localeCompare(a.title))
       }
-  
+
       setFilteredCards(newFilteredCards)
       console.log('Filtered Cards: ', newFilteredCards)
     }
   }, [data, selectedCategories, selectedCountry, selectedSorting])
-
 
   if (loading) return <p>Loading...</p>
   if (error) return <p>Error :(</p>
@@ -145,7 +143,6 @@ const Browse = () => {
             <CountryDropdown onSelectCountry={handleCountrySelect} selectedCountry={selectedCountry} />
 
             <SortingDropdown onSelectedSorting={handleSortingSelect} />
-
           </div>
         </section>
 
