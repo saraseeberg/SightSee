@@ -7,7 +7,7 @@ import StarRating from './StarRating'
 const ReviewCard: FC<Partial<Review>> = ({ username, title, text, rating }) => {
   return (
     <div className="flex items-center justify-center">
-      <Card className="max-w-md w-full pt-2 rounded-lg shadow-lg flex flex-col items-center space-y-4">
+      <Card className="max-w-xs h-80 w-full pt-2 overflow-y-auto rounded-lg shadow-lg flex flex-col pl-6 space-y-2">
         {/* Profile Picture and Username */}
         <div className="flex items-center space-x-3">
           <Avatar className="w-10 h-10">
@@ -18,7 +18,7 @@ const ReviewCard: FC<Partial<Review>> = ({ username, title, text, rating }) => {
         </div>
 
         {/* Rating */}
-        <CardContent className="flex flex-col items-center text-center space-y-2">
+        <CardContent className="flex flex-col space-y-3">
           <StarRating rating={rating ?? 0} />
 
           {/* Review Title and Text */}
