@@ -15,7 +15,7 @@ describe('Application Routing and Components', () => {
   it('should navigate to Browse page from Navbar', () => {
     cy.get('nav').contains('Browse').click()
 
-    cy.url().should('include', '/Browse')
+    cy.url().should('include', '/browse')
 
     cy.get('h2').should('have.text', 'Browse Cards')
   })
@@ -43,4 +43,19 @@ describe('Application Routing and Components', () => {
 
     cy.get('h1').should('contain.text', "Oh no, looks like you've traveled a bit to far")
   })
+
+  describe('Application Routing and Components', () => {
+    beforeEach(() => {
+      cy.visit('/')
+    })
+  
+    it('should navigate to the correct review page when a search result is clicked', () => {
+      cy.get('input[type="search"]:visible').type('Disney')
+  
+      cy.get('div').contains('Disneyland').should('be.visible').click()
+  
+      cy.url().should('include', '/review/1')
+    })
+  })
+  
 })

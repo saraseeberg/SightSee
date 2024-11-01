@@ -17,7 +17,7 @@ const NavbarContent = ({ isDarkMode, toggleIcon }: { isDarkMode: boolean; toggle
   return (
     <>
       <div className="md:flex-1 flex justify-start gap-10 md:gap-[15%] md:mx-24 max-md:mb-6 max-md:flex-col">
-        <Link to="/Browse" className="text-xl text-content">
+        <Link to="/browse" className="text-xl text-content">
           Browse
         </Link>
       </div>
