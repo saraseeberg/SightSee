@@ -62,7 +62,7 @@ const ReviewDialog: FC<ReviewDialogProps> = ({ destinationId }) => {
       <DialogTrigger asChild>
         <Button>Write a Review</Button>
       </DialogTrigger>
-      <DialogContent className="max-w-md p-6 rounded-lg shadow-lg">
+      <DialogContent className="max-w-md p-6 rounded-lg shadow-lg text-content">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold">Write a Review</DialogTitle>
           <DialogDescription>Share your experience by rating and leaving a review below</DialogDescription>
