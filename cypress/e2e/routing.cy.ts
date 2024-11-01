@@ -48,14 +48,13 @@ describe('Application Routing and Components', () => {
     beforeEach(() => {
       cy.visit('/')
     })
-  
+
     it('should navigate to the correct review page when a search result is clicked', () => {
       cy.get('input[type="search"]:visible').type('Disney')
-  
+
       cy.get('div').contains('Disneyland').should('be.visible').click()
-  
+
       cy.url().should('include', '/review/1')
     })
   })
-  
 })
