@@ -55,7 +55,6 @@ export type Mutation = {
   deleteReview?: Maybe<Review>
   deleteTable?: Maybe<Table>
   deleteUser?: Maybe<User>
-  updateReview?: Maybe<Review>
   updateUser?: Maybe<User>
 }
 
@@ -68,10 +67,11 @@ export type MutationCreateDestinationsArgs = {
 }
 
 export type MutationCreateReviewArgs = {
-  rating: Scalars['Float']['input']
+  destinationid: Scalars['ID']['input']
+  rating: Scalars['Int']['input']
   text: Scalars['String']['input']
   title: Scalars['String']['input']
-  user: UserInput
+  username: Scalars['String']['input']
 }
 
 export type MutationCreateTableArgs = {
@@ -101,10 +101,6 @@ export type MutationDeleteUserArgs = {
   id: Scalars['ID']['input']
 }
 
-export type MutationUpdateReviewArgs = {
-  review: ReviewInput
-}
-
 export type MutationUpdateUserArgs = {
   user: UserInput
 }
@@ -115,8 +111,8 @@ export type Query = {
   getDestination?: Maybe<Destination>
   getFeaturedDestinations?: Maybe<Array<Maybe<Destination>>>
   getReviewByID?: Maybe<Review>
-  getReviews?: Maybe<Array<Maybe<Review>>>
-  getReviewsByID?: Maybe<Array<Maybe<Review>>>
+  getReviews?: Maybe<Array<Review>>
+  getReviewsByDestinationID?: Maybe<Array<Review>>
   getUserByID?: Maybe<User>
   getUsers?: Maybe<Array<User>>
   getUsersByID?: Maybe<Array<User>>
@@ -130,8 +126,8 @@ export type QueryGetReviewByIdArgs = {
   id: Scalars['Int']['input']
 }
 
-export type QueryGetReviewsByIdArgs = {
-  ids?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>
+export type QueryGetReviewsByDestinationIdArgs = {
+  destinationid: Scalars['ID']['input']
 }
 
 export type QueryGetUserByIdArgs = {
@@ -144,18 +140,20 @@ export type QueryGetUsersByIdArgs = {
 
 export type Review = {
   __typename?: 'Review'
-  id: Scalars['Int']['output']
-  rating: Scalars['Float']['output']
+  destinationid: Scalars['ID']['output']
+  id: Scalars['ID']['output']
+  rating: Scalars['Int']['output']
   text: Scalars['String']['output']
   title: Scalars['String']['output']
-  user: User
+  username: Scalars['String']['output']
 }
 
 export type ReviewInput = {
-  rating: Scalars['Float']['input']
+  destinationid: Scalars['ID']['input']
+  rating: Scalars['Int']['input']
   text: Scalars['String']['input']
   title: Scalars['String']['input']
-  user: UserInput
+  username: Scalars['String']['input']
 }
 
 export type Table = {
@@ -330,7 +328,7 @@ export type MutationResolvers<
     Maybe<ResolversTypes['Review']>,
     ParentType,
     ContextType,
-    RequireFields<MutationCreateReviewArgs, 'rating' | 'text' | 'title' | 'user'>
+    RequireFields<MutationCreateReviewArgs, 'destinationid' | 'rating' | 'text' | 'title' | 'username'>
   >
   createTable?: Resolver<
     Maybe<ResolversTypes['Table']>,
@@ -368,12 +366,6 @@ export type MutationResolvers<
     ContextType,
     RequireFields<MutationDeleteUserArgs, 'id'>
   >
-  updateReview?: Resolver<
-    Maybe<ResolversTypes['Review']>,
-    ParentType,
-    ContextType,
-    RequireFields<MutationUpdateReviewArgs, 'review'>
-  >
   updateUser?: Resolver<
     Maybe<ResolversTypes['User']>,
     ParentType,
@@ -400,12 +392,12 @@ export type QueryResolvers<
     ContextType,
     RequireFields<QueryGetReviewByIdArgs, 'id'>
   >
-  getReviews?: Resolver<Maybe<Array<Maybe<ResolversTypes['Review']>>>, ParentType, ContextType>
-  getReviewsByID?: Resolver<
-    Maybe<Array<Maybe<ResolversTypes['Review']>>>,
+  getReviews?: Resolver<Maybe<Array<ResolversTypes['Review']>>, ParentType, ContextType>
+  getReviewsByDestinationID?: Resolver<
+    Maybe<Array<ResolversTypes['Review']>>,
     ParentType,
     ContextType,
-    Partial<QueryGetReviewsByIdArgs>
+    RequireFields<QueryGetReviewsByDestinationIdArgs, 'destinationid'>
   >
   getUserByID?: Resolver<
     Maybe<ResolversTypes['User']>,
@@ -421,11 +413,12 @@ export type ReviewResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['Review'] = ResolversParentTypes['Review'],
 > = ResolversObject<{
-  id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
-  rating?: Resolver<ResolversTypes['Float'], ParentType, ContextType>
+  destinationid?: Resolver<ResolversTypes['ID'], ParentType, ContextType>
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>
+  rating?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
   text?: Resolver<ResolversTypes['String'], ParentType, ContextType>
   title?: Resolver<ResolversTypes['String'], ParentType, ContextType>
-  user?: Resolver<ResolversTypes['User'], ParentType, ContextType>
+  username?: Resolver<ResolversTypes['String'], ParentType, ContextType>
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>
 }>
 
