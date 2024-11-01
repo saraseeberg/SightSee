@@ -1,34 +1,30 @@
+import CategoryButton, { CategoryButtonProps } from '@/components/atoms/CategoryButton'
 import BrowseCard from '@/components/molecules/BrowseCard'
 import CardDetailsDialog from '@/components/molecules/CardDetailsDialog'
-import CategoryButton, { CategoryButtonProps } from '@/components/atoms/CategoryButton'
+import CategoryDropdown from '@/components/molecules/CategoryDropdown'
 import CountryDropdown from '@/components/molecules/CountryDropdown'
+import SortingDropdown from '@/components/molecules/SortingDropdown'
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from '@/components/ui/pagination'
+import { GET_ALL_DESTINATIONS } from '@/graphql/queries'
+import { useQuery } from '@apollo/client'
+import { Destination } from '@types'
 import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
-import CategoryDropdown from '@/components/molecules/CategoryDropdown'
-import { useQuery } from '@apollo/client'
-import { GET_ALL_DESTINATIONS } from '@/graphql/queries'
-import { Destination } from '@types'
-import SortingDropdown from '@/components/molecules/SortingDropdown'
 
 const categoryButtonData: Omit<CategoryButtonProps, 'onClick' | 'isSelected'>[] = [
-  {
-    category: 'Activities',
-  },
-  {
-    category: 'Entertainment',
-  },
-  {
-    category: 'Nightlife',
-  },
-  {
-    category: 'Restaurants',
-  },
-  {
-    category: 'Shopping',
-  },
-  {
-    category: 'Sights',
-  },
+  { category: 'Activities' },
+  { category: 'Entertainment' },
+  { category: 'Nightlife' },
+  { category: 'Restaurants' },
+  { category: 'Shopping' },
+  { category: 'Sights' },
 ]
 
 const Browse = () => {
@@ -40,10 +36,9 @@ const Browse = () => {
   const [openDialog, setOpenDialog] = useState(false)
   const [selectedCard, setSelectedCard] = useState<Destination | null>(null)
   const [filteredCards, setFilteredCards] = useState<Destination[]>([])
-
-  const handleSortingSelect = (sorting: string) => {
-    setSelectedSorting(sorting)
-  }
+  const [currentPage, setCurrentPage] = useState(1)
+  const cardsPerPage = 12
+  const paginatedCards = filteredCards.slice((currentPage - 1) * cardsPerPage, currentPage * cardsPerPage)
 
   useEffect(() => {
     const storedCategories = sessionStorage.getItem('selectedCategories')
@@ -59,18 +54,6 @@ const Browse = () => {
       sessionStorage.setItem('selectedCountry', location.state.country)
     }
   }, [location.state])
-
-  const handleCategoryClick = (category: string) => {
-    let updatedCategories: string[]
-    if (selectedCategories.includes(category)) {
-      updatedCategories = selectedCategories.filter((c) => c !== category)
-    } else {
-      updatedCategories = [...selectedCategories, category]
-    }
-
-    setSelectedCategories(updatedCategories)
-    sessionStorage.setItem('selectedCategories', JSON.stringify(updatedCategories))
-  }
 
   useEffect(() => {
     if (data?.getAllDestinations) {
@@ -91,12 +74,27 @@ const Browse = () => {
       }
 
       setFilteredCards(newFilteredCards)
-      console.log('Filtered Cards: ', newFilteredCards)
+      setCurrentPage(1) // Reset to the first page when filters change
     }
   }, [data, selectedCategories, selectedCountry, selectedSorting])
 
   if (loading) return <p>Loading...</p>
   if (error) return <p>Error :(</p>
+
+  const handleCategoryClick = (category: string) => {
+    let updatedCategories: string[]
+    if (selectedCategories.includes(category)) {
+      updatedCategories = selectedCategories.filter((c) => c !== category)
+    } else {
+      updatedCategories = [...selectedCategories, category]
+    }
+
+    setSelectedCategories(updatedCategories)
+    sessionStorage.setItem('selectedCategories', JSON.stringify(updatedCategories))
+  }
+  const handleSortingSelect = (sorting: string) => {
+    setSelectedSorting(sorting)
+  }
 
   const handleCountrySelect = (country: string) => {
     setSelectedCountry(country)
@@ -116,13 +114,29 @@ const Browse = () => {
     setOpenDialog(true)
   }
 
+  const handleNextPage = () => {
+    if (currentPage < Math.ceil(filteredCards.length / cardsPerPage)) {
+      setCurrentPage((prevPage) => prevPage + 1)
+    }
+  }
+
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage((prevPage) => prevPage - 1)
+    }
+  }
+
+  const handleJumpToPage = (page: number) => {
+    if (page >= 1 && page <= Math.ceil(filteredCards.length / cardsPerPage)) {
+      setCurrentPage(page)
+    }
+  }
+
   return (
     <>
       <main className="flex flex-col gap-8">
-        {/* Section for category buttons */}
         <section aria-labelledby="category-section" className="flex w-full p-4 justify-center items-center">
           <div className="flex flex-wrap gap-4">
-            {/* CategoryButton is hidden on mobile screens (below md breakpoint) */}
             <div className="hidden md:flex flex-wrap gap-4">
               {categoryButtonData.map((item, index) => (
                 <CategoryButton
@@ -133,25 +147,19 @@ const Browse = () => {
                 />
               ))}
             </div>
-
-            {/* Show CategoryDropdown on mobile screens (below md breakpoint) */}
             <div className="block md:hidden">
               <CategoryDropdown onSelectCategory={handleCategorySelect} />
             </div>
-
-            {/* CountryDropdown is always visible */}
             <CountryDropdown onSelectCountry={handleCountrySelect} selectedCountry={selectedCountry} />
-
             <SortingDropdown onSelectedSorting={handleSortingSelect} />
           </div>
         </section>
 
-        {/* Section for listing cards */}
         <section aria-labelledby="browse-section" className="flex flex-wrap gap-2 sm:gap-4 justify-center">
           <h2 id="browse-section" className="sr-only">
             Browse Cards
           </h2>
-          {filteredCards.map((card: Destination, index: number) => (
+          {paginatedCards.map((card: Destination, index: number) => (
             <BrowseCard
               key={index}
               onClick={() => handleCardClick(card)}
@@ -161,9 +169,38 @@ const Browse = () => {
           ))}
         </section>
       </main>
-
-      {/* Dialog for Card Details */}
       <CardDetailsDialog selectedCard={selectedCard} openDialog={openDialog} setOpenDialog={setOpenDialog} />
+
+      <Pagination className="my-3">
+        <PaginationContent className="cursor-pointer">
+          <PaginationItem>
+            <PaginationPrevious
+              onClick={handlePreviousPage}
+              className={currentPage === 1 ? 'cursor-default opacity-0' : ''}
+            />
+          </PaginationItem>
+
+          {[...Array(Math.ceil(filteredCards.length / cardsPerPage))].map((_, index) => (
+            <PaginationItem key={index} className="cursorPointer">
+              <PaginationLink
+                onClick={() => handleJumpToPage(index + 1)}
+                className={currentPage === index + 1 ? 'font-bold text-xl cursor cursor-pointer' : ''}
+              >
+                {index + 1}
+              </PaginationLink>
+            </PaginationItem>
+          ))}
+
+          <PaginationItem>
+            <PaginationNext
+              onClick={handleNextPage}
+              className={
+                currentPage === Math.ceil(filteredCards.length / cardsPerPage) ? 'cursor-default opacity-0' : ''
+              }
+            />
+          </PaginationItem>
+        </PaginationContent>
+      </Pagination>
     </>
   )
 }
