@@ -5,10 +5,9 @@
 3. [Developer Information](#developer-information)
 4. [Features](#features)
 5. [Folder Structure](#folder-structure)
-5. [How To Run](#how-to-run)
-6. [How To Test](#how-to-test)
-7. [Design and Technology Choices](#design-and-technology-choices)
-
+6. [How To Run](#how-to-run)
+7. [How To Test](#how-to-test)
+8. [Design and Technology Choices](#design-and-technology-choices)
 
 ## SightSee
 
@@ -20,8 +19,8 @@ The website is hosted at
 [SightSee on NTNU](http://it2810-33.idi.ntnu.no/project2/) .
 
 > **⚠ NB!!**
-</br>
->This is the only place you will be able to see the whole application!
+> </br>
+> This is the only place you will be able to see the whole application!
 
 ## Developer Information
 
@@ -46,11 +45,13 @@ The website is hosted at
 To help navigate the codebase, here’s a quick overview of the main folders and their purpose:
 
 - **/backend** - Contains backend-specific code for the application.
+
   - **/src** - Holds the core server files.
     - **/models** - Defines the data models used in the database (e.g., destination, user, review).
     - **/resolvers** - Contains GraphQL resolver functions that handle API requests and perform operations on the data models.
 
 - **/cypress** - Contains end-to-end (e2e) test setup and test files.
+
   - **/e2e** - Houses specific e2e test files for different parts of the application, ensuring functionality is tested.
 
 - **/frontend** - Contains all frontend-specific code and assets.
@@ -72,35 +73,35 @@ To run the application in development mode, follow these steps:
 
 1. **Clone the repository**:
 
-    ```bash
-    # SSH
-    git clone git@git.ntnu.no:IT2810-H24/T33-Project-2.git
+   ```bash
+   # SSH
+   git clone git@git.ntnu.no:IT2810-H24/T33-Project-2.git
 
-    # HTTPS
-    git clone https://git.ntnu.no/IT2810-H24/T33-Project-2.git
+   # HTTPS
+   git clone https://git.ntnu.no/IT2810-H24/T33-Project-2.git
 
-    cd T33-Project-2
-    ```
+   cd T33-Project-2
+   ```
 
 2. **Install dependencies**:
 
-    ```bash
-    npm i
-    ```
+   ```bash
+   npm i
+   ```
 
 3. **Start the backend development server**:
 
-    ```bash
-    npm run dev:backend
-    ```
+   ```bash
+   npm run dev:backend
+   ```
 
-    Runs on [localhost:4000/graphql](localhost:4000/graphql)
+   Runs on [localhost:4000/graphql](localhost:4000/graphql)
 
 4. **Open a `new ternimal` and start the frontend development server**:
 
-    ```bash
-    npm run dev:frontend
-    ```
+   ```bash
+   npm run dev:frontend
+   ```
 
 5. **Open your browser** and navigate to [http://localhost:3000](http://localhost:3000) to see the application running.
 
@@ -110,15 +111,13 @@ Make sure you have [Node.js](https://nodejs.org/) and [npm](https://www.npmjs.co
 
 How to run the tests in development mode, follow these steps:
 
- 1. Run both the backend and frontend,
- see **step 3 and 4 under the "How To Run"** section
- 2. **Open a `new ternimal` and run the e2e test**:
+1.  Run both the backend and frontend,
+    see **step 3 and 4 under the "How To Run"** section
+2.  **Open a `new ternimal` and run the e2e test**:
 
     ```bash
     npx cypress open
     ```
-    
-
 
 ## Design and Technology Choices
 
@@ -145,7 +144,6 @@ SightSee was developed to provide a smooth, interactive experience for users see
 
 - **Cypress:** Cypress is used for end-to-end testing to validate key features, including search, filtering, and navigation. This framework simulates user interactions to verify that the application performs as expected across various scenarios.
 
-  
 ### Overall Design Choices
 
 The application is designed to offer a clear, intuitive, and visually appealing experience that prioritizes usability. We focused on reducing visual clutter while maintaining a modern, cohesive design. By using **shadcn/ui** as the component library, we ensured a consistent look across the entire application, with all components sharing a unified style for a seamless user experience.
