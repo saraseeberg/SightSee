@@ -18,8 +18,7 @@ SightSee is an application designed to enhance the travel experience by providin
 The website is hosted at
 [SightSee on NTNU](http://it2810-33.idi.ntnu.no/project2/) .
 
-> **⚠ NB!!**
-> </br>
+> **⚠ NB!!** > </br>
 > This is the only place you will be able to see the whole application!
 
 ## Developer Information
