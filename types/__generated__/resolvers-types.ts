@@ -109,6 +109,7 @@ export type Query = {
   __typename?: 'Query'
   getAllDestinations?: Maybe<Array<Maybe<Destination>>>
   getDestination?: Maybe<Destination>
+  getFeaturedDestinations?: Maybe<Array<Maybe<Destination>>>
   getReviewByID?: Maybe<Review>
   getReviews?: Maybe<Array<Review>>
   getReviewsByDestinationID?: Maybe<Array<Review>>
@@ -384,6 +385,7 @@ export type QueryResolvers<
     ContextType,
     RequireFields<QueryGetDestinationArgs, 'id'>
   >
+  getFeaturedDestinations?: Resolver<Maybe<Array<Maybe<ResolversTypes['Destination']>>>, ParentType, ContextType>
   getReviewByID?: Resolver<
     Maybe<ResolversTypes['Review']>,
     ParentType,

@@ -22,7 +22,7 @@ const CardDetailsDialog: React.FC<CardDetailsDialogProps> = ({ selectedCard, ope
           <div className="flex flex-col gap-2 ml-4">
             <DialogTitle className="text-xl text-content">{selectedCard.title}</DialogTitle>
             <DialogDescription className="text-base">
-              {selectedCard.country}, {selectedCard.region}
+              {selectedCard.region}, {selectedCard.country}
             </DialogDescription>
             <p className="text-sm text-content mt-2">Rating:</p>
             <StarRating rating={selectedCard.rating} />

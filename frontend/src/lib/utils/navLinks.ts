@@ -1,7 +1,7 @@
 const navLinks = [
   {
     title: 'Browse',
-    href: '/Browse',
+    href: '/browse',
   },
   {
     title: 'Reviews',

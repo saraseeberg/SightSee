@@ -1,8 +1,8 @@
 import { Icon } from '@iconify/react/dist/iconify.js'
-import { Button } from './ui/button'
-import { Input } from './ui/input'
 import { FormEvent } from 'react'
 import { Link } from 'react-router-dom'
+import { Button } from './ui/button'
+import { Input } from './ui/input'
 
 const SoMeIcon = ({ icon, href }: { icon: string; href: string }) => (
   <Link to={href} className="hover:scale-105  hover:text-secondary/80 ">
@@ -31,8 +31,8 @@ const Footer = () => {
       <section className="flex-1 flex max-md:flex-col">
         <div className="flex-1 flex justify-around items-start">
           <div className="text-accent-2 flex flex-col gap-6">
-            <Link to="/Browse">Browse</Link>
-            <Link to="/Reviews">Reviews</Link>
+            <Link to="/browse">Browse</Link>
+            <Link to="/reviews">Reviews</Link>
           </div>
           <div className="text-accent-2 flex flex-col gap-6 group transition-all">
             <p className="group-hover:-translate-x-48 group:pointer-events-none duration-150">Terms and conditions</p>
