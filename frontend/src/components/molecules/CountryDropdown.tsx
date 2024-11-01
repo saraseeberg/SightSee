@@ -2,17 +2,8 @@ import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Icon } from '@iconify/react/dist/iconify.js'
 import React from 'react'
-
-const countries = [
-  'World',
-  'Denmark',
-  'Italy',
-  'Norway',
-  'Spain',
-  'Switzerland',
-  'United Arab Emirates',
-  'United States',
-]
+import { useQuery } from '@apollo/client'
+import { GET_COUNTRIES } from '@/graphql/queries'
 
 type CountryDropdownProps = {
   onSelectCountry: (country: string) => void
@@ -20,6 +11,7 @@ type CountryDropdownProps = {
 }
 
 const CountryDropdown: React.FC<CountryDropdownProps> = ({ onSelectCountry, selectedCountry }) => {
+  const { data, loading, error } = useQuery(GET_COUNTRIES)
   const [currentCountry, setCurrentCountry] = React.useState(selectedCountry || 'World')
 
   const handleSelect = (country: string) => {
@@ -31,6 +23,13 @@ const CountryDropdown: React.FC<CountryDropdownProps> = ({ onSelectCountry, sele
     setCurrentCountry(selectedCountry)
   }, [selectedCountry])
 
+  const countries: string[] = data?.getAllDestinations
+    ? [...new Set((data.getAllDestinations as { country: string }[]).map((destination) => destination.country))]
+    : []
+
+  if (loading) return <p>Loading...</p>
+  if (error) return <p>Error: {error.message}</p>
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -39,7 +38,18 @@ const CountryDropdown: React.FC<CountryDropdownProps> = ({ onSelectCountry, sele
         </Button>
       </DropdownMenuTrigger>
 
-      <DropdownMenuContent className="rounded-lg border p-2 space-y-1 shadow-lg">
+      <DropdownMenuContent className="rounded-lg border p-2 space-y-1 shadow-lg max-h-60 overflow-y-auto">
+        {/* World option */}
+        <DropdownMenuItem
+          onSelect={() => handleSelect('World')}
+          className={`cursor-pointer p-2 hover:bg-accent-1 hover:text-white ${
+            currentCountry === 'World' ? 'bg-accent-1 text-white' : ''
+          }`}
+        >
+          World
+        </DropdownMenuItem>
+
+        {/* Country options */}
         {countries.map((country) => (
           <DropdownMenuItem
             key={country}
