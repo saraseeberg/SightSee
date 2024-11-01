@@ -7,9 +7,12 @@
     "lint": "eslint . && npx prettier --write ."
   },
   "dependencies": {
+    "@graphql-tools/load-files": "^7.0.0",
+    "@graphql-tools/merge": "^9.0.8",
+    "@graphql-tools/schema": "^10.0.7",
     "apollo-server-express": "^3.13.0",
     "express": "^4.21.1",
-    "graphql": "^15.9.0",
+    "graphql": "^16.9.0",
     "pg": "^8.13.0",
     "ts-node-dev": "^2.0.0"
   },
