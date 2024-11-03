@@ -1,9 +1,9 @@
 import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import { GET_ALL_COUNTRIES } from '@/graphql/queries'
+import { useQuery } from '@apollo/client'
 import { Icon } from '@iconify/react/dist/iconify.js'
 import React from 'react'
-import { useQuery } from '@apollo/client'
-import { GET_COUNTRIES } from '@/graphql/queries'
 
 type CountryDropdownProps = {
   onSelectCountry: (country: string) => void
@@ -11,7 +11,7 @@ type CountryDropdownProps = {
 }
 
 const CountryDropdown: React.FC<CountryDropdownProps> = ({ onSelectCountry, selectedCountry }) => {
-  const { data, loading, error } = useQuery(GET_COUNTRIES)
+  const { data, loading, error } = useQuery(GET_ALL_COUNTRIES)
   const [currentCountry, setCurrentCountry] = React.useState(selectedCountry || 'World')
 
   const handleSelect = (country: string) => {
@@ -23,9 +23,7 @@ const CountryDropdown: React.FC<CountryDropdownProps> = ({ onSelectCountry, sele
     setCurrentCountry(selectedCountry)
   }, [selectedCountry])
 
-  const countries: string[] = data?.getAllDestinations
-    ? [...new Set((data.getAllDestinations as { country: string }[]).map((destination) => destination.country))]
-    : []
+  const countries: string[] = data ? data.getAllCountries : []
 
   if (loading) return <p>Loading...</p>
   if (error) return <p>Error: {error.message}</p>

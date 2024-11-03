@@ -27,18 +27,35 @@ const categoryButtonData: Omit<CategoryButtonProps, 'onClick' | 'isSelected'>[] 
   { category: 'Sights' },
 ]
 
+const CARDS_LIMIT = 12
+
 const Browse = () => {
   const location = useLocation()
-  const { loading, error, data } = useQuery<{ getAllDestinations: Destination[] }>(GET_ALL_DESTINATIONS)
   const [selectedCategories, setSelectedCategories] = useState<string[]>([])
   const [selectedCountry, setSelectedCountry] = useState<string>('World')
   const [selectedSorting, setSelectedSorting] = useState<string>('Best Rated')
   const [openDialog, setOpenDialog] = useState(false)
   const [selectedCard, setSelectedCard] = useState<Destination | null>(null)
-  const [filteredCards, setFilteredCards] = useState<Destination[]>([])
   const [currentPage, setCurrentPage] = useState(1)
-  const cardsPerPage = 12
-  const paginatedCards = filteredCards.slice((currentPage - 1) * cardsPerPage, currentPage * cardsPerPage)
+
+  const { loading, error, data } = useQuery<{
+    getAllDestinations: { destinations: Destination[]; totalCount: number }
+  }>(GET_ALL_DESTINATIONS, {
+    variables: {
+      page: currentPage,
+      limit: CARDS_LIMIT,
+      categories: selectedCategories.length > 0 ? selectedCategories : null,
+      country: selectedCountry === 'World' ? null : selectedCountry,
+      sorting: selectedSorting,
+    },
+  })
+
+  console.log(error)
+
+  console.log(data)
+
+  const paginatedCards = data ? data.getAllDestinations.destinations : []
+  const totalPages = data ? Math.ceil(data.getAllDestinations.totalCount / CARDS_LIMIT) : 0
 
   useEffect(() => {
     const storedCategories = sessionStorage.getItem('selectedCategories')
@@ -56,30 +73,8 @@ const Browse = () => {
   }, [location.state])
 
   useEffect(() => {
-    if (data?.getAllDestinations) {
-      const newFilteredCards = data.getAllDestinations.filter((card: Destination) => {
-        const matchesCategory =
-          selectedCategories.length === 0 || selectedCategories.some((category) => card.categories.includes(category))
-        const matchesCountry = selectedCountry === 'World' || card.country === selectedCountry
-        return matchesCategory && matchesCountry
-      })
-      if (selectedSorting === 'Best Rated') {
-        newFilteredCards.sort((a, b) => b.rating - a.rating)
-      } else if (selectedSorting === 'Worst Rated') {
-        newFilteredCards.sort((a, b) => a.rating - b.rating)
-      } else if (selectedSorting === 'A - Z') {
-        newFilteredCards.sort((a, b) => a.title.localeCompare(b.title))
-      } else if (selectedSorting === 'Z - A') {
-        newFilteredCards.sort((a, b) => b.title.localeCompare(a.title))
-      }
-
-      setFilteredCards(newFilteredCards)
-      setCurrentPage(1) // Reset to the first page when filters change
-    }
-  }, [data, selectedCategories, selectedCountry, selectedSorting])
-
-  if (loading) return <p>Loading...</p>
-  if (error) return <p>Error :(</p>
+    setCurrentPage(1) // Reset to the first page when filters change
+  }, [selectedCategories, selectedCountry, selectedSorting])
 
   const handleCategoryClick = (category: string) => {
     let updatedCategories: string[]
@@ -115,21 +110,15 @@ const Browse = () => {
   }
 
   const handleNextPage = () => {
-    if (currentPage < Math.ceil(filteredCards.length / cardsPerPage)) {
-      setCurrentPage((prevPage) => prevPage + 1)
-    }
+    setCurrentPage((prev) => (prev < totalPages ? prev + 1 : prev))
   }
 
   const handlePreviousPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage((prevPage) => prevPage - 1)
-    }
+    setCurrentPage((prev) => (prev > 1 ? prev - 1 : prev))
   }
 
   const handleJumpToPage = (page: number) => {
-    if (page >= 1 && page <= Math.ceil(filteredCards.length / cardsPerPage)) {
-      setCurrentPage(page)
-    }
+    setCurrentPage(page)
   }
 
   return (
@@ -159,7 +148,8 @@ const Browse = () => {
           <h2 id="browse-section" className="sr-only">
             Browse Cards
           </h2>
-          {paginatedCards.map((card: Destination, index: number) => (
+
+          {paginatedCards.map((card, index: number) => (
             <BrowseCard
               key={index}
               onClick={() => handleCardClick(card)}
@@ -171,7 +161,7 @@ const Browse = () => {
       </main>
       <CardDetailsDialog selectedCard={selectedCard} openDialog={openDialog} setOpenDialog={setOpenDialog} />
 
-      <Pagination className="my-3">
+      <Pagination className="my-4">
         <PaginationContent className="cursor-pointer">
           <PaginationItem>
             <PaginationPrevious
@@ -180,10 +170,12 @@ const Browse = () => {
             />
           </PaginationItem>
 
-          {[...Array(Math.ceil(filteredCards.length / cardsPerPage))].map((_, index) => (
+          {[...Array(totalPages)].map((_, index) => (
             <PaginationItem key={index} className="cursorPointer">
               <PaginationLink
-                onClick={() => handleJumpToPage(index + 1)}
+                onClick={() => {
+                  handleJumpToPage(index + 1)
+                }}
                 className={currentPage === index + 1 ? 'font-bold text-xl cursor cursor-pointer' : ''}
               >
                 {index + 1}
@@ -194,9 +186,7 @@ const Browse = () => {
           <PaginationItem>
             <PaginationNext
               onClick={handleNextPage}
-              className={
-                currentPage === Math.ceil(filteredCards.length / cardsPerPage) ? 'cursor-default opacity-0' : ''
-              }
+              className={currentPage === totalPages ? 'cursor-default opacity-0' : ''}
             />
           </PaginationItem>
         </PaginationContent>
