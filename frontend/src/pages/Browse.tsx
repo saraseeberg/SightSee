@@ -186,7 +186,7 @@ const Browse = () => {
           <PaginationItem>
             <PaginationNext
               onClick={handleNextPage}
-              className={currentPage === totalPages ? 'cursor-default opacity-0' : ''}
+              className={currentPage === totalPages || totalPages == 0 ? 'cursor-default opacity-0' : ''}
             />
           </PaginationItem>
         </PaginationContent>
