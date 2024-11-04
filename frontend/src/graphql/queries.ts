@@ -67,10 +67,3 @@ export const GET_FEATURED_DESTINATIONS = gql`
     }
   }
 `
-export const GET_COUNTRIES = gql`
-  query {
-    getAllDestinations {
-      country
-    }
-  }
-`
