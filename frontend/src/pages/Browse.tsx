@@ -12,11 +12,12 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from '@/components/ui/pagination'
+import { Skeleton } from '@/components/ui/skeleton'
 import { GET_ALL_DESTINATIONS } from '@/graphql/queries'
 import { useQuery } from '@apollo/client'
 import { Destination } from '@types'
-import { useEffect, useState } from 'react'
-import { useLocation } from 'react-router-dom'
+import { useEffect, useRef, useState } from 'react'
+import { useLocation, useSearchParams } from 'react-router-dom'
 
 const categoryButtonData: Omit<CategoryButtonProps, 'onClick' | 'isSelected'>[] = [
   { category: 'Activities' },
@@ -31,12 +32,42 @@ const CARDS_LIMIT = 12
 
 const Browse = () => {
   const location = useLocation()
+  const [openDialog, setOpenDialog] = useState(false)
+  const [selectedCard, setSelectedCard] = useState<Destination | null>(null)
+  const [searchParams, setSearchParams] = useSearchParams()
+
   const [selectedCategories, setSelectedCategories] = useState<string[]>([])
   const [selectedCountry, setSelectedCountry] = useState<string>('World')
   const [selectedSorting, setSelectedSorting] = useState<string>('Best Rated')
-  const [openDialog, setOpenDialog] = useState(false)
-  const [selectedCard, setSelectedCard] = useState<Destination | null>(null)
-  const [currentPage, setCurrentPage] = useState(1)
+  const [currentPage, setCurrentPage] = useState<number>(1)
+
+  const isInitialMount = useRef(true)
+
+  // Initialize state from URL parameters on initial mount
+  useEffect(() => {
+    const categoriesParam = searchParams.get('categories')
+    if (categoriesParam) {
+      setSelectedCategories(categoriesParam.split(','))
+    }
+
+    const countryParam = searchParams.get('country')
+    if (countryParam) {
+      setSelectedCountry(countryParam)
+    }
+
+    const sortingParam = searchParams.get('sorting')
+    if (sortingParam) {
+      setSelectedSorting(sortingParam)
+    }
+
+    const pageParam = searchParams.get('page')
+    if (pageParam) {
+      const pageNumber = parseInt(pageParam, 10)
+      if (!isNaN(pageNumber)) {
+        setCurrentPage(pageNumber)
+      }
+    }
+  }, [])
 
   const { loading, error, data } = useQuery<{
     getAllDestinations: { destinations: Destination[]; totalCount: number }
@@ -51,30 +82,54 @@ const Browse = () => {
   })
 
   console.log(error)
-
   console.log(data)
 
   const paginatedCards = data ? data.getAllDestinations.destinations : []
   const totalPages = data ? Math.ceil(data.getAllDestinations.totalCount / CARDS_LIMIT) : 0
 
+  // Handle location state
   useEffect(() => {
-    const storedCategories = sessionStorage.getItem('selectedCategories')
-    if (storedCategories) {
-      setSelectedCategories(JSON.parse(storedCategories))
-    }
     if (location.state?.category) {
       setSelectedCategories([location.state.category])
-      sessionStorage.setItem('selectedCategories', JSON.stringify([location.state.category]))
     }
     if (location.state?.country) {
       setSelectedCountry(location.state.country)
-      sessionStorage.setItem('selectedCountry', location.state.country)
     }
   }, [location.state])
 
+  // Reset currentPage when filters change, except on initial mount
   useEffect(() => {
-    setCurrentPage(1) // Reset to the first page when filters change
-  }, [selectedCategories, selectedCountry, selectedSorting])
+    const pageParam = searchParams.get('page')
+    if (pageParam) {
+      const pageNumber = parseInt(pageParam, 10)
+      if (!isNaN(pageNumber)) {
+        setCurrentPage(pageNumber)
+      }
+    }
+  }, [])
+
+  // Update URL parameters when state changes
+  useEffect(() => {
+    const params = new URLSearchParams()
+
+    if (selectedCategories.length > 0) {
+      params.set('categories', selectedCategories.join(','))
+    }
+
+    if (selectedCountry && selectedCountry !== 'World') {
+      params.set('country', selectedCountry)
+    }
+
+    if (selectedSorting && selectedSorting !== 'Best Rated') {
+      params.set('sorting', selectedSorting)
+    }
+
+    if (currentPage && currentPage !== 1) {
+      params.set('page', currentPage.toString())
+    }
+
+    setSearchParams(params)
+  }, [selectedCategories, selectedCountry, selectedSorting, currentPage])
 
   const handleCategoryClick = (category: string) => {
     let updatedCategories: string[]
@@ -85,14 +140,18 @@ const Browse = () => {
     }
 
     setSelectedCategories(updatedCategories)
-    sessionStorage.setItem('selectedCategories', JSON.stringify(updatedCategories))
+    setCurrentPage(1)
+    setSearchParams(new URLSearchParams())
   }
+
   const handleSortingSelect = (sorting: string) => {
     setSelectedSorting(sorting)
   }
 
   const handleCountrySelect = (country: string) => {
     setSelectedCountry(country)
+    setCurrentPage(1)
+    setSearchParams(new URLSearchParams())
   }
 
   const handleCategorySelect = (category: string) => {
@@ -101,7 +160,6 @@ const Browse = () => {
     } else {
       setSelectedCategories([category])
     }
-    sessionStorage.setItem('selectedCategories', JSON.stringify(category === 'All' ? [] : [category]))
   }
 
   const handleCardClick = (card: Destination) => {
@@ -120,6 +178,7 @@ const Browse = () => {
   const handleJumpToPage = (page: number) => {
     setCurrentPage(page)
   }
+  const SkeletonCard = () => <Skeleton className="w-[46%] sm:w-1/3 md:w-1/3 lg:w-1/4 h-64" />
 
   return (
     <>
@@ -149,14 +208,16 @@ const Browse = () => {
             Browse Cards
           </h2>
 
-          {paginatedCards.map((card, index: number) => (
-            <BrowseCard
-              key={index}
-              onClick={() => handleCardClick(card)}
-              className="w-[46%] sm:w-1/3 md:w-1/3 lg:w-1/4 shrink-0"
-              card={card}
-            />
-          ))}
+          {loading
+            ? Array.from({ length: CARDS_LIMIT }).map((_, index) => <SkeletonCard key={index} />)
+            : paginatedCards.map((card, index) => (
+                <BrowseCard
+                  key={index}
+                  onClick={() => handleCardClick(card)}
+                  className="w-[46%] sm:w-1/3 md:w-1/3 lg:w-1/4 shrink-0"
+                  card={card}
+                />
+              ))}
         </section>
       </main>
       <CardDetailsDialog selectedCard={selectedCard} openDialog={openDialog} setOpenDialog={setOpenDialog} />
