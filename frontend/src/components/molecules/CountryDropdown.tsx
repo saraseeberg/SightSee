@@ -28,9 +28,7 @@ const CountryDropdown: React.FC<CountryDropdownProps> = ({ onSelectCountry, sele
   const countries: string[] = data ? data.getAllCountries : []
 
   if (loading) {
-    return (
-      <Skeleton className="h-10 w-full rounded-lg" />
-    )
+    return <Skeleton className="h-10 w-full rounded-lg" />
   }
 
   if (error) {

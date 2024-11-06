@@ -65,7 +65,7 @@ const Browse = () => {
         setCurrentPage(pageNumber)
       }
     }
-  },[])
+  }, [])
 
   const { loading, error, data } = useQuery<{
     getAllDestinations: { destinations: Destination[]; totalCount: number }

@@ -19,7 +19,7 @@ const DestinationResolver: DestinationResolvers = {
     ) => {
       try {
         const whereClauses: string[] = []
-        const values: any[] = []
+        const values: (string | number)[] = []
         let idx = 1
 
         // Remove categories filtering from SQL
