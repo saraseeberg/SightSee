@@ -26,7 +26,7 @@ const CountryDropdown: React.FC<CountryDropdownProps> = ({ onSelectCountry, sele
   }, [selectedCountry])
 
   // Sort countries alphabetically, keeping "World" on top
-  const countries: string[] = data ? ['World', ...data.getAllCountries.filter((c) => c !== 'World').sort()] : []
+  const countries: string[] = data ? ['World', ...data.getAllCountries.filter((c: string) => c !== 'World').sort()] : []
 
   if (loading) {
     return <Skeleton className="h-10 w-full rounded-lg" />
