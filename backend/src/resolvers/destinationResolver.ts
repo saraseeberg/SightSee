@@ -1,4 +1,4 @@
-import { Destination, DestinationInput, PaginatedDestinations, QueryGetAllDestinationsArgs, Resolvers } from '@types'
+import { Destination, DestinationInput, PaginatedDestinations, Resolvers } from '@types'
 import db from '../db'
 import { ApolloError } from 'apollo-server-express'
 
@@ -16,7 +16,7 @@ const DestinationResolver: Resolvers = {
 
     getAllDestinations: async (
       _: unknown,
-      { page, limit, country, sorting, categories }: { page: number, limit: number, country?: string, sorting?: string, categories?: string[] },
+      { page, limit, country, sorting, categories }: { page: number, limit: number, country?: string | null, sorting?: string | null, categories?: string[] | null },
     ) => {
       try {
         const whereClauses: string[] = []

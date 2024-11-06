@@ -64,7 +64,6 @@ export type Mutation = {
   deleteTable: Scalars['String']['output'];
   deleteUser: User;
   login: UserData;
-  updateReview?: Maybe<Review>;
   updateUser: User;
 };
 
@@ -80,10 +79,11 @@ export type MutationCreateDestinationsArgs = {
 
 
 export type MutationCreateReviewArgs = {
-  rating: Scalars['Float']['input'];
+  destinationid: Scalars['ID']['input'];
+  rating: Scalars['Int']['input'];
   text: Scalars['String']['input'];
   title: Scalars['String']['input'];
-  user: UserInput;
+  username: Scalars['String']['input'];
 };
 
 
@@ -124,25 +124,38 @@ export type MutationLoginArgs = {
 };
 
 
-export type MutationUpdateReviewArgs = {
-  review: ReviewInput;
-};
-
-
 export type MutationUpdateUserArgs = {
   user: UserInput;
 };
 
+export type PaginatedDestinations = {
+  __typename?: 'PaginatedDestinations';
+  destinations: Array<Destination>;
+  totalCount: Scalars['Int']['output'];
+};
+
 export type Query = {
   __typename?: 'Query';
-  getAllDestinations?: Maybe<Array<Maybe<Destination>>>;
+  getAllCountries: Array<Scalars['String']['output']>;
+  getAllDestinations?: Maybe<PaginatedDestinations>;
   getDestination?: Maybe<Destination>;
+  getDestinationsByTextSimilarity?: Maybe<Array<Maybe<Destination>>>;
+  getFeaturedDestinations?: Maybe<Array<Maybe<Destination>>>;
   getReviewByID?: Maybe<Review>;
-  getReviews?: Maybe<Array<Maybe<Review>>>;
-  getReviewsByID?: Maybe<Array<Maybe<Review>>>;
+  getReviews?: Maybe<Array<Review>>;
+  getReviewsByDestinationID?: Maybe<Array<Review>>;
   getUserByID?: Maybe<User>;
   getUsers?: Maybe<Array<User>>;
   getUsersByID?: Maybe<Array<User>>;
+};
+
+
+export type QueryGetAllDestinationsArgs = {
+  categories?: InputMaybe<Array<Scalars['String']['input']>>;
+  country?: InputMaybe<Scalars['String']['input']>;
+  limit: Scalars['Int']['input'];
+  page: Scalars['Int']['input'];
+  sorting?: InputMaybe<Scalars['String']['input']>;
 };
 
 
@@ -151,13 +164,18 @@ export type QueryGetDestinationArgs = {
 };
 
 
+export type QueryGetDestinationsByTextSimilarityArgs = {
+  searchText: Scalars['String']['input'];
+};
+
+
 export type QueryGetReviewByIdArgs = {
   id: Scalars['Int']['input'];
 };
 
 
-export type QueryGetReviewsByIdArgs = {
-  ids?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
+export type QueryGetReviewsByDestinationIdArgs = {
+  destinationid: Scalars['ID']['input'];
 };
 
 
@@ -172,18 +190,20 @@ export type QueryGetUsersByIdArgs = {
 
 export type Review = {
   __typename?: 'Review';
-  id: Scalars['Int']['output'];
-  rating: Scalars['Float']['output'];
+  destinationid: Scalars['ID']['output'];
+  id: Scalars['ID']['output'];
+  rating: Scalars['Int']['output'];
   text: Scalars['String']['output'];
   title: Scalars['String']['output'];
-  user: User;
+  username: Scalars['String']['output'];
 };
 
 export type ReviewInput = {
-  rating: Scalars['Float']['input'];
+  destinationid: Scalars['ID']['input'];
+  rating: Scalars['Int']['input'];
   text: Scalars['String']['input'];
   title: Scalars['String']['input'];
-  user: UserInput;
+  username: Scalars['String']['input'];
 };
 
 export type Table = {
@@ -302,6 +322,7 @@ export type ResolversTypes = ResolversObject<{
   Int: ResolverTypeWrapper<Scalars['Int']['output']>;
   LoginInput: LoginInput;
   Mutation: ResolverTypeWrapper<{}>;
+  PaginatedDestinations: ResolverTypeWrapper<PaginatedDestinations>;
   Query: ResolverTypeWrapper<{}>;
   Review: ResolverTypeWrapper<Review>;
   ReviewInput: ReviewInput;
@@ -323,6 +344,7 @@ export type ResolversParentTypes = ResolversObject<{
   Int: Scalars['Int']['output'];
   LoginInput: LoginInput;
   Mutation: {};
+  PaginatedDestinations: PaginatedDestinations;
   Query: {};
   Review: Review;
   ReviewInput: ReviewInput;
@@ -352,7 +374,7 @@ export type DestinationResolvers<ContextType = any, ParentType extends Resolvers
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
   createDestination?: Resolver<Maybe<ResolversTypes['Destination']>, ParentType, ContextType, RequireFields<MutationCreateDestinationArgs, 'destination'>>;
   createDestinations?: Resolver<Array<ResolversTypes['Destination']>, ParentType, ContextType, RequireFields<MutationCreateDestinationsArgs, 'destinations'>>;
-  createReview?: Resolver<Maybe<ResolversTypes['Review']>, ParentType, ContextType, RequireFields<MutationCreateReviewArgs, 'rating' | 'text' | 'title' | 'user'>>;
+  createReview?: Resolver<Maybe<ResolversTypes['Review']>, ParentType, ContextType, RequireFields<MutationCreateReviewArgs, 'destinationid' | 'rating' | 'text' | 'title' | 'username'>>;
   createTable?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationCreateTableArgs, 'table'>>;
   createUser?: Resolver<ResolversTypes['UserData'], ParentType, ContextType, RequireFields<MutationCreateUserArgs, 'name' | 'password' | 'username'>>;
   deleteDestination?: Resolver<Maybe<ResolversTypes['Destination']>, ParentType, ContextType, RequireFields<MutationDeleteDestinationArgs, 'id'>>;
@@ -360,27 +382,36 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   deleteTable?: Resolver<ResolversTypes['String'], ParentType, ContextType, RequireFields<MutationDeleteTableArgs, 'name'>>;
   deleteUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationDeleteUserArgs, 'id'>>;
   login?: Resolver<ResolversTypes['UserData'], ParentType, ContextType, RequireFields<MutationLoginArgs, 'data'>>;
-  updateReview?: Resolver<Maybe<ResolversTypes['Review']>, ParentType, ContextType, RequireFields<MutationUpdateReviewArgs, 'review'>>;
   updateUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationUpdateUserArgs, 'user'>>;
 }>;
 
+export type PaginatedDestinationsResolvers<ContextType = any, ParentType extends ResolversParentTypes['PaginatedDestinations'] = ResolversParentTypes['PaginatedDestinations']> = ResolversObject<{
+  destinations?: Resolver<Array<ResolversTypes['Destination']>, ParentType, ContextType>;
+  totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
-  getAllDestinations?: Resolver<Maybe<Array<Maybe<ResolversTypes['Destination']>>>, ParentType, ContextType>;
+  getAllCountries?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
+  getAllDestinations?: Resolver<Maybe<ResolversTypes['PaginatedDestinations']>, ParentType, ContextType, RequireFields<QueryGetAllDestinationsArgs, 'limit' | 'page'>>;
   getDestination?: Resolver<Maybe<ResolversTypes['Destination']>, ParentType, ContextType, RequireFields<QueryGetDestinationArgs, 'id'>>;
+  getDestinationsByTextSimilarity?: Resolver<Maybe<Array<Maybe<ResolversTypes['Destination']>>>, ParentType, ContextType, RequireFields<QueryGetDestinationsByTextSimilarityArgs, 'searchText'>>;
+  getFeaturedDestinations?: Resolver<Maybe<Array<Maybe<ResolversTypes['Destination']>>>, ParentType, ContextType>;
   getReviewByID?: Resolver<Maybe<ResolversTypes['Review']>, ParentType, ContextType, RequireFields<QueryGetReviewByIdArgs, 'id'>>;
-  getReviews?: Resolver<Maybe<Array<Maybe<ResolversTypes['Review']>>>, ParentType, ContextType>;
-  getReviewsByID?: Resolver<Maybe<Array<Maybe<ResolversTypes['Review']>>>, ParentType, ContextType, Partial<QueryGetReviewsByIdArgs>>;
+  getReviews?: Resolver<Maybe<Array<ResolversTypes['Review']>>, ParentType, ContextType>;
+  getReviewsByDestinationID?: Resolver<Maybe<Array<ResolversTypes['Review']>>, ParentType, ContextType, RequireFields<QueryGetReviewsByDestinationIdArgs, 'destinationid'>>;
   getUserByID?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<QueryGetUserByIdArgs, 'id'>>;
   getUsers?: Resolver<Maybe<Array<ResolversTypes['User']>>, ParentType, ContextType>;
   getUsersByID?: Resolver<Maybe<Array<ResolversTypes['User']>>, ParentType, ContextType, RequireFields<QueryGetUsersByIdArgs, 'ids'>>;
 }>;
 
 export type ReviewResolvers<ContextType = any, ParentType extends ResolversParentTypes['Review'] = ResolversParentTypes['Review']> = ResolversObject<{
-  id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  rating?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
+  destinationid?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  rating?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   text?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  user?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
+  username?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -409,6 +440,7 @@ export type UserDataResolvers<ContextType = any, ParentType extends ResolversPar
 export type Resolvers<ContextType = any> = ResolversObject<{
   Destination?: DestinationResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
+  PaginatedDestinations?: PaginatedDestinationsResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   Review?: ReviewResolvers<ContextType>;
   Table?: TableResolvers<ContextType>;
