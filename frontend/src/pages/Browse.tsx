@@ -16,7 +16,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { GET_ALL_DESTINATIONS } from '@/graphql/queries'
 import { useQuery } from '@apollo/client'
 import { Destination } from '@types'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useLocation, useSearchParams } from 'react-router-dom'
 
 const categoryButtonData: Omit<CategoryButtonProps, 'onClick' | 'isSelected'>[] = [
@@ -40,8 +40,6 @@ const Browse = () => {
   const [selectedCountry, setSelectedCountry] = useState<string>('World')
   const [selectedSorting, setSelectedSorting] = useState<string>('Best Rated')
   const [currentPage, setCurrentPage] = useState<number>(1)
-
-  const isInitialMount = useRef(true)
 
   // Initialize state from URL parameters on initial mount
   useEffect(() => {
@@ -67,7 +65,7 @@ const Browse = () => {
         setCurrentPage(pageNumber)
       }
     }
-  }, [])
+  },[])
 
   const { loading, error, data } = useQuery<{
     getAllDestinations: { destinations: Destination[]; totalCount: number }
