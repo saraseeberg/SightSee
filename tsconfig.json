@@ -1,14 +1,12 @@
 {
-    "compilerOptions": {
-      "composite": true,
-      "declaration": true,
-      "outDir": "./dist",
-      "baseUrl": ".",
-      "paths": {
-        "@types": ["types/__generated__/resolvers-types.ts"],
-        "@backend/*": ["backend/src/*"],
-        "@frontend/*": ["frontend/src/*"]
-      }
-    },
-    "include": ["frontend", "backend", "types"]
-  }
+  "compilerOptions": {
+    "composite": true,
+    "baseUrl": ".",
+    "paths": {
+      "@types": ["types/__generated__/resolvers-types.ts"],
+      "@backend/*": ["backend/src/*"],
+      "@frontend/*": ["frontend/src/*"]
+    }
+  },
+  "include": ["frontend", "backend", "types"]
+}

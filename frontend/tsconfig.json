@@ -1,14 +1,13 @@
 {
   "files": [],
-  "extends": "../tsconfig.json",
   "references": [{ "path": "./tsconfig.app.json" }, { "path": "./tsconfig.node.json" }],
   "compilerOptions": {
-    "rootDir": "../../",
+    "rootDir": "../",
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
       "@types": ["../types/__generated__/resolvers-types.ts"]
     }
   },
-  "include": ["src/**/*"]
+
 }

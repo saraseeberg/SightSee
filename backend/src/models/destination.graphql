@@ -12,6 +12,11 @@ type Destination {
   rating: Float!
 }
 
+type PaginatedDestinations {
+  destinations: [Destination!]!
+  totalCount: Int!
+}
+
 input DestinationInput {
   title: String!
   titlequestion: String
@@ -27,7 +32,16 @@ input DestinationInput {
 
 type Query {
   getDestination(id: ID!): Destination
-  getAllDestinations: [Destination]
+  getAllDestinations(
+    page: Int!
+    limit: Int!
+    categories: [String]
+    country: String
+    sorting: String
+  ): PaginatedDestinations
+  getFeaturedDestinations: [Destination]
+  getDestinationsByTextSimilarity(searchText: String!): [Destination]
+  getAllCountries: [String!]!
 }
 
 type Mutation {

@@ -1,4 +1,4 @@
-import { Destination, DestinationInput, Resolvers } from '@types'
+import { Destination, DestinationInput, PaginatedDestinations, QueryGetAllDestinationsArgs, Resolvers } from '@types'
 import db from '../db'
 import { ApolloError } from 'apollo-server-express'
 
@@ -14,10 +14,92 @@ const DestinationResolver: Resolvers = {
       }
     },
 
-    // Henter alle destinasjoner
-    getAllDestinations: async () => {
+    getAllDestinations: async (
+      _: unknown,
+      { page, limit, country, sorting, categories }: { page: number, limit: number, country?: string, sorting?: string, categories?: string[] },
+    ) => {
       try {
-        const result = await db.query('SELECT * FROM destinations')
+        const whereClauses: string[] = []
+        const values: (string | number)[] = []
+        let idx = 1
+
+        // Remove categories filtering from SQL
+
+        if (country && country !== 'World') {
+          whereClauses.push(`country = $${idx}`)
+          values.push(country)
+          idx++
+        }
+
+        let orderByClause = ''
+        if (sorting) {
+          if (sorting === 'Best Rated') {
+            orderByClause = 'ORDER BY rating DESC'
+          } else if (sorting === 'Worst Rated') {
+            orderByClause = 'ORDER BY rating ASC'
+          } else if (sorting === 'A - Z') {
+            orderByClause = 'ORDER BY title ASC'
+          } else if (sorting === 'Z - A') {
+            orderByClause = 'ORDER BY title DESC'
+          }
+        }
+
+        const whereClause = whereClauses.length > 0 ? 'WHERE ' + whereClauses.join(' AND ') : ''
+
+        // Fetch all data matching the filters except categories
+        const dataQuery = `SELECT * FROM destinations ${whereClause} ${orderByClause}`
+        const result = await db.query(dataQuery, values)
+
+        // Now, filter the results in TypeScript based on categories
+        let destinations = result.rows
+
+        if (categories && categories.length > 0) {
+          destinations = destinations.filter((destination: Destination) =>
+            categories.some((category) => destination.categories.includes(category)),
+          )
+        }
+
+        const totalCount = destinations.length
+
+        // Now apply pagination in TypeScript
+        const start = (page - 1) * limit
+        const paginatedDestinations = destinations.slice(start, start + limit)
+
+        return {
+          destinations: paginatedDestinations,
+          totalCount,
+        } as PaginatedDestinations
+      } catch (error) {
+        throw new Error(error as string)
+      }
+    },
+
+    getDestinationsByTextSimilarity: async (_: unknown, { searchText }: { searchText: string }) => {
+      try {
+        const result = await db.query(
+          `SELECT * FROM destinations WHERE title ILIKE $1 OR country ILIKE $1 OR region ILIKE $1`,
+          [`${searchText}%`],
+        )
+        return result.rows
+      } catch (error) {
+        throw new Error(error as string)
+      }
+    },
+
+    getAllCountries: async () => {
+      try {
+        const result = await db.query('SELECT DISTINCT country FROM destinations')
+        const countries = result.rows.map((row) => row.country)
+        return countries
+      } catch (error) {
+        throw new Error(error as string)
+      }
+    },
+
+    getFeaturedDestinations: async () => {
+      // get all destination with `titlequestion` field
+      try {
+        const result = await db.query('SELECT * FROM destinations WHERE titlequestion IS NOT NULL')
         return result.rows
       } catch (error) {
         throw new Error(error as string)

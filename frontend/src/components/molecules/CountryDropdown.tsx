@@ -1,18 +1,11 @@
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert' // Assuming shadcn has an Alert component
 import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import { Skeleton } from '@/components/ui/skeleton' // Assuming shadcn has a Skeleton component
+import { GET_ALL_COUNTRIES } from '@/graphql/queries'
+import { useQuery } from '@apollo/client'
 import { Icon } from '@iconify/react/dist/iconify.js'
 import React from 'react'
-
-const countries = [
-  'World',
-  'Denmark',
-  'Italy',
-  'Norway',
-  'Spain',
-  'Switzerland',
-  'United Arab Emirates',
-  'United States',
-]
 
 type CountryDropdownProps = {
   onSelectCountry: (country: string) => void
@@ -20,6 +13,7 @@ type CountryDropdownProps = {
 }
 
 const CountryDropdown: React.FC<CountryDropdownProps> = ({ onSelectCountry, selectedCountry }) => {
+  const { data, loading, error } = useQuery(GET_ALL_COUNTRIES)
   const [currentCountry, setCurrentCountry] = React.useState(selectedCountry || 'World')
 
   const handleSelect = (country: string) => {
@@ -31,6 +25,23 @@ const CountryDropdown: React.FC<CountryDropdownProps> = ({ onSelectCountry, sele
     setCurrentCountry(selectedCountry)
   }, [selectedCountry])
 
+  // Sort countries alphabetically, keeping "World" on top
+  const countries: string[] = data ? ['World', ...data.getAllCountries.filter((c: string) => c !== 'World').sort()] : []
+
+  if (loading) {
+    return <Skeleton className="h-10 w-full rounded-lg" />
+  }
+
+  if (error) {
+    return (
+      <Alert className="bg-red-100 border-red-400 " role="alert">
+        <Icon icon="akar-icons:alert-circle" className="w-4 h-4 mr-3" />
+        <AlertTitle>Error</AlertTitle>
+        <AlertDescription>Not able to fetch data 🤕 </AlertDescription>
+      </Alert>
+    )
+  }
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -39,7 +50,7 @@ const CountryDropdown: React.FC<CountryDropdownProps> = ({ onSelectCountry, sele
         </Button>
       </DropdownMenuTrigger>
 
-      <DropdownMenuContent className="rounded-lg border p-2 space-y-1 shadow-lg">
+      <DropdownMenuContent className="rounded-lg border p-2 space-y-1 shadow-lg max-h-60 overflow-y-auto">
         {countries.map((country) => (
           <DropdownMenuItem
             key={country}

@@ -1,10 +1,10 @@
-import { Location } from '@/lib/types/Location'
 import { Card, CardContent } from '@components/ui/card'
 import { Icon } from '@iconify/react'
+import { Destination } from '@types'
 
 export type CardDataProps = {
   className?: string
-  card: Location
+  card: Destination
   onClick?: () => void
 }
 
@@ -24,8 +24,8 @@ const BrowseCard: React.FC<CardDataProps> = ({ card, onClick, ...props }) => {
               <h3 className="font-bold text-2xl shadow-2xl">{card.title}</h3>
               <div className="flex w-full justify-between">
                 <address className="font-bold italic text-base">
-                  {card.country}
-                  {card.region && ','} {card.region}
+                  {card.region}
+                  {card.country && ','} {card.country}
                 </address>
                 <div className="flex pt-0.5">
                   <Icon icon="ic:round-star" className="size-6" />

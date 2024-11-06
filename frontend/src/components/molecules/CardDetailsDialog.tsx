@@ -1,12 +1,12 @@
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog'
-import { Location } from '@/lib/types/Location'
 import React from 'react'
 import { Link } from 'react-router-dom'
-import StarRating from './CurrentRating'
+import StarRating from './StarRating'
 import { Button } from '@/components/ui/button'
+import { Destination } from '@types'
 
 type CardDetailsDialogProps = {
-  selectedCard: Location | null
+  selectedCard: Destination | null
   openDialog: boolean
   setOpenDialog: (open: boolean) => void
 }
@@ -22,7 +22,7 @@ const CardDetailsDialog: React.FC<CardDetailsDialogProps> = ({ selectedCard, ope
           <div className="flex flex-col gap-2 ml-4">
             <DialogTitle className="text-xl text-content">{selectedCard.title}</DialogTitle>
             <DialogDescription className="text-base">
-              {selectedCard.country}, {selectedCard.region}
+              {selectedCard.region}, {selectedCard.country}
             </DialogDescription>
             <p className="text-sm text-content mt-2">Rating:</p>
             <StarRating rating={selectedCard.rating} />
@@ -30,7 +30,7 @@ const CardDetailsDialog: React.FC<CardDetailsDialogProps> = ({ selectedCard, ope
           </div>
         </article>
 
-        <Link to="/Review">
+        <Link to={`/review/${selectedCard.id}`}>
           <Button className="flex w-full"> Discover more here! </Button>
         </Link>
       </DialogContent>
