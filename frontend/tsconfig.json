@@ -8,6 +8,5 @@
       "@/*": ["./src/*"],
       "@types": ["../types/__generated__/resolvers-types.ts"]
     }
-  },
-
+  }
 }

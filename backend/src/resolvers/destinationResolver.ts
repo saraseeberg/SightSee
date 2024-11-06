@@ -16,7 +16,19 @@ const DestinationResolver: Resolvers = {
 
     getAllDestinations: async (
       _: unknown,
-      { page, limit, country, sorting, categories }: { page: number, limit: number, country?: string | null, sorting?: string | null, categories?: string[] | null },
+      {
+        page,
+        limit,
+        country,
+        sorting,
+        categories,
+      }: {
+        page: number
+        limit: number
+        country?: string | null
+        sorting?: string | null
+        categories?: string[] | null
+      },
     ) => {
       try {
         const whereClauses: string[] = []
