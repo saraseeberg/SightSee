@@ -1,29 +1,29 @@
 import StatisticsCard from '@/components/molecules/StatisticsCard'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { useAuth } from '@/lib/context/auth-context'
+import { useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 const Profile = () => {
+  const navigate = useNavigate()
   const burgersEaten = localStorage.getItem('eatenBurger') || 0
-  const user = {
-    name: 'Lotte',
-    username: 'LotteTotten27',
-    image: 'https://github.com/shadcn.png',
-    reviews: [
-      {
-        title: 'Review 1',
-        rating: 5,
-      },
-      {
-        title: 'Review 1',
-        rating: 5,
-      },
-    ],
-  } // Change this to api call when ready
+  const { user } = useAuth()
+
+  useEffect(() => {
+    if (!user) {
+      navigate('/login')
+    }
+  }, [user, navigate])
+
+  if (!user) return null
+  console.log(user.reviews?.length)
+
   return (
     <main className="flex flex-col items-center my-2 px-2 md:mx-[10%] gap-10 ">
       <section className="flex justify-center gap-10">
-        <Avatar className="w-48 h-auto max-sm:w-24 ">
-          <AvatarImage src={user.image} />
-          <AvatarFallback>{user.username.slice(0, 2)}</AvatarFallback>
+        <Avatar className="size-48 max-sm:size-24 ">
+          <AvatarImage src={'This'} />
+          <AvatarFallback>{user.username.slice(0, 2).toUpperCase()}</AvatarFallback>
         </Avatar>
         <div className="flex-1 flex flex-col justify-center ">
           <h1 className="text-3xl">{user.name}</h1>
@@ -34,15 +34,15 @@ const Profile = () => {
         <StatisticsCard
           title="Reviews"
           description="Number of reviews you have written"
-          number={user.reviews.length}
-        ></StatisticsCard>
+          number={user.reviews?.length || 0}
+        />
         <StatisticsCard
           title="Recent reviews"
           description="List of yout recent reviews"
           className="row-span-2 max-md:row-start-2 max-md:col-span-2"
         >
           <ul className="flex flex-col gap-2 border border-border rounded-md h-48 overflow-y-scroll scroll">
-            {user.reviews.map((review) => (
+            {user.reviews?.map((review) => (
               // Change with a ReviewCard component
               <li key={review.title} className="flex gap-2 border-2 border-red-500">
                 <span>{review.title}</span>
