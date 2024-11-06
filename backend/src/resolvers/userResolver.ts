@@ -4,7 +4,6 @@ import bcrypt from 'bcrypt'
 import { ApolloError, AuthenticationError } from 'apollo-server-express'
 import jwt from 'jsonwebtoken'
 
-
 const UserResolver: Resolvers = {
   Query: {
     getUsers: async () => {
@@ -32,7 +31,10 @@ const UserResolver: Resolvers = {
   },
 
   Mutation: {
-    createUser: async (_: unknown, { name, username, password }: { name: string, username: string, password: string}) => {
+    createUser: async (
+      _: unknown,
+      { name, username, password }: { name: string; username: string; password: string },
+    ) => {
       try {
         // Check if user already exists
         const checkQuery = 'SELECT * FROM users WHERE username = $1'
@@ -49,21 +51,23 @@ const UserResolver: Resolvers = {
         console.log('Created user: ', username, ' with id: ', rows[0].id)
 
         const user = rows[0] as User
-        const token = jwt.sign({
-          user_id: user.id,
-          username: user.username
-        },
-        process.env.JWT_SECRET as string,
-        {
-          expiresIn: '2h'
-        })
+        const token = jwt.sign(
+          {
+            user_id: user.id,
+            username: user.username,
+          },
+          process.env.JWT_SECRET as string,
+          {
+            expiresIn: '2h',
+          },
+        )
 
         return {
           user,
-          token
+          token,
         }
       } catch (error) {
-        throw new ApolloError("Internal Server Error " + error as string, "INTERNAL_SERVER_ERROR")
+        throw new ApolloError(('Internal Server Error ' + error) as string, 'INTERNAL_SERVER_ERROR')
       }
     },
 
@@ -83,7 +87,7 @@ const UserResolver: Resolvers = {
         console.log('Updated user: ', user.id)
         return rows[0] as User
       } catch (error) {
-        throw new ApolloError("Failed to update: " + error as string, "INTERNAL_SERVER_ERROR")
+        throw new ApolloError(('Failed to update: ' + error) as string, 'INTERNAL_SERVER_ERROR')
       }
     },
 
@@ -95,10 +99,10 @@ const UserResolver: Resolvers = {
         console.log('Deleted user: ', id)
         return rows[0]
       } catch (error) {
-        throw new ApolloError("Could not delete user: " + error as string, "INTERNAL_SERVER_ERROR")
+        throw new ApolloError(('Could not delete user: ' + error) as string, 'INTERNAL_SERVER_ERROR')
       }
     },
-    login: async (_: unknown, { data }: { data: LoginInput}) => {
+    login: async (_: unknown, { data }: { data: LoginInput }) => {
       try {
         const query = 'SELECT * FROM users WHERE username = $1'
         const { rows } = await db.query(query, [data.username])
@@ -115,24 +119,25 @@ const UserResolver: Resolvers = {
           throw new AuthenticationError('Username or password is incorrect')
         }
 
-        const token = jwt.sign({
-          user_id: user.id,
-          username: user.username
-        },
-        process.env.JWT_SECRET as string,
-        {
-          expiresIn: '2h'
-        })
-
+        const token = jwt.sign(
+          {
+            user_id: user.id,
+            username: user.username,
+          },
+          process.env.JWT_SECRET as string,
+          {
+            expiresIn: '2h',
+          },
+        )
 
         return {
           user,
-          token
+          token,
         }
       } catch (error) {
         throw new Error(error as string)
       }
-    }
+    },
   },
 }
 

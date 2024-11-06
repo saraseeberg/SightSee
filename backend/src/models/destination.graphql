@@ -31,7 +31,7 @@ type Query {
 }
 
 type Mutation {
-  createDestination(destination: DestinationInput): Destination
+  createDestination(destination: DestinationInput!): Destination
 
   createDestinations(destinations: [DestinationInput!]!): [Destination!]!
 
