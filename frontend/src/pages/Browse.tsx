@@ -218,10 +218,9 @@ const Browse = () => {
             ))
           ) : (
             <Alert className="bg-red-100  border-red-400  w-2/4" role="alert">
-              <Icon icon="ic:baseline-sentiment-very-dissatisfied" className="w-4 h-4 pt-0"/>
-              <AlertTitle > Hmmm... </AlertTitle>
+              <Icon icon="ic:baseline-sentiment-very-dissatisfied" className="w-4 h-4 pt-0" />
+              <AlertTitle> Hmmm... </AlertTitle>
               <AlertDescription> No results found for your selected filters. 🤕 </AlertDescription>
-
             </Alert>
           )}
         </section>

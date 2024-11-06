@@ -25,7 +25,8 @@ const CountryDropdown: React.FC<CountryDropdownProps> = ({ onSelectCountry, sele
     setCurrentCountry(selectedCountry)
   }, [selectedCountry])
 
-  const countries: string[] = data ? data.getAllCountries : []
+  // Sort countries alphabetically, keeping "World" on top
+  const countries: string[] = data ? ['World', ...data.getAllCountries.filter((c) => c !== 'World').sort()] : []
 
   if (loading) {
     return <Skeleton className="h-10 w-full rounded-lg" />
@@ -50,15 +51,6 @@ const CountryDropdown: React.FC<CountryDropdownProps> = ({ onSelectCountry, sele
       </DropdownMenuTrigger>
 
       <DropdownMenuContent className="rounded-lg border p-2 space-y-1 shadow-lg max-h-60 overflow-y-auto">
-        <DropdownMenuItem
-          onSelect={() => handleSelect('World')}
-          className={`cursor-pointer p-2 hover:bg-accent-1 hover:text-white ${
-            currentCountry === 'World' ? 'bg-accent-1 text-white' : ''
-          }`}
-        >
-          World
-        </DropdownMenuItem>
-
         {countries.map((country) => (
           <DropdownMenuItem
             key={country}
