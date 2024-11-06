@@ -4,6 +4,7 @@ import CardDetailsDialog from '@/components/molecules/CardDetailsDialog'
 import CategoryDropdown from '@/components/molecules/CategoryDropdown'
 import CountryDropdown from '@/components/molecules/CountryDropdown'
 import SortingDropdown from '@/components/molecules/SortingDropdown'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import {
   Pagination,
   PaginationContent,
@@ -15,6 +16,7 @@ import {
 import { Skeleton } from '@/components/ui/skeleton'
 import { GET_ALL_DESTINATIONS } from '@/graphql/queries'
 import { useQuery } from '@apollo/client'
+import { Icon } from '@iconify/react/dist/iconify.js'
 import { Destination } from '@types'
 import { useEffect, useState } from 'react'
 import { useLocation, useSearchParams } from 'react-router-dom'
@@ -41,7 +43,6 @@ const Browse = () => {
   const [selectedSorting, setSelectedSorting] = useState<string>('Best Rated')
   const [currentPage, setCurrentPage] = useState<number>(1)
 
-  // Initialize state from URL parameters on initial mount
   useEffect(() => {
     const categoriesParam = searchParams.get('categories')
     if (categoriesParam) {
@@ -85,7 +86,6 @@ const Browse = () => {
   const paginatedCards = data ? data.getAllDestinations.destinations : []
   const totalPages = data ? Math.ceil(data.getAllDestinations.totalCount / CARDS_LIMIT) : 0
 
-  // Handle location state
   useEffect(() => {
     if (location.state?.category) {
       setSelectedCategories([location.state.category])
@@ -95,7 +95,6 @@ const Browse = () => {
     }
   }, [location.state])
 
-  // Reset currentPage when filters change, except on initial mount
   useEffect(() => {
     const pageParam = searchParams.get('page')
     if (pageParam) {
@@ -106,7 +105,6 @@ const Browse = () => {
     }
   }, [])
 
-  // Update URL parameters when state changes
   useEffect(() => {
     const params = new URLSearchParams()
 
@@ -176,6 +174,7 @@ const Browse = () => {
   const handleJumpToPage = (page: number) => {
     setCurrentPage(page)
   }
+
   const SkeletonCard = () => <Skeleton className="w-[46%] sm:w-1/3 md:w-1/3 lg:w-1/4 h-64" />
 
   return (
@@ -206,18 +205,28 @@ const Browse = () => {
             Browse Cards
           </h2>
 
-          {loading
-            ? Array.from({ length: CARDS_LIMIT }).map((_, index) => <SkeletonCard key={index} />)
-            : paginatedCards.map((card, index) => (
-                <BrowseCard
-                  key={index}
-                  onClick={() => handleCardClick(card)}
-                  className="w-[46%] sm:w-1/3 md:w-1/3 lg:w-1/4 shrink-0"
-                  card={card}
-                />
-              ))}
+          {loading ? (
+            Array.from({ length: CARDS_LIMIT }).map((_, index) => <SkeletonCard key={index} />)
+          ) : paginatedCards.length > 0 ? (
+            paginatedCards.map((card, index) => (
+              <BrowseCard
+                key={index}
+                onClick={() => handleCardClick(card)}
+                className="w-[46%] sm:w-1/3 md:w-1/3 lg:w-1/4 shrink-0"
+                card={card}
+              />
+            ))
+          ) : (
+            <Alert className="bg-red-100  border-red-400  w-2/4" role="alert">
+              <Icon icon="ic:baseline-sentiment-very-dissatisfied" className="w-4 h-4 pt-0"/>
+              <AlertTitle > Hmmm... </AlertTitle>
+              <AlertDescription> No results found for your selected filters. 🤕 </AlertDescription>
+
+            </Alert>
+          )}
         </section>
       </main>
+
       <CardDetailsDialog selectedCard={selectedCard} openDialog={openDialog} setOpenDialog={setOpenDialog} />
 
       <Pagination className="my-4">
@@ -232,9 +241,7 @@ const Browse = () => {
           {[...Array(totalPages)].map((_, index) => (
             <PaginationItem key={index} className="cursorPointer">
               <PaginationLink
-                onClick={() => {
-                  handleJumpToPage(index + 1)
-                }}
+                onClick={() => handleJumpToPage(index + 1)}
                 className={currentPage === index + 1 ? 'font-bold text-xl cursor cursor-pointer' : ''}
               >
                 {index + 1}
@@ -245,7 +252,7 @@ const Browse = () => {
           <PaginationItem>
             <PaginationNext
               onClick={handleNextPage}
-              className={currentPage === totalPages || totalPages == 0 ? 'cursor-default opacity-0' : ''}
+              className={currentPage === totalPages || totalPages === 0 ? 'cursor-default opacity-0' : ''}
             />
           </PaginationItem>
         </PaginationContent>

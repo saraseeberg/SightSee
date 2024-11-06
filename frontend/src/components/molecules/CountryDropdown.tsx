@@ -1,7 +1,7 @@
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert' // Assuming shadcn has an Alert component
 import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Skeleton } from '@/components/ui/skeleton' // Assuming shadcn has a Skeleton component
-import { Alert } from '@/components/ui/alert' // Assuming shadcn has an Alert component
 import { GET_ALL_COUNTRIES } from '@/graphql/queries'
 import { useQuery } from '@apollo/client'
 import { Icon } from '@iconify/react/dist/iconify.js'
@@ -33,9 +33,10 @@ const CountryDropdown: React.FC<CountryDropdownProps> = ({ onSelectCountry, sele
 
   if (error) {
     return (
-      <Alert className="bg-red-100 text-red-700 border-red-400 " role="alert">
-        <Icon icon="akar-icons:alert-circle" className="w-5 h-5 mr-3" />
-        Error: Not able to fetch data 🤕
+      <Alert className="bg-red-100 border-red-400 " role="alert">
+        <Icon icon="akar-icons:alert-circle" className="w-4 h-4 mr-3" />
+        <AlertTitle>Error</AlertTitle>
+        <AlertDescription>Not able to fetch data 🤕 </AlertDescription>
       </Alert>
     )
   }
