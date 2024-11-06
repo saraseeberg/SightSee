@@ -27,7 +27,7 @@ const ReviewPage = () => {
   return (
     <main>
       <div className="flex-col text-center mb-6 md:mb-10">
-        <h1 className="font-extrabold mb-2 text-4xl md:text-6xl lg:text-7xl">{destination.title}</h1>
+        <h1 className="font-extrabold mb-2 mt-4 text-4xl md:text-6xl lg:text-7xl">{destination.title}</h1>
         <div className="flex justify-center items-center">
           <StarRating rating={destination.rating} />
         </div>

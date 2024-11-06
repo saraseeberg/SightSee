@@ -105,10 +105,18 @@ export type MutationUpdateUserArgs = {
   user: UserInput
 }
 
+export type PaginatedDestinations = {
+  __typename?: 'PaginatedDestinations'
+  destinations: Array<Destination>
+  totalCount: Scalars['Int']['output']
+}
+
 export type Query = {
   __typename?: 'Query'
-  getAllDestinations?: Maybe<Array<Maybe<Destination>>>
+  getAllCountries: Array<Scalars['String']['output']>
+  getAllDestinations?: Maybe<PaginatedDestinations>
   getDestination?: Maybe<Destination>
+  getDestinationsByTextSimilarity?: Maybe<Array<Maybe<Destination>>>
   getFeaturedDestinations?: Maybe<Array<Maybe<Destination>>>
   getReviewByID?: Maybe<Review>
   getReviews?: Maybe<Array<Review>>
@@ -118,8 +126,20 @@ export type Query = {
   getUsersByID?: Maybe<Array<User>>
 }
 
+export type QueryGetAllDestinationsArgs = {
+  categories?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+  country?: InputMaybe<Scalars['String']['input']>
+  limit: Scalars['Int']['input']
+  page: Scalars['Int']['input']
+  sorting?: InputMaybe<Scalars['String']['input']>
+}
+
 export type QueryGetDestinationArgs = {
   id: Scalars['ID']['input']
+}
+
+export type QueryGetDestinationsByTextSimilarityArgs = {
+  searchText: Scalars['String']['input']
 }
 
 export type QueryGetReviewByIdArgs = {
@@ -263,6 +283,7 @@ export type ResolversTypes = ResolversObject<{
   ID: ResolverTypeWrapper<Scalars['ID']['output']>
   Int: ResolverTypeWrapper<Scalars['Int']['output']>
   Mutation: ResolverTypeWrapper<{}>
+  PaginatedDestinations: ResolverTypeWrapper<PaginatedDestinations>
   Query: ResolverTypeWrapper<{}>
   Review: ResolverTypeWrapper<Review>
   ReviewInput: ReviewInput
@@ -281,6 +302,7 @@ export type ResolversParentTypes = ResolversObject<{
   ID: Scalars['ID']['output']
   Int: Scalars['Int']['output']
   Mutation: {}
+  PaginatedDestinations: PaginatedDestinations
   Query: {}
   Review: Review
   ReviewInput: ReviewInput
@@ -374,16 +396,37 @@ export type MutationResolvers<
   >
 }>
 
+export type PaginatedDestinationsResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['PaginatedDestinations'] = ResolversParentTypes['PaginatedDestinations'],
+> = ResolversObject<{
+  destinations?: Resolver<Array<ResolversTypes['Destination']>, ParentType, ContextType>
+  totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>
+}>
+
 export type QueryResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query'],
 > = ResolversObject<{
-  getAllDestinations?: Resolver<Maybe<Array<Maybe<ResolversTypes['Destination']>>>, ParentType, ContextType>
+  getAllCountries?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>
+  getAllDestinations?: Resolver<
+    Maybe<ResolversTypes['PaginatedDestinations']>,
+    ParentType,
+    ContextType,
+    RequireFields<QueryGetAllDestinationsArgs, 'limit' | 'page'>
+  >
   getDestination?: Resolver<
     Maybe<ResolversTypes['Destination']>,
     ParentType,
     ContextType,
     RequireFields<QueryGetDestinationArgs, 'id'>
+  >
+  getDestinationsByTextSimilarity?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes['Destination']>>>,
+    ParentType,
+    ContextType,
+    RequireFields<QueryGetDestinationsByTextSimilarityArgs, 'searchText'>
   >
   getFeaturedDestinations?: Resolver<Maybe<Array<Maybe<ResolversTypes['Destination']>>>, ParentType, ContextType>
   getReviewByID?: Resolver<
@@ -447,6 +490,7 @@ export type UserResolvers<
 export type Resolvers<ContextType = any> = ResolversObject<{
   Destination?: DestinationResolvers<ContextType>
   Mutation?: MutationResolvers<ContextType>
+  PaginatedDestinations?: PaginatedDestinationsResolvers<ContextType>
   Query?: QueryResolvers<ContextType>
   Review?: ReviewResolvers<ContextType>
   Table?: TableResolvers<ContextType>

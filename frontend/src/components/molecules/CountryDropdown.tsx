@@ -1,9 +1,11 @@
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert' // Assuming shadcn has an Alert component
 import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import { Skeleton } from '@/components/ui/skeleton' // Assuming shadcn has a Skeleton component
+import { GET_ALL_COUNTRIES } from '@/graphql/queries'
+import { useQuery } from '@apollo/client'
 import { Icon } from '@iconify/react/dist/iconify.js'
 import React from 'react'
-import { useQuery } from '@apollo/client'
-import { GET_COUNTRIES } from '@/graphql/queries'
 
 type CountryDropdownProps = {
   onSelectCountry: (country: string) => void
@@ -11,7 +13,7 @@ type CountryDropdownProps = {
 }
 
 const CountryDropdown: React.FC<CountryDropdownProps> = ({ onSelectCountry, selectedCountry }) => {
-  const { data, loading, error } = useQuery(GET_COUNTRIES)
+  const { data, loading, error } = useQuery(GET_ALL_COUNTRIES)
   const [currentCountry, setCurrentCountry] = React.useState(selectedCountry || 'World')
 
   const handleSelect = (country: string) => {
@@ -23,12 +25,22 @@ const CountryDropdown: React.FC<CountryDropdownProps> = ({ onSelectCountry, sele
     setCurrentCountry(selectedCountry)
   }, [selectedCountry])
 
-  const countries: string[] = data?.getAllDestinations
-    ? [...new Set((data.getAllDestinations as { country: string }[]).map((destination) => destination.country))]
-    : []
+  // Sort countries alphabetically, keeping "World" on top
+  const countries: string[] = data ? ['World', ...data.getAllCountries.filter((c: string) => c !== 'World').sort()] : []
 
-  if (loading) return <p>Loading...</p>
-  if (error) return <p>Error: {error.message}</p>
+  if (loading) {
+    return <Skeleton className="h-10 w-full rounded-lg" />
+  }
+
+  if (error) {
+    return (
+      <Alert className="bg-red-100 border-red-400 " role="alert">
+        <Icon icon="akar-icons:alert-circle" className="w-4 h-4 mr-3" />
+        <AlertTitle>Error</AlertTitle>
+        <AlertDescription>Not able to fetch data 🤕 </AlertDescription>
+      </Alert>
+    )
+  }
 
   return (
     <DropdownMenu>
@@ -39,17 +51,6 @@ const CountryDropdown: React.FC<CountryDropdownProps> = ({ onSelectCountry, sele
       </DropdownMenuTrigger>
 
       <DropdownMenuContent className="rounded-lg border p-2 space-y-1 shadow-lg max-h-60 overflow-y-auto">
-        {/* World option */}
-        <DropdownMenuItem
-          onSelect={() => handleSelect('World')}
-          className={`cursor-pointer p-2 hover:bg-accent-1 hover:text-white ${
-            currentCountry === 'World' ? 'bg-accent-1 text-white' : ''
-          }`}
-        >
-          World
-        </DropdownMenuItem>
-
-        {/* Country options */}
         {countries.map((country) => (
           <DropdownMenuItem
             key={country}

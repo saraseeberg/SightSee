@@ -4,6 +4,7 @@ import CardDetailsDialog from '@/components/molecules/CardDetailsDialog'
 import CategoryDropdown from '@/components/molecules/CategoryDropdown'
 import CountryDropdown from '@/components/molecules/CountryDropdown'
 import SortingDropdown from '@/components/molecules/SortingDropdown'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import {
   Pagination,
   PaginationContent,
@@ -12,11 +13,13 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from '@/components/ui/pagination'
+import { Skeleton } from '@/components/ui/skeleton'
 import { GET_ALL_DESTINATIONS } from '@/graphql/queries'
 import { useQuery } from '@apollo/client'
+import { Icon } from '@iconify/react/dist/iconify.js'
 import { Destination } from '@types'
 import { useEffect, useState } from 'react'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useSearchParams } from 'react-router-dom'
 
 const categoryButtonData: Omit<CategoryButtonProps, 'onClick' | 'isSelected'>[] = [
   { category: 'Activities' },
@@ -27,59 +30,102 @@ const categoryButtonData: Omit<CategoryButtonProps, 'onClick' | 'isSelected'>[] 
   { category: 'Sights' },
 ]
 
+const CARDS_LIMIT = 12
+
 const Browse = () => {
   const location = useLocation()
-  const { loading, error, data } = useQuery<{ getAllDestinations: Destination[] }>(GET_ALL_DESTINATIONS)
+  const [openDialog, setOpenDialog] = useState(false)
+  const [selectedCard, setSelectedCard] = useState<Destination | null>(null)
+  const [searchParams, setSearchParams] = useSearchParams()
+
   const [selectedCategories, setSelectedCategories] = useState<string[]>([])
   const [selectedCountry, setSelectedCountry] = useState<string>('World')
   const [selectedSorting, setSelectedSorting] = useState<string>('Best Rated')
-  const [openDialog, setOpenDialog] = useState(false)
-  const [selectedCard, setSelectedCard] = useState<Destination | null>(null)
-  const [filteredCards, setFilteredCards] = useState<Destination[]>([])
-  const [currentPage, setCurrentPage] = useState(1)
-  const cardsPerPage = 12
-  const paginatedCards = filteredCards.slice((currentPage - 1) * cardsPerPage, currentPage * cardsPerPage)
+  const [currentPage, setCurrentPage] = useState<number>(1)
 
   useEffect(() => {
-    const storedCategories = sessionStorage.getItem('selectedCategories')
-    if (storedCategories) {
-      setSelectedCategories(JSON.parse(storedCategories))
+    const categoriesParam = searchParams.get('categories')
+    if (categoriesParam) {
+      setSelectedCategories(categoriesParam.split(','))
     }
+
+    const countryParam = searchParams.get('country')
+    if (countryParam) {
+      setSelectedCountry(countryParam)
+    }
+
+    const sortingParam = searchParams.get('sorting')
+    if (sortingParam) {
+      setSelectedSorting(sortingParam)
+    }
+
+    const pageParam = searchParams.get('page')
+    if (pageParam) {
+      const pageNumber = parseInt(pageParam, 10)
+      if (!isNaN(pageNumber)) {
+        setCurrentPage(pageNumber)
+      }
+    }
+  }, [])
+
+  const { loading, error, data } = useQuery<{
+    getAllDestinations: { destinations: Destination[]; totalCount: number }
+  }>(GET_ALL_DESTINATIONS, {
+    variables: {
+      page: currentPage,
+      limit: CARDS_LIMIT,
+      categories: selectedCategories.length > 0 ? selectedCategories : null,
+      country: selectedCountry === 'World' ? null : selectedCountry,
+      sorting: selectedSorting,
+    },
+  })
+
+  console.log(error)
+  console.log(data)
+
+  const paginatedCards = data ? data.getAllDestinations.destinations : []
+  const totalPages = data ? Math.ceil(data.getAllDestinations.totalCount / CARDS_LIMIT) : 0
+
+  useEffect(() => {
     if (location.state?.category) {
       setSelectedCategories([location.state.category])
-      sessionStorage.setItem('selectedCategories', JSON.stringify([location.state.category]))
     }
     if (location.state?.country) {
       setSelectedCountry(location.state.country)
-      sessionStorage.setItem('selectedCountry', location.state.country)
     }
   }, [location.state])
 
   useEffect(() => {
-    if (data?.getAllDestinations) {
-      const newFilteredCards = data.getAllDestinations.filter((card: Destination) => {
-        const matchesCategory =
-          selectedCategories.length === 0 || selectedCategories.some((category) => card.categories.includes(category))
-        const matchesCountry = selectedCountry === 'World' || card.country === selectedCountry
-        return matchesCategory && matchesCountry
-      })
-      if (selectedSorting === 'Best Rated') {
-        newFilteredCards.sort((a, b) => b.rating - a.rating)
-      } else if (selectedSorting === 'Worst Rated') {
-        newFilteredCards.sort((a, b) => a.rating - b.rating)
-      } else if (selectedSorting === 'A - Z') {
-        newFilteredCards.sort((a, b) => a.title.localeCompare(b.title))
-      } else if (selectedSorting === 'Z - A') {
-        newFilteredCards.sort((a, b) => b.title.localeCompare(a.title))
+    const pageParam = searchParams.get('page')
+    if (pageParam) {
+      const pageNumber = parseInt(pageParam, 10)
+      if (!isNaN(pageNumber)) {
+        setCurrentPage(pageNumber)
       }
-
-      setFilteredCards(newFilteredCards)
-      setCurrentPage(1) // Reset to the first page when filters change
     }
-  }, [data, selectedCategories, selectedCountry, selectedSorting])
+  }, [])
 
-  if (loading) return <p>Loading...</p>
-  if (error) return <p>Error :(</p>
+  useEffect(() => {
+    const params = new URLSearchParams()
+
+    if (selectedCategories.length > 0) {
+      params.set('categories', selectedCategories.join(','))
+    }
+
+    if (selectedCountry && selectedCountry !== 'World') {
+      params.set('country', selectedCountry)
+    }
+
+    if (selectedSorting && selectedSorting !== 'Best Rated') {
+      params.set('sorting', selectedSorting)
+    }
+
+    if (currentPage && currentPage !== 1) {
+      params.set('page', currentPage.toString())
+    }
+
+    setSearchParams(params)
+  }, [selectedCategories, selectedCountry, selectedSorting, currentPage])
 
   const handleCategoryClick = (category: string) => {
     let updatedCategories: string[]
@@ -90,14 +136,18 @@ const Browse = () => {
     }
 
     setSelectedCategories(updatedCategories)
-    sessionStorage.setItem('selectedCategories', JSON.stringify(updatedCategories))
+    setCurrentPage(1)
+    setSearchParams(new URLSearchParams())
   }
+
   const handleSortingSelect = (sorting: string) => {
     setSelectedSorting(sorting)
   }
 
   const handleCountrySelect = (country: string) => {
     setSelectedCountry(country)
+    setCurrentPage(1)
+    setSearchParams(new URLSearchParams())
   }
 
   const handleCategorySelect = (category: string) => {
@@ -106,7 +156,6 @@ const Browse = () => {
     } else {
       setSelectedCategories([category])
     }
-    sessionStorage.setItem('selectedCategories', JSON.stringify(category === 'All' ? [] : [category]))
   }
 
   const handleCardClick = (card: Destination) => {
@@ -115,22 +164,18 @@ const Browse = () => {
   }
 
   const handleNextPage = () => {
-    if (currentPage < Math.ceil(filteredCards.length / cardsPerPage)) {
-      setCurrentPage((prevPage) => prevPage + 1)
-    }
+    setCurrentPage((prev) => (prev < totalPages ? prev + 1 : prev))
   }
 
   const handlePreviousPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage((prevPage) => prevPage - 1)
-    }
+    setCurrentPage((prev) => (prev > 1 ? prev - 1 : prev))
   }
 
   const handleJumpToPage = (page: number) => {
-    if (page >= 1 && page <= Math.ceil(filteredCards.length / cardsPerPage)) {
-      setCurrentPage(page)
-    }
+    setCurrentPage(page)
   }
+
+  const SkeletonCard = () => <Skeleton className="w-[46%] sm:w-1/3 md:w-1/3 lg:w-1/4 h-64" />
 
   return (
     <>
@@ -159,19 +204,31 @@ const Browse = () => {
           <h2 id="browse-section" className="sr-only">
             Browse Cards
           </h2>
-          {paginatedCards.map((card: Destination, index: number) => (
-            <BrowseCard
-              key={index}
-              onClick={() => handleCardClick(card)}
-              className="w-[46%] sm:w-1/3 md:w-1/3 lg:w-1/4 shrink-0"
-              card={card}
-            />
-          ))}
+
+          {loading ? (
+            Array.from({ length: CARDS_LIMIT }).map((_, index) => <SkeletonCard key={index} />)
+          ) : paginatedCards.length > 0 ? (
+            paginatedCards.map((card, index) => (
+              <BrowseCard
+                key={index}
+                onClick={() => handleCardClick(card)}
+                className="w-[46%] sm:w-1/3 md:w-1/3 lg:w-1/4 shrink-0"
+                card={card}
+              />
+            ))
+          ) : (
+            <Alert className="bg-red-100  border-red-400  w-2/4" role="alert">
+              <Icon icon="ic:baseline-sentiment-very-dissatisfied" className="w-4 h-4 pt-0" />
+              <AlertTitle> Hmmm... </AlertTitle>
+              <AlertDescription> No results found for your selected filters. 🤕 </AlertDescription>
+            </Alert>
+          )}
         </section>
       </main>
+
       <CardDetailsDialog selectedCard={selectedCard} openDialog={openDialog} setOpenDialog={setOpenDialog} />
 
-      <Pagination className="my-3">
+      <Pagination className="my-4">
         <PaginationContent className="cursor-pointer">
           <PaginationItem>
             <PaginationPrevious
@@ -180,7 +237,7 @@ const Browse = () => {
             />
           </PaginationItem>
 
-          {[...Array(Math.ceil(filteredCards.length / cardsPerPage))].map((_, index) => (
+          {[...Array(totalPages)].map((_, index) => (
             <PaginationItem key={index} className="cursorPointer">
               <PaginationLink
                 onClick={() => handleJumpToPage(index + 1)}
@@ -194,9 +251,7 @@ const Browse = () => {
           <PaginationItem>
             <PaginationNext
               onClick={handleNextPage}
-              className={
-                currentPage === Math.ceil(filteredCards.length / cardsPerPage) ? 'cursor-default opacity-0' : ''
-              }
+              className={currentPage === totalPages || totalPages === 0 ? 'cursor-default opacity-0' : ''}
             />
           </PaginationItem>
         </PaginationContent>
