@@ -1,4 +1,6 @@
 import { GraphQLResolveInfo } from 'graphql';
+import { gql } from '@apollo/client';
+import * as Apollo from '@apollo/client';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -7,6 +9,7 @@ export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Mayb
 export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never };
 export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
 export type RequireFields<T, K extends keyof T> = Omit<T, K> & { [P in K]-?: NonNullable<T[P]> };
+const defaultOptions = {} as const;
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: { input: string; output: string; }
@@ -24,11 +27,11 @@ export type Destination = {
   description: Scalars['String']['output'];
   id: Scalars['ID']['output'];
   image: Scalars['String']['output'];
-  longDescription: Scalars['String']['output'];
+  longdescription: Scalars['String']['output'];
   rating: Scalars['Float']['output'];
   region?: Maybe<Scalars['String']['output']>;
   title: Scalars['String']['output'];
-  titleQuestion?: Maybe<Scalars['String']['output']>;
+  titlequestion?: Maybe<Scalars['String']['output']>;
 };
 
 export type DestinationInput = {
@@ -37,11 +40,16 @@ export type DestinationInput = {
   country: Scalars['String']['input'];
   description: Scalars['String']['input'];
   image: Scalars['String']['input'];
-  longDescription: Scalars['String']['input'];
+  longdescription: Scalars['String']['input'];
   rating: Scalars['Float']['input'];
   region?: InputMaybe<Scalars['String']['input']>;
   title: Scalars['String']['input'];
-  titleQuestion?: InputMaybe<Scalars['String']['input']>;
+  titlequestion?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type LoginInput = {
+  password: Scalars['String']['input'];
+  username: Scalars['String']['input'];
 };
 
 export type Mutation = {
@@ -49,19 +57,20 @@ export type Mutation = {
   createDestination?: Maybe<Destination>;
   createDestinations: Array<Destination>;
   createReview?: Maybe<Review>;
-  createTable?: Maybe<Table>;
-  createUser?: Maybe<User>;
+  createTable: Scalars['Boolean']['output'];
+  createUser: UserData;
   deleteDestination?: Maybe<Destination>;
   deleteReview?: Maybe<Review>;
-  deleteTable?: Maybe<Table>;
-  deleteUser?: Maybe<User>;
+  deleteTable: Scalars['String']['output'];
+  deleteUser: User;
+  login: UserData;
   updateReview?: Maybe<Review>;
-  updateUser?: Maybe<User>;
+  updateUser: User;
 };
 
 
 export type MutationCreateDestinationArgs = {
-  destination?: InputMaybe<DestinationInput>;
+  destination: DestinationInput;
 };
 
 
@@ -79,14 +88,13 @@ export type MutationCreateReviewArgs = {
 
 
 export type MutationCreateTableArgs = {
-  columns: Array<Scalars['String']['input']>;
-  name: Scalars['String']['input'];
+  table: TableInput;
 };
 
 
 export type MutationCreateUserArgs = {
-  hashedpassword: Scalars['String']['input'];
   name: Scalars['String']['input'];
+  password: Scalars['String']['input'];
   username: Scalars['String']['input'];
 };
 
@@ -111,6 +119,11 @@ export type MutationDeleteUserArgs = {
 };
 
 
+export type MutationLoginArgs = {
+  data: LoginInput;
+};
+
+
 export type MutationUpdateReviewArgs = {
   review: ReviewInput;
 };
@@ -128,8 +141,8 @@ export type Query = {
   getReviews?: Maybe<Array<Maybe<Review>>>;
   getReviewsByID?: Maybe<Array<Maybe<Review>>>;
   getUserByID?: Maybe<User>;
-  getUsers?: Maybe<Array<Maybe<User>>>;
-  getUsersByID?: Maybe<Array<Maybe<User>>>;
+  getUsers?: Maybe<Array<User>>;
+  getUsersByID?: Maybe<Array<User>>;
 };
 
 
@@ -154,7 +167,7 @@ export type QueryGetUserByIdArgs = {
 
 
 export type QueryGetUsersByIdArgs = {
-  ids?: InputMaybe<Array<InputMaybe<Scalars['ID']['input']>>>;
+  ids: Array<Scalars['ID']['input']>;
 };
 
 export type Review = {
@@ -179,22 +192,33 @@ export type Table = {
   name: Scalars['String']['output'];
 };
 
+export type TableInput = {
+  columns: Array<Scalars['String']['input']>;
+  name: Scalars['String']['input'];
+};
+
 export type User = {
   __typename?: 'User';
   favorites?: Maybe<Array<Destination>>;
-  hashedpassword: Scalars['String']['output'];
   id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
+  password: Scalars['String']['output'];
   reviews?: Maybe<Array<Review>>;
   username: Scalars['String']['output'];
 };
 
+export type UserData = {
+  __typename?: 'UserData';
+  token: Scalars['String']['output'];
+  user: User;
+};
+
 export type UserInput = {
-  favorites?: InputMaybe<Array<Destination>>;
-  hashedpassword: Scalars['String']['input'];
+  favorites?: InputMaybe<Array<DestinationInput>>;
   id: Scalars['ID']['input'];
-  name: Scalars['String']['input'];
-  reviews?: InputMaybe<Array<Review>>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  password?: InputMaybe<Scalars['String']['input']>;
+  reviews?: InputMaybe<Array<ReviewInput>>;
   username: Scalars['String']['input'];
 };
 
@@ -276,13 +300,16 @@ export type ResolversTypes = ResolversObject<{
   Float: ResolverTypeWrapper<Scalars['Float']['output']>;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
   Int: ResolverTypeWrapper<Scalars['Int']['output']>;
+  LoginInput: LoginInput;
   Mutation: ResolverTypeWrapper<{}>;
   Query: ResolverTypeWrapper<{}>;
   Review: ResolverTypeWrapper<Review>;
   ReviewInput: ReviewInput;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
   Table: ResolverTypeWrapper<Table>;
+  TableInput: TableInput;
   User: ResolverTypeWrapper<User>;
+  UserData: ResolverTypeWrapper<UserData>;
   UserInput: UserInput;
 }>;
 
@@ -294,13 +321,16 @@ export type ResolversParentTypes = ResolversObject<{
   Float: Scalars['Float']['output'];
   ID: Scalars['ID']['output'];
   Int: Scalars['Int']['output'];
+  LoginInput: LoginInput;
   Mutation: {};
   Query: {};
   Review: Review;
   ReviewInput: ReviewInput;
   String: Scalars['String']['output'];
   Table: Table;
+  TableInput: TableInput;
   User: User;
+  UserData: UserData;
   UserInput: UserInput;
 }>;
 
@@ -311,26 +341,27 @@ export type DestinationResolvers<ContextType = any, ParentType extends Resolvers
   description?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   image?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  longDescription?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  longdescription?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   rating?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   region?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  titleQuestion?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  titlequestion?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
-  createDestination?: Resolver<Maybe<ResolversTypes['Destination']>, ParentType, ContextType, Partial<MutationCreateDestinationArgs>>;
+  createDestination?: Resolver<Maybe<ResolversTypes['Destination']>, ParentType, ContextType, RequireFields<MutationCreateDestinationArgs, 'destination'>>;
   createDestinations?: Resolver<Array<ResolversTypes['Destination']>, ParentType, ContextType, RequireFields<MutationCreateDestinationsArgs, 'destinations'>>;
   createReview?: Resolver<Maybe<ResolversTypes['Review']>, ParentType, ContextType, RequireFields<MutationCreateReviewArgs, 'rating' | 'text' | 'title' | 'user'>>;
-  createTable?: Resolver<Maybe<ResolversTypes['Table']>, ParentType, ContextType, RequireFields<MutationCreateTableArgs, 'columns' | 'name'>>;
-  createUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<MutationCreateUserArgs, 'hashedpassword' | 'name' | 'username'>>;
+  createTable?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationCreateTableArgs, 'table'>>;
+  createUser?: Resolver<ResolversTypes['UserData'], ParentType, ContextType, RequireFields<MutationCreateUserArgs, 'name' | 'password' | 'username'>>;
   deleteDestination?: Resolver<Maybe<ResolversTypes['Destination']>, ParentType, ContextType, RequireFields<MutationDeleteDestinationArgs, 'id'>>;
   deleteReview?: Resolver<Maybe<ResolversTypes['Review']>, ParentType, ContextType, RequireFields<MutationDeleteReviewArgs, 'id'>>;
-  deleteTable?: Resolver<Maybe<ResolversTypes['Table']>, ParentType, ContextType, RequireFields<MutationDeleteTableArgs, 'name'>>;
-  deleteUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<MutationDeleteUserArgs, 'id'>>;
+  deleteTable?: Resolver<ResolversTypes['String'], ParentType, ContextType, RequireFields<MutationDeleteTableArgs, 'name'>>;
+  deleteUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationDeleteUserArgs, 'id'>>;
+  login?: Resolver<ResolversTypes['UserData'], ParentType, ContextType, RequireFields<MutationLoginArgs, 'data'>>;
   updateReview?: Resolver<Maybe<ResolversTypes['Review']>, ParentType, ContextType, RequireFields<MutationUpdateReviewArgs, 'review'>>;
-  updateUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<MutationUpdateUserArgs, 'user'>>;
+  updateUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationUpdateUserArgs, 'user'>>;
 }>;
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
@@ -340,8 +371,8 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   getReviews?: Resolver<Maybe<Array<Maybe<ResolversTypes['Review']>>>, ParentType, ContextType>;
   getReviewsByID?: Resolver<Maybe<Array<Maybe<ResolversTypes['Review']>>>, ParentType, ContextType, Partial<QueryGetReviewsByIdArgs>>;
   getUserByID?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<QueryGetUserByIdArgs, 'id'>>;
-  getUsers?: Resolver<Maybe<Array<Maybe<ResolversTypes['User']>>>, ParentType, ContextType>;
-  getUsersByID?: Resolver<Maybe<Array<Maybe<ResolversTypes['User']>>>, ParentType, ContextType, Partial<QueryGetUsersByIdArgs>>;
+  getUsers?: Resolver<Maybe<Array<ResolversTypes['User']>>, ParentType, ContextType>;
+  getUsersByID?: Resolver<Maybe<Array<ResolversTypes['User']>>, ParentType, ContextType, RequireFields<QueryGetUsersByIdArgs, 'ids'>>;
 }>;
 
 export type ReviewResolvers<ContextType = any, ParentType extends ResolversParentTypes['Review'] = ResolversParentTypes['Review']> = ResolversObject<{
@@ -361,11 +392,17 @@ export type TableResolvers<ContextType = any, ParentType extends ResolversParent
 
 export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = ResolversObject<{
   favorites?: Resolver<Maybe<Array<ResolversTypes['Destination']>>, ParentType, ContextType>;
-  hashedpassword?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  password?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   reviews?: Resolver<Maybe<Array<ResolversTypes['Review']>>, ParentType, ContextType>;
   username?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type UserDataResolvers<ContextType = any, ParentType extends ResolversParentTypes['UserData'] = ResolversParentTypes['UserData']> = ResolversObject<{
+  token?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  user?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -376,5 +413,104 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   Review?: ReviewResolvers<ContextType>;
   Table?: TableResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
+  UserData?: UserDataResolvers<ContextType>;
 }>;
 
+
+export type CreateUserMutationVariables = Exact<{
+  username: Scalars['String']['input'];
+  password: Scalars['String']['input'];
+  name: Scalars['String']['input'];
+}>;
+
+
+export type CreateUserMutation = { __typename?: 'Mutation', createUser: { __typename?: 'UserData', token: string, user: { __typename?: 'User', id: string, name: string, username: string } } };
+
+export type LoginMutationVariables = Exact<{
+  username: Scalars['String']['input'];
+  password: Scalars['String']['input'];
+}>;
+
+
+export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'UserData', token: string, user: { __typename?: 'User', id: string, name: string, username: string } } };
+
+
+export const CreateUserDocument = gql`
+    mutation createUser($username: String!, $password: String!, $name: String!) {
+  createUser(username: $username, password: $password, name: $name) {
+    user {
+      id
+      name
+      username
+    }
+    token
+  }
+}
+    `;
+export type CreateUserMutationFn = Apollo.MutationFunction<CreateUserMutation, CreateUserMutationVariables>;
+
+/**
+ * __useCreateUserMutation__
+ *
+ * To run a mutation, you first call `useCreateUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateUserMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createUserMutation, { data, loading, error }] = useCreateUserMutation({
+ *   variables: {
+ *      username: // value for 'username'
+ *      password: // value for 'password'
+ *      name: // value for 'name'
+ *   },
+ * });
+ */
+export function useCreateUserMutation(baseOptions?: Apollo.MutationHookOptions<CreateUserMutation, CreateUserMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateUserMutation, CreateUserMutationVariables>(CreateUserDocument, options);
+      }
+export type CreateUserMutationHookResult = ReturnType<typeof useCreateUserMutation>;
+export type CreateUserMutationResult = Apollo.MutationResult<CreateUserMutation>;
+export type CreateUserMutationOptions = Apollo.BaseMutationOptions<CreateUserMutation, CreateUserMutationVariables>;
+export const LoginDocument = gql`
+    mutation login($username: String!, $password: String!) {
+  login(data: {username: $username, password: $password}) {
+    user {
+      id
+      name
+      username
+    }
+    token
+  }
+}
+    `;
+export type LoginMutationFn = Apollo.MutationFunction<LoginMutation, LoginMutationVariables>;
+
+/**
+ * __useLoginMutation__
+ *
+ * To run a mutation, you first call `useLoginMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useLoginMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [loginMutation, { data, loading, error }] = useLoginMutation({
+ *   variables: {
+ *      username: // value for 'username'
+ *      password: // value for 'password'
+ *   },
+ * });
+ */
+export function useLoginMutation(baseOptions?: Apollo.MutationHookOptions<LoginMutation, LoginMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument, options);
+      }
+export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
+export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
+export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
