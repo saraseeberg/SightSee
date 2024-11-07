@@ -7,7 +7,7 @@ import Home from './pages/Home'
 import Login from './pages/Login'
 import Profile from './pages/Profile'
 import Register from './pages/Register'
-import ReviewPage from './pages/ReviewPage'
+import DestinationDetailsPage from './pages/DestinationDetail'
 import { AuthProvider } from './lib/context/auth-context'
 
 // The app uses a hashrouter, therefore navigating to different routes use /#/Browse or /#/Search
@@ -19,7 +19,7 @@ function App() {
           <Route path="/" element={<MainLayout />}>
             <Route index element={<Home />} />
             <Route path="/browse" element={<Browse />} />
-            <Route path="/review/:id" element={<ReviewPage />} />
+            <Route path="/destination/:id" element={<DestinationDetailsPage />} />
             <Route path="/profile" element={<Profile />} />
           </Route>
           <Route element={<CenterLayout />}>

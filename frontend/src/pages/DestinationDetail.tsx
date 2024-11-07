@@ -1,22 +1,19 @@
-import { GET_DESTINATION_BY_ID } from '@/graphql/queries'
-import { useQuery } from '@apollo/client'
-import { Destination, Review } from '@types'
+import { useGetDestinationByIdQuery, useGetReviewsByDestinationIdQuery } from '@types'
 import { useParams } from 'react-router-dom'
 import StarRating from '@/components/molecules/StarRating'
 import ReviewDialog from '@/components/molecules/ReviewDialog'
-import { GET_REVIEWS_BY_DESTINATIONID } from '@/graphql/review'
 import ReviewCard from '@/components/molecules/ReviewCard'
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel'
 
-const ReviewPage = () => {
+const DestinationDetailsPage = () => {
   const { id } = useParams<{ id: string }>()
-  const { data, loading, error } = useQuery<{ getDestination: Destination }>(GET_DESTINATION_BY_ID, {
-    variables: { id },
-  })
-  const reviewRes = useQuery<{ getReviewsByDestinationID: Review[] }>(GET_REVIEWS_BY_DESTINATIONID, {
-    variables: { destinationid: id },
+  const { data, loading, error } = useGetDestinationByIdQuery({
+    variables: { id: id as string },
   })
 
+  const reviewRes = useGetReviewsByDestinationIdQuery({
+    variables: { destinationid: id as string },
+  })
   if (loading || reviewRes.loading) return <p>Loading... </p>
   if (error || reviewRes.error) return <p>Error loading destination details. {reviewRes.error?.message}</p>
 
@@ -52,23 +49,23 @@ const ReviewPage = () => {
       {/* Responsive Carousel reviews */}
       <section className="mt-4 relative">
         <div className="text-center mb-6">
-          <ReviewDialog destinationId={parseInt(destination.id)} />
+          <ReviewDialog destinationId={destination.id} />
         </div>
         <Carousel className="relative lg:mx-36">
           <CarouselContent
             className={
-              (reviewRes.data?.getReviewsByDestinationID.length || 0) < 4
+              (reviewRes.data?.getReviewsByDestinationID?.length || 0) < 4
                 ? 'max-md: justify-start flex space-x-4 px-4 md:px-5 md:justify-center'
                 : 'flex space-x-4 px-4 md:px-5'
             }
           >
-            {reviewRes.data?.getReviewsByDestinationID.map((review) => (
+            {reviewRes.data?.getReviewsByDestinationID?.map((review) => (
               <CarouselItem key={review.id} className="w-full xs:basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/3">
                 <ReviewCard {...review} />
               </CarouselItem>
             ))}
           </CarouselContent>
-          {(reviewRes.data?.getReviewsByDestinationID.length || 0) > 1 && (
+          {(reviewRes.data?.getReviewsByDestinationID?.length || 0) > 1 && (
             <>
               <CarouselPrevious className="sm:flex left-2 md:left-4 top-1/2 transform -translate-y-1/2" />
               <CarouselNext className="sm:flex right-2 md:right-4 top-1/2 transform -translate-y-1/2" />
@@ -80,4 +77,4 @@ const ReviewPage = () => {
   )
 }
 
-export default ReviewPage
+export default DestinationDetailsPage
