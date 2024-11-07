@@ -3,7 +3,12 @@ type Table {
   columns: [String!]!
 }
 
+input TableInput {
+  name: String!
+  columns: [String!]!
+}
+
 type Mutation {
-  createTable(name: String!, columns: [String!]!): Table
-  deleteTable(name: String!): Table
+  createTable(table: TableInput!): Boolean!
+  deleteTable(name: String!): String!
 }

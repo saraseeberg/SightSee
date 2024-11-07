@@ -4,13 +4,12 @@ import { Icon } from '@iconify/react/dist/iconify.js'
 import { Button } from '../ui/button'
 import { Input } from '../ui/input'
 import { Textarea } from '../ui/textarea'
-import { useMutation } from '@apollo/client'
-import { CREATE_REVIEW } from '@/graphql/review'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { FC, useState } from 'react'
 import { Label } from '../ui/label'
+import { useCreateReviewMutation } from '@types'
 
 const ReviewSchema = z.object({
   title: z.string().min(1, 'Title is required').max(50, 'Title cannot exceed 50 characters'),
@@ -20,11 +19,11 @@ const ReviewSchema = z.object({
 type ReviewSchema = z.infer<typeof ReviewSchema>
 
 type ReviewDialogProps = {
-  destinationId: number
+  destinationId: string
 }
 
 const ReviewDialog: FC<ReviewDialogProps> = ({ destinationId }) => {
-  const [createReview] = useMutation(CREATE_REVIEW)
+  const [createReview] = useCreateReviewMutation()
 
   const {
     register,

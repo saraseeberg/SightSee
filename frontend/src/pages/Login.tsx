@@ -2,10 +2,43 @@ import { Button } from '@/components/ui/button'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { useAuth } from '@/lib/context/auth-context'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { Icon } from '@iconify/react/dist/iconify.js'
+import { useForm } from 'react-hook-form'
 import { Link } from 'react-router-dom'
+import { z } from 'zod'
+
+const LoginSchema = z.object({
+  username: z.string().nonempty('Username cannot be empty'),
+  password: z.string().nonempty('Password cannot be empty'),
+})
+
+export type LoginWriteSchema = z.infer<typeof LoginSchema>
 
 function Login() {
+  const { loginUser } = useAuth()
+  const {
+    register,
+    handleSubmit,
+    setError,
+    formState: { errors },
+  } = useForm<LoginWriteSchema>({
+    resolver: zodResolver(LoginSchema),
+    defaultValues: {
+      username: 'TestUser',
+      password: 'TestPassword',
+    },
+  })
+
+  const onSubmit = async (data: LoginWriteSchema) => {
+    const { error } = await loginUser(data.username, data.password)
+    console.log(error)
+    if (error) {
+      setError('root', { message: 'Username or password is incorrect' })
+    }
+  }
+
   return (
     <Card className="mx-auto max-w-sm">
       <CardHeader className="space-y-1">
@@ -17,17 +50,27 @@ function Login() {
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
-          <div className="space-y-2">
+          <form className="space-y-2" onSubmit={handleSubmit(onSubmit)}>
             <Label htmlFor="username">Username</Label>
-            <Input id="username" type="username" required />
-          </div>
-          <div className="space-y-2">
+            <Input
+              id="username"
+              type="username"
+              error={errors.username?.message}
+              {...register('username', { required: true })}
+            />
+
             <Label htmlFor="password">Password</Label>
-            <Input id="password" type="password" required />
-          </div>
-          <Button type="submit" className="w-full">
-            Login
-          </Button>
+            <Input
+              id="password"
+              type="password"
+              error={errors.password?.message}
+              {...register('password', { required: true })}
+            />
+            {errors.root && <p className="text-red-500 w-full text-center text-sm">{errors.root.message}</p>}
+            <Button type="submit" className="w-full">
+              Login
+            </Button>
+          </form>
           <div className="text-center">
             <CardDescription>Don't have an account?</CardDescription>
             <Link to="/Register">

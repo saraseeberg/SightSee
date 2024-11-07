@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Destination } from '@types'
 
 type CardDetailsDialogProps = {
-  selectedCard: Destination | null
+  selectedCard: Partial<Destination> | null
   openDialog: boolean
   setOpenDialog: (open: boolean) => void
 }
@@ -25,12 +25,12 @@ const CardDetailsDialog: React.FC<CardDetailsDialogProps> = ({ selectedCard, ope
               {selectedCard.region}, {selectedCard.country}
             </DialogDescription>
             <p className="text-sm text-content mt-2">Rating:</p>
-            <StarRating rating={selectedCard.rating} />
+            <StarRating rating={selectedCard?.rating || 0} />
             <p className="text-sm text-content">{selectedCard.description}</p>
           </div>
         </article>
 
-        <Link to={`/review/${selectedCard.id}`}>
+        <Link to={`/destination/${selectedCard.id}`}>
           <Button className="flex w-full"> Discover more here! </Button>
         </Link>
       </DialogContent>

@@ -1,0 +1,58 @@
+query GetAllDestinations($page: Int!, $limit: Int!, $categories: [String!], $country: String, $sorting: String) {
+  getAllDestinations(page: $page, limit: $limit, categories: $categories, country: $country, sorting: $sorting) {
+    destinations {
+      id
+      title
+      country
+      region
+      image
+      description
+      rating
+      categories
+    }
+    totalCount
+  }
+}
+
+query GetDestinationsByTextSimilarity($searchText: String!) {
+  getDestinationsByTextSimilarity(searchText: $searchText) {
+    id
+    title
+    country
+    region
+    image
+    description
+    rating
+    categories
+  }
+}
+
+query GetAllCountries {
+  getAllCountries
+}
+
+query GetDestinationById($id: ID!) {
+  getDestination(id: $id) {
+    id
+    title
+    region
+    rating
+    description
+    longdescription
+    image
+    alt
+    country
+    categories
+  }
+}
+
+query GetFeaturedDestinations {
+  getFeaturedDestinations {
+    id
+    image
+    alt
+    categories
+    titlequestion
+    country
+  }
+}

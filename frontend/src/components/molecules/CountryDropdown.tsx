@@ -2,9 +2,8 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert' // A
 import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Skeleton } from '@/components/ui/skeleton' // Assuming shadcn has a Skeleton component
-import { GET_ALL_COUNTRIES } from '@/graphql/queries'
-import { useQuery } from '@apollo/client'
 import { Icon } from '@iconify/react/dist/iconify.js'
+import { useGetAllCountriesQuery } from '@types'
 import React from 'react'
 
 type CountryDropdownProps = {
@@ -13,7 +12,7 @@ type CountryDropdownProps = {
 }
 
 const CountryDropdown: React.FC<CountryDropdownProps> = ({ onSelectCountry, selectedCountry }) => {
-  const { data, loading, error } = useQuery(GET_ALL_COUNTRIES)
+  const { data, loading, error } = useGetAllCountriesQuery()
   const [currentCountry, setCurrentCountry] = React.useState(selectedCountry || 'World')
 
   const handleSelect = (country: string) => {

@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { User } from '@types'
+import { useAuth } from '@/lib/context/auth-context'
 
 const RegisterSchema = z
   .object({
@@ -31,6 +31,7 @@ const RegisterSchema = z
 export type RegisterWriteSchema = z.infer<typeof RegisterSchema>
 
 function Register() {
+  const { registerUser } = useAuth()
   const {
     register,
     handleSubmit,
@@ -38,8 +39,9 @@ function Register() {
   } = useForm<RegisterWriteSchema>({
     resolver: zodResolver(RegisterSchema),
   })
-  const onSubmit = (data: Partial<User>) => {
-    console.log(data)
+
+  const onSubmit = async (data: RegisterWriteSchema) => {
+    await registerUser(data.name, data.username, data.password)
   }
 
   return (

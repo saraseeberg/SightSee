@@ -4,7 +4,7 @@ type Destination {
   titlequestion: String
   description: String!
   longdescription: String!
-  categories: [String]!
+  categories: [String!]!
   country: String!
   region: String
   image: String!
@@ -22,7 +22,7 @@ input DestinationInput {
   titlequestion: String
   description: String!
   longdescription: String!
-  categories: [String]!
+  categories: [String!]!
   country: String!
   region: String
   image: String!
@@ -35,7 +35,7 @@ type Query {
   getAllDestinations(
     page: Int!
     limit: Int!
-    categories: [String]
+    categories: [String!]
     country: String
     sorting: String
   ): PaginatedDestinations
@@ -45,7 +45,7 @@ type Query {
 }
 
 type Mutation {
-  createDestination(destination: DestinationInput): Destination
+  createDestination(destination: DestinationInput!): Destination
 
   createDestinations(destinations: [DestinationInput!]!): [Destination!]!
 

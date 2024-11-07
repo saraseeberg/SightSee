@@ -1,10 +1,11 @@
-import { Destination, DestinationResolvers, QueryGetAllDestinationsArgs } from '@types'
+import { Destination, DestinationInput, PaginatedDestinations, Resolvers } from '@types'
 import db from '../db'
+import { ApolloError } from 'apollo-server-express'
 
-const DestinationResolver: DestinationResolvers = {
+const DestinationResolver: Resolvers = {
   Query: {
     // Henter destinasjon med id
-    getDestination: async (_: unknown, { id }: { id: number }) => {
+    getDestination: async (_: unknown, { id }: { id: string }) => {
       try {
         const result = await db.query('SELECT * FROM destinations WHERE id = $1', [id])
         return result.rows[0]
@@ -15,7 +16,19 @@ const DestinationResolver: DestinationResolvers = {
 
     getAllDestinations: async (
       _: unknown,
-      { page, limit, categories, country, sorting }: QueryGetAllDestinationsArgs,
+      {
+        page,
+        limit,
+        country,
+        sorting,
+        categories,
+      }: {
+        page: number
+        limit: number
+        country?: string | null
+        sorting?: string | null
+        categories?: string[] | null
+      },
     ) => {
       try {
         const whereClauses: string[] = []
@@ -67,7 +80,7 @@ const DestinationResolver: DestinationResolvers = {
         return {
           destinations: paginatedDestinations,
           totalCount,
-        }
+        } as PaginatedDestinations
       } catch (error) {
         throw new Error(error as string)
       }
@@ -107,13 +120,13 @@ const DestinationResolver: DestinationResolvers = {
   },
 
   Mutation: {
-    createDestination: async (_: unknown, { destination }: { destination: Destination }) => {
+    createDestination: async (_: unknown, { destination }: { destination: DestinationInput }) => {
       const { title, titlequestion, description, longdescription, categories, country, region, image, alt, rating } =
         destination
 
       try {
         const result = await db.query(
-          'INSERT INTO destinations (title, titleQuestion, description, longDescription, categories, country, region, image, alt, rating) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *',
+          'INSERT INTO destinations (title, titlequestion, description, longdescription, categories, country, region, image, alt, rating) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *',
           [
             title,
             titlequestion,
@@ -127,16 +140,16 @@ const DestinationResolver: DestinationResolvers = {
             rating,
           ],
         )
-        return result.rows[0]
+        return result.rows[0] as Destination
       } catch (error) {
-        throw new Error(error as string)
+        throw new ApolloError(('Could not create destination ' + title + ': ' + error) as string)
       }
     },
 
-    createDestinations: async (_: unknown, { destinations }: { destinations: Destination[] }) => {
+    createDestinations: async (_: unknown, { destinations }: { destinations: DestinationInput[] }) => {
       const query = `
         INSERT INTO destinations
-          (title, titleQuestion, description, longDescription, categories, country, region, image, alt, rating)
+          (title, titlequestion, description, longdescription, categories, country, region, image, alt, rating)
         VALUES
           ${destinations.map((_, i) => `($${i * 10 + 1}, $${i * 10 + 2}, $${i * 10 + 3}, $${i * 10 + 4}, $${i * 10 + 5}::json, $${i * 10 + 6}, $${i * 10 + 7}, $${i * 10 + 8}, $${i * 10 + 9}, $${i * 10 + 10})`).join(', ')}
         RETURNING *;
@@ -159,17 +172,17 @@ const DestinationResolver: DestinationResolvers = {
         const result = await db.query(query, values)
         return result.rows
       } catch (error) {
-        throw new Error(error as string)
+        throw new ApolloError(('Could not create destinations: ' + error) as string)
       }
     },
 
     // Sletter destinasjon med id
-    deleteDestination: async (_: unknown, { id }: { id: number }) => {
+    deleteDestination: async (_: unknown, { id }: { id: string }) => {
       try {
         const result = await db.query('DELETE FROM destinations WHERE id = $1 RETURNING *', [id])
-        return result.rows[0]
+        return result.rows[0] as Destination
       } catch (error) {
-        throw new Error(error as string)
+        throw new ApolloError(('Could not delete Destination: ' + error) as string)
       }
     },
   },

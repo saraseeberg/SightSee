@@ -1,0 +1,19 @@
+mutation createReview($destinationid: ID!, $title: String!, $text: String!, $rating: Int!, $username: String!) {
+  createReview(destinationid: $destinationid, title: $title, text: $text, rating: $rating, username: $username) {
+    id
+    rating
+    title
+    username
+    text
+  }
+}
+
+query getReviewsByDestinationID($destinationid: ID!) {
+  getReviewsByDestinationID(destinationid: $destinationid) {
+    id
+    rating
+    title
+    username
+    text
+  }
+}
