@@ -4,7 +4,7 @@ type Destination {
   titlequestion: String
   description: String!
   longdescription: String!
-  categories: [String]!
+  categories: [String!]!
   country: String!
   region: String
   image: String!
@@ -22,7 +22,7 @@ input DestinationInput {
   titlequestion: String
   description: String!
   longdescription: String!
-  categories: [String]!
+  categories: [String!]!
   country: String!
   region: String
   image: String!

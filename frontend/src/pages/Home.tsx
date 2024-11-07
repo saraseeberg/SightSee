@@ -1,8 +1,7 @@
 import HeroCarousel from '@/components/molecules/HeroCarousel'
 import { Card, CardContent } from '@/components/ui/card'
-import { GET_FEATURED_DESTINATIONS } from '@/graphql/queries'
-import { useQuery } from '@apollo/client'
-import { Destination } from '@types'
+import { Skeleton } from '@/components/ui/skeleton'
+import { useGetFeaturedDestinationsQuery } from '@types'
 import { useNavigate } from 'react-router-dom'
 
 const Home = () => {
@@ -11,9 +10,7 @@ const Home = () => {
     navigate('/browse', { state: { category, country } })
   }
 
-  const { data, loading, error } = useQuery<{ getFeaturedDestinations: Destination[] }>(GET_FEATURED_DESTINATIONS)
-  if (loading) return <p> Loading... 😴</p>
-  if (error) return <p>Error loading featured destinations.</p>
+  const { data, loading, error } = useGetFeaturedDestinationsQuery()
   const destinations = data?.getFeaturedDestinations ?? []
 
   return (
@@ -33,30 +30,38 @@ const Home = () => {
           </h1>
 
           <div className="flex justify-center flex-wrap items-center gap-3 max-sm:flex-col xl: mb-4">
-            {destinations.map((item, index) => (
-              <Card
-                key={index}
-                className="cursor-pointer rounded-lg shadow-lg overflow-hidden w-64 xl:w-80 xl:mb-6 p-0 transform transition-transform duration-300 hover:scale-105"
-                onClick={() => {
-                  const category = item.categories[0] ?? null
-                  if (!category) {
-                    return
-                  }
+            {loading ? (
+              error ? (
+                <Skeleton className="w-64 h-96" />
+              ) : (
+                <p>Error fetching destinations</p>
+              )
+            ) : (
+              destinations.map((item, index) => (
+                <Card
+                  key={index}
+                  className="cursor-pointer rounded-lg shadow-lg overflow-hidden w-64 xl:w-80 xl:mb-6 p-0 transform transition-transform duration-300 hover:scale-105"
+                  onClick={() => {
+                    const category = item?.categories[0] ?? null
+                    if (!category || !item?.country) {
+                      return
+                    }
 
-                  suggestionClick(category, item.country)
-                }}
-              >
-                <CardContent className="relative p-0">
-                  <div className="relative">
-                    <img src={item.image} alt={item.alt} className="w-full h-96 object-cover" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-90"></div>
-                    <p className="absolute bottom-4 left-4 ml-2 text-white font-bold text-lg shadow-2xl">
-                      {item.titlequestion}
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+                    suggestionClick(category, item.country)
+                  }}
+                >
+                  <CardContent className="relative p-0">
+                    <div className="relative">
+                      <img src={item?.image} alt={item?.alt} className="w-full h-96 object-cover" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-90"></div>
+                      <p className="absolute bottom-4 left-4 ml-2 text-white font-bold text-lg shadow-2xl">
+                        {item?.titlequestion}
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))
+            )}
           </div>
         </section>
       </main>

@@ -1,9 +1,7 @@
-import { useLazyQuery } from '@apollo/client'
 import { Icon } from '@iconify/react/dist/iconify.js'
-import { Destination } from '@types'
+import { useGetDestinationsByTextSimilarityLazyQuery } from '@types'
 import React, { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { GET_DESTINATIONS_BY_TEXT_SIMILARITY } from '../graphql/queries'
 import { Alert, AlertDescription, AlertTitle } from './ui/alert'
 import { Skeleton } from './ui/skeleton'
 
@@ -12,9 +10,7 @@ const SearchBar: React.FC = () => {
   const dropdownRef = useRef<HTMLDivElement>(null)
   const debounceRef = useRef<NodeJS.Timeout | null>(null)
 
-  const [getDestinationsByTextSimilarity, { data, loading, error }] = useLazyQuery<{
-    getDestinationsByTextSimilarity: Destination[]
-  }>(GET_DESTINATIONS_BY_TEXT_SIMILARITY)
+  const [getDestinationsByTextSimilarity, { data, loading, error }] = useGetDestinationsByTextSimilarityLazyQuery()
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
@@ -88,14 +84,14 @@ const SearchBar: React.FC = () => {
 
           {data?.getDestinationsByTextSimilarity && data.getDestinationsByTextSimilarity.length > 0 ? (
             data.getDestinationsByTextSimilarity.map((result) => (
-              <Link to={`/review/${result.id}`} key={result.id}>
+              <Link to={`/review/${result?.id}`} key={result?.id}>
                 <div className="px-4 py-2 cursor-pointer bg-background hover:bg-accent-1 hover:text-white">
-                  <p className="font-semibold text-sm md:text-base">{result.title}</p>
+                  <p className="font-semibold text-sm md:text-base">{result?.title}</p>
                   <p className="text-xs md:text-sm">
-                    {result.country} {result.region && `, ${result.region}`}
+                    {result?.country} {result?.region && `, ${result?.region}`}
                   </p>
-                  <p className="text-xs md:text-sm">{result.description}</p>
-                  <p className="text-xs italic">{result.categories.join(', ')}</p>
+                  <p className="text-xs md:text-sm">{result?.description}</p>
+                  <p className="text-xs italic">{result?.categories.join(', ')}</p>
                 </div>
               </Link>
             ))

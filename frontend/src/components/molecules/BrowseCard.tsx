@@ -4,7 +4,7 @@ import { Destination } from '@types'
 
 export type CardDataProps = {
   className?: string
-  card: Destination
+  card: Partial<Destination>
   onClick?: () => void
 }
 

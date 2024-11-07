@@ -14,10 +14,8 @@ import {
   PaginationPrevious,
 } from '@/components/ui/pagination'
 import { Skeleton } from '@/components/ui/skeleton'
-import { GET_ALL_DESTINATIONS } from '@/graphql/queries'
-import { useQuery } from '@apollo/client'
 import { Icon } from '@iconify/react/dist/iconify.js'
-import { Destination } from '@types'
+import { Destination, useGetAllDestinationsQuery } from '@types'
 import { useEffect, useState } from 'react'
 import { useLocation, useSearchParams } from 'react-router-dom'
 
@@ -35,7 +33,7 @@ const CARDS_LIMIT = 12
 const Browse = () => {
   const location = useLocation()
   const [openDialog, setOpenDialog] = useState(false)
-  const [selectedCard, setSelectedCard] = useState<Destination | null>(null)
+  const [selectedCard, setSelectedCard] = useState<Partial<Destination> | null>(null)
   const [searchParams, setSearchParams] = useSearchParams()
 
   const [selectedCategories, setSelectedCategories] = useState<string[]>([])
@@ -68,9 +66,7 @@ const Browse = () => {
     }
   }, [])
 
-  const { loading, error, data } = useQuery<{
-    getAllDestinations: { destinations: Destination[]; totalCount: number }
-  }>(GET_ALL_DESTINATIONS, {
+  const { loading, error, data } = useGetAllDestinationsQuery({
     variables: {
       page: currentPage,
       limit: CARDS_LIMIT,
@@ -83,8 +79,8 @@ const Browse = () => {
   console.log(error)
   console.log(data)
 
-  const paginatedCards = data ? data.getAllDestinations.destinations : []
-  const totalPages = data ? Math.ceil(data.getAllDestinations.totalCount / CARDS_LIMIT) : 0
+  const paginatedCards = data?.getAllDestinations ? data.getAllDestinations?.destinations : []
+  const totalPages = data?.getAllDestinations ? Math.ceil(data.getAllDestinations.totalCount / CARDS_LIMIT) : 0
 
   useEffect(() => {
     if (location.state?.category) {
@@ -158,7 +154,7 @@ const Browse = () => {
     }
   }
 
-  const handleCardClick = (card: Destination) => {
+  const handleCardClick = (card: Partial<Destination>) => {
     setSelectedCard(card)
     setOpenDialog(true)
   }
