@@ -66,23 +66,37 @@ const SearchBar: React.FC = () => {
           ref={dropdownRef}
           className="absolute left-0 w-full md:w-64 bg-background shadow-lg rounded-md max-h-[348px] overflow-y-scroll z-10 mt-1"
         >
-          {loading && !data && (
+          {loading && (
             <div className="flex flex-col gap-2">
               {[...Array(3)].map((_, index) => (
-                <Skeleton key={index} className="w-full left-0 h-12" />
+                <Skeleton
+                  key={index}
+                  className={`w-auto left-0 h-12 p-5 mx-2 mt-1 ${index === 2 ? 'mb-4' : ''}`} 
+                />
               ))}
             </div>
           )}
 
-          {error && !loading && !data && (
-            <Alert>
-              <Icon icon="ic:round-terminal" className="h-4 w-4" />
-              <AlertTitle>Heads up!</AlertTitle>
-              <AlertDescription> An error occurred. Please try again later.</AlertDescription>
+          {!loading && error && (
+            <Alert className="bg-red-100 border-red-400 text-black">
+              <Icon icon="ic:round-terminal" className="h-4 w-4" style={{ color: 'black' }} />
+              <AlertTitle>An error has occurred!</AlertTitle>
+              <AlertDescription> Not able to fetch data 🙁 Please try again later.</AlertDescription>
             </Alert>
           )}
 
-          {data?.getDestinationsByTextSimilarity && data.getDestinationsByTextSimilarity.length > 0 ? (
+          {!loading && !error && data?.getDestinationsByTextSimilarity?.length === 0 && (
+            <Alert>
+              <Icon icon="ic:round-error-outline" className="h-4 w-4" />
+              <AlertTitle>Heads up!</AlertTitle>
+              <AlertDescription> No results found 🤕 </AlertDescription>
+            </Alert>
+          )}
+
+          {!loading &&
+          !error &&
+          data?.getDestinationsByTextSimilarity &&
+          data.getDestinationsByTextSimilarity.length > 0 ? (
             data.getDestinationsByTextSimilarity.map((result) => (
               <Link to={`/review/${result?.id}`} key={result?.id}>
                 <div className="px-4 py-2 cursor-pointer bg-background hover:bg-accent-1 hover:text-white">
@@ -91,16 +105,12 @@ const SearchBar: React.FC = () => {
                     {result?.country} {result?.region && `, ${result?.region}`}
                   </p>
                   <p className="text-xs md:text-sm">{result?.description}</p>
-                  <p className="text-xs italic">{result?.categories.join(', ')}</p>
+                  <p className="text-xs italic">{result?.categories?.join(', ')}</p>
                 </div>
               </Link>
             ))
           ) : (
-            <Alert>
-              <Icon icon="ic:round-error-outline" className="h-4 w-4" />
-              <AlertTitle>Heads up!</AlertTitle>
-              <AlertDescription> No results found 🤕 </AlertDescription>
-            </Alert>
+            <div></div>
           )}
         </div>
       )}
