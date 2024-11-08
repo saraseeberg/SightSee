@@ -69,7 +69,10 @@ const SearchBar: React.FC = () => {
           {loading && (
             <div className="flex flex-col gap-2">
               {[...Array(3)].map((_, index) => (
-                <Skeleton key={index} className="w-auto left-0 h-12 p-5 mx-2 mt-1" />
+                <Skeleton
+                  key={index}
+                  className={`w-auto left-0 h-12 p-5 mx-2 mt-1 ${index === 2 ? 'mb-4' : ''}`} 
+                />
               ))}
             </div>
           )}
