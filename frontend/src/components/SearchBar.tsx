@@ -95,7 +95,7 @@ const SearchBar: React.FC = () => {
           data?.getDestinationsByTextSimilarity &&
           data.getDestinationsByTextSimilarity.length > 0 ? (
             data.getDestinationsByTextSimilarity.map((result) => (
-              <Link to={`/review/${result?.id}`} key={result?.id}>
+              <Link to={`/destination/${result?.id}`} key={result?.id}>
                 <div className="px-4 py-2 cursor-pointer bg-background hover:bg-accent-1 hover:text-white">
                   <p className="font-semibold text-sm md:text-base">{result?.title}</p>
                   <p className="text-xs md:text-sm">
