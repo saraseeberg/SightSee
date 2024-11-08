@@ -1,7 +1,7 @@
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert' // Assuming shadcn has an Alert component
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import { Skeleton } from '@/components/ui/skeleton' // Assuming shadcn has a Skeleton component
+import { Skeleton } from '@/components/ui/skeleton'
 import { Icon } from '@iconify/react/dist/iconify.js'
 import { useGetAllCountriesQuery } from '@types'
 import React from 'react'
@@ -24,21 +24,7 @@ const CountryDropdown: React.FC<CountryDropdownProps> = ({ onSelectCountry, sele
     setCurrentCountry(selectedCountry)
   }, [selectedCountry])
 
-  // Sort countries alphabetically, keeping "World" on top
   const countries: string[] = data ? ['World', ...data.getAllCountries.filter((c: string) => c !== 'World').sort()] : []
-
-  if (loading) {
-    return <Skeleton className="h-10 w-32 rounded-lg" />
-  }
-
-  if (error) {
-    return (
-      <Alert className="bg-red-100 border-red-400 text-black w-auto " role="alert">
-        <AlertTitle>Error</AlertTitle>
-        <AlertDescription>Not able to fetch data 🤕 </AlertDescription>
-      </Alert>
-    )
-  }
 
   return (
     <DropdownMenu>
@@ -49,17 +35,26 @@ const CountryDropdown: React.FC<CountryDropdownProps> = ({ onSelectCountry, sele
       </DropdownMenuTrigger>
 
       <DropdownMenuContent className="rounded-lg border p-2 space-y-1 shadow-lg max-h-60 overflow-y-auto">
-        {countries.map((country) => (
-          <DropdownMenuItem
-            key={country}
-            onSelect={() => handleSelect(country)}
-            className={`cursor-pointer p-2 hover:bg-accent-1 hover:text-white ${
-              currentCountry === country ? 'bg-accent-1 text-white' : ''
-            }`}
-          >
-            {country}
-          </DropdownMenuItem>
-        ))}
+        {loading ? (
+          <Skeleton className="h-10 w-full rounded-lg" />
+        ) : error ? (
+          <Alert className="bg-red-100 border-red-400 text-black w-full" role="alert">
+            <AlertTitle>Error</AlertTitle>
+            <AlertDescription>Not able to fetch data 🤕</AlertDescription>
+          </Alert>
+        ) : (
+          countries.map((country) => (
+            <DropdownMenuItem
+              key={country}
+              onSelect={() => handleSelect(country)}
+              className={`cursor-pointer p-2 hover:bg-accent-1 hover:text-white ${
+                currentCountry === country ? 'bg-accent-1 text-white' : ''
+              }`}
+            >
+              {country}
+            </DropdownMenuItem>
+          ))
+        )}
       </DropdownMenuContent>
     </DropdownMenu>
   )
