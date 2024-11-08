@@ -69,10 +69,7 @@ const SearchBar: React.FC = () => {
           {loading && (
             <div className="flex flex-col gap-2">
               {[...Array(3)].map((_, index) => (
-                <Skeleton
-                  key={index}
-                  className={`w-auto left-0 h-12 p-5 mx-2 mt-1 ${index === 2 ? 'mb-4' : ''}`} 
-                />
+                <Skeleton key={index} className={`w-auto left-0 h-12 p-5 mx-2 mt-1 ${index === 2 ? 'mb-4' : ''}`} />
               ))}
             </div>
           )}
@@ -98,7 +95,7 @@ const SearchBar: React.FC = () => {
           data?.getDestinationsByTextSimilarity &&
           data.getDestinationsByTextSimilarity.length > 0 ? (
             data.getDestinationsByTextSimilarity.map((result) => (
-              <Link to={`/review/${result?.id}`} key={result?.id}>
+              <Link to={`/destination/${result?.id}`} key={result?.id}>
                 <div className="px-4 py-2 cursor-pointer bg-background hover:bg-accent-1 hover:text-white">
                   <p className="font-semibold text-sm md:text-base">{result?.title}</p>
                   <p className="text-xs md:text-sm">
