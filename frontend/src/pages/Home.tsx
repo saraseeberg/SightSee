@@ -4,7 +4,6 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Icon } from '@iconify/react/dist/iconify.js'
 import { useGetFeaturedDestinationsQuery } from '@types'
-import { color } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 
 const Home = () => {
@@ -38,8 +37,12 @@ const Home = () => {
               Array.from({ length: 4 }).map((_, index) => <Skeleton key={index} className="w-64 h-96" />)
             ) : error ? (
               // Display ShadCN alert for error message
-              <Alert  className=" w-2/4 mt-5 bg-red-100  border-red-400 text-black">
-                <Icon icon={'ic:baseline-sentiment-very-dissatisfied'} className="w-4 h-4 pt-0"  style={{ color: 'black' }}/>
+              <Alert className=" w-2/4 mt-5 bg-red-100  border-red-400 text-black">
+                <Icon
+                  icon={'ic:baseline-sentiment-very-dissatisfied'}
+                  className="w-4 h-4 pt-0"
+                  style={{ color: 'black' }}
+                />
                 <AlertTitle className=" pt-1">Error fetching data..! </AlertTitle>
                 <AlertDescription>Not able to fetch data 🤕 </AlertDescription>
               </Alert>
