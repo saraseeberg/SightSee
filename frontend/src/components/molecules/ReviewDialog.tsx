@@ -20,9 +20,11 @@ type ReviewSchema = z.infer<typeof ReviewSchema>
 
 type ReviewDialogProps = {
   destinationId: string
+  refetch: () => void
+  onReviewSubmit: () => void
 }
 
-const ReviewDialog: FC<ReviewDialogProps> = ({ destinationId }) => {
+const ReviewDialog: FC<ReviewDialogProps> = ({ destinationId, refetch, onReviewSubmit }) => {
   const [createReview] = useCreateReviewMutation()
 
   const {
@@ -49,6 +51,8 @@ const ReviewDialog: FC<ReviewDialogProps> = ({ destinationId }) => {
     })
     console.log(res)
     reset()
+    refetch()
+    onReviewSubmit()
   }
 
   const handleStarClick = (star: number) => {

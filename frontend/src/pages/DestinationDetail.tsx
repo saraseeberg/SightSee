@@ -4,6 +4,8 @@ import StarRating from '@/components/molecules/StarRating'
 import ReviewDialog from '@/components/molecules/ReviewDialog'
 import ReviewCard from '@/components/molecules/ReviewCard'
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel'
+import { useToast } from '@/hooks/use-toast'
+import { Toaster } from '@/components/ui/toaster'
 
 const DestinationDetailsPage = () => {
   const { id } = useParams<{ id: string }>()
@@ -14,6 +16,16 @@ const DestinationDetailsPage = () => {
   const reviewRes = useGetReviewsByDestinationIdQuery({
     variables: { destinationid: id as string },
   })
+
+  const toast = useToast()
+
+  const handleReviewToast = () => {
+    toast.toast({
+      title: 'Review Submitted',
+      description: 'Your review has been successfully added!',
+    })
+  }
+
   if (loading || reviewRes.loading) return <p>Loading... </p>
   if (error || reviewRes.error) return <p>Error loading destination details. {reviewRes.error?.message}</p>
 
@@ -49,7 +61,7 @@ const DestinationDetailsPage = () => {
       {/* Responsive Carousel reviews */}
       <section className="mt-4 relative">
         <div className="text-center mb-6">
-          <ReviewDialog destinationId={destination.id} />
+          <ReviewDialog destinationId={destination.id} refetch={reviewRes.refetch} onReviewSubmit={handleReviewToast} />
         </div>
         <Carousel className="relative lg:mx-36">
           <CarouselContent
@@ -73,6 +85,7 @@ const DestinationDetailsPage = () => {
           )}
         </Carousel>
       </section>
+      <Toaster />
     </main>
   )
 }
