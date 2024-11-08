@@ -38,7 +38,7 @@ const CountryDropdown: React.FC<CountryDropdownProps> = ({ onSelectCountry, sele
         {loading ? (
           <Skeleton className="h-10 w-full rounded-lg" />
         ) : error ? (
-          <Alert className="bg-red-100 border-red-400 text-black w-full" role="alert">
+          <Alert className=" w-full border-none" role="alert">
             <AlertTitle>Error</AlertTitle>
             <AlertDescription>Not able to fetch data 🤕</AlertDescription>
           </Alert>
