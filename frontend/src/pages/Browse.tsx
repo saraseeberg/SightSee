@@ -240,7 +240,7 @@ const Browse = () => {
                 className="w-4 h-4 pt-0"
                 style={{ color: 'black' }}
               />
-              <AlertTitle className='pt-1'> Hmmm... </AlertTitle>
+              <AlertTitle className="pt-1"> Hmmm... </AlertTitle>
               <AlertDescription> No results found for your selected filters. 🤕 </AlertDescription>
             </Alert>
           )}
