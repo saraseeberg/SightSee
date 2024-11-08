@@ -69,16 +69,16 @@ const SearchBar: React.FC = () => {
           {loading && !data && (
             <div className="flex flex-col gap-2">
               {[...Array(3)].map((_, index) => (
-                <Skeleton key={index} className="w-full left-0 h-12" />
+                <Skeleton key={index} className="w-auto left-0 h-12 p-5 mx-2 mt-1" />
               ))}
             </div>
           )}
 
           {error && !loading && !data && (
-            <Alert>
-              <Icon icon="ic:round-terminal" className="h-4 w-4" />
-              <AlertTitle>Heads up!</AlertTitle>
-              <AlertDescription> An error occurred. Please try again later.</AlertDescription>
+            <Alert className=' bg-red-100 border-red-400 text-black  '>
+              <Icon icon="ic:round-terminal" className="h-4 w-4" style={{ color: 'black' }} />
+              <AlertTitle>An error has occurred!</AlertTitle>
+              <AlertDescription> Not able to fetch data 🙁 Please try again later.</AlertDescription>
             </Alert>
           )}
 

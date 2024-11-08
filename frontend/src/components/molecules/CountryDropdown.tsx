@@ -28,13 +28,12 @@ const CountryDropdown: React.FC<CountryDropdownProps> = ({ onSelectCountry, sele
   const countries: string[] = data ? ['World', ...data.getAllCountries.filter((c: string) => c !== 'World').sort()] : []
 
   if (loading) {
-    return <Skeleton className="h-10 w-full rounded-lg" />
+    return <Skeleton className="h-10 w-32 rounded-lg" />
   }
 
   if (error) {
     return (
-      <Alert className="bg-red-100 border-red-400 " role="alert">
-        <Icon icon="akar-icons:alert-circle" className="w-4 h-4 mr-3" />
+      <Alert className="bg-red-100 border-red-400 text-black w-auto " role="alert">
         <AlertTitle>Error</AlertTitle>
         <AlertDescription>Not able to fetch data 🤕 </AlertDescription>
       </Alert>
