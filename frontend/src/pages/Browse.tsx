@@ -5,6 +5,7 @@ import CategoryDropdown from '@/components/molecules/CategoryDropdown'
 import CountryDropdown from '@/components/molecules/CountryDropdown'
 import SortingDropdown from '@/components/molecules/SortingDropdown'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import { Button } from '@/components/ui/button'
 import {
   Pagination,
   PaginationContent,
@@ -40,6 +41,7 @@ const Browse = () => {
   const [selectedCountry, setSelectedCountry] = useState<string>('World')
   const [selectedSorting, setSelectedSorting] = useState<string>('Best Rated')
   const [currentPage, setCurrentPage] = useState<number>(1)
+  const [filtersApplied, setFiltersApplied] = useState<boolean>(false)
 
   useEffect(() => {
     const categoriesParam = searchParams.get('categories')
@@ -123,6 +125,12 @@ const Browse = () => {
     setSearchParams(params)
   }, [selectedCategories, selectedCountry, selectedSorting, currentPage])
 
+  useEffect(() => {
+    const hasFilters = selectedCategories.length > 0 || selectedCountry !== 'World' || selectedSorting !== 'Best Rated'
+
+    setFiltersApplied(hasFilters)
+  }, [selectedCategories, selectedCountry, selectedSorting])
+
   const handleCategoryClick = (category: string) => {
     let updatedCategories: string[]
     if (selectedCategories.includes(category)) {
@@ -152,6 +160,11 @@ const Browse = () => {
     } else {
       setSelectedCategories([category])
     }
+  }
+  const handleResetFilters = () => {
+    setSelectedCategories([])
+    setSelectedCountry('World')
+    setSelectedSorting('Best Rated')
   }
 
   const handleCardClick = (card: Partial<Destination>) => {
@@ -193,9 +206,17 @@ const Browse = () => {
             </div>
             <CountryDropdown onSelectCountry={handleCountrySelect} selectedCountry={selectedCountry} />
             <SortingDropdown onSelectedSorting={handleSortingSelect} />
+            <Button
+              variant="ghost"
+              onClick={handleResetFilters}
+              className={`border border-content text-content font-bold rounded-full px-4 py-2 shadow-md bg-background
+                ${filtersApplied ? 'cursor-pointer hover:scale-105' : 'opacity-50 cursor-not-allowed'}`}
+              disabled={!filtersApplied}
+            >
+              Deselect all
+            </Button>
           </div>
         </section>
-
         <section aria-labelledby="browse-section" className="flex flex-wrap gap-2 sm:gap-4 justify-center">
           <h2 id="browse-section" className="sr-only">
             Browse Cards
