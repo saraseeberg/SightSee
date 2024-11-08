@@ -49,7 +49,7 @@ const DestinationDetailsPage = () => {
       {/* Responsive Carousel reviews */}
       <section className="mt-4 relative">
         <div className="text-center mb-6">
-          <ReviewDialog destinationId={destination.id} />
+          <ReviewDialog destinationId={destination.id} refetch={reviewRes.refetch} />
         </div>
         <Carousel className="relative lg:mx-36">
           <CarouselContent
