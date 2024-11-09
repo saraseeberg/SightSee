@@ -1,5 +1,5 @@
 import { Dialog, DialogContent, DialogHeader } from '@/components/ui/dialog'
-import { DialogClose, DialogDescription, DialogTitle, DialogTrigger } from '@radix-ui/react-dialog'
+import { DialogDescription, DialogTitle, DialogTrigger } from '@radix-ui/react-dialog'
 import { Icon } from '@iconify/react/dist/iconify.js'
 import { Button } from '../ui/button'
 import { Input } from '../ui/input'
@@ -10,6 +10,8 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { FC, useState } from 'react'
 import { Label } from '../ui/label'
 import { useCreateReviewMutation } from '@types'
+import { useNavigate } from 'react-router-dom'
+import { User } from '@types'
 
 const ReviewSchema = z.object({
   title: z.string().min(1, 'Title is required').max(50, 'Title cannot exceed 50 characters'),
@@ -22,10 +24,13 @@ type ReviewDialogProps = {
   destinationId: string
   refetch: () => void
   onReviewSubmit: () => void
+  user: User | null
 }
 
-const ReviewDialog: FC<ReviewDialogProps> = ({ destinationId, refetch, onReviewSubmit }) => {
+const ReviewDialog: FC<ReviewDialogProps> = ({ user, destinationId, refetch, onReviewSubmit }) => {
   const [createReview] = useCreateReviewMutation()
+  const navigate = useNavigate()
+  const [isOpen, setIsOpen] = useState(false)
 
   const {
     register,
@@ -40,19 +45,28 @@ const ReviewDialog: FC<ReviewDialogProps> = ({ destinationId, refetch, onReviewS
   const [userRating, setUserRating] = useState(0)
 
   const onSubmit = async (data: ReviewSchema) => {
-    const res = await createReview({
-      variables: {
-        destinationid: destinationId,
-        rating: data.rating,
-        text: data.description,
-        title: data.title,
-        username: 'LotteTotten27',
-      },
-    })
-    console.log(res)
-    reset()
-    refetch()
-    onReviewSubmit()
+    try {
+      const res = await createReview({
+        variables: {
+          destinationid: destinationId,
+          rating: data.rating,
+          text: data.description,
+          title: data.title,
+          username: user?.username || 'Anonymous',
+        },
+      })
+
+      if (res.errors) {
+        console.error('Mutation error:', res.errors)
+      } else {
+        reset()
+        refetch()
+        onReviewSubmit()
+        setIsOpen(false)
+      }
+    } catch (error) {
+      console.error('Error during review creation:', error)
+    }
   }
 
   const handleStarClick = (star: number) => {
@@ -61,9 +75,19 @@ const ReviewDialog: FC<ReviewDialogProps> = ({ destinationId, refetch, onReviewS
   }
 
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button>Write a Review</Button>
+        <Button
+          onClick={() => {
+            if (!user) {
+              navigate('/login')
+            } else {
+              setIsOpen(true)
+            }
+          }}
+        >
+          Write a Review
+        </Button>
       </DialogTrigger>
       <DialogContent className="max-w-md p-6 rounded-lg shadow-lg text-content">
         <DialogHeader>
@@ -102,11 +126,10 @@ const ReviewDialog: FC<ReviewDialogProps> = ({ destinationId, refetch, onReviewS
               {...register('description', { required: true })}
             />
           </div>
-          <DialogClose asChild>
-            <Button type="submit" className="w-full">
-              Submit Review
-            </Button>
-          </DialogClose>
+
+          <Button type="submit" className="w-full">
+            Submit Review
+          </Button>
         </form>
       </DialogContent>
     </Dialog>
