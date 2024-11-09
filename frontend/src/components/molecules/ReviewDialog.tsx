@@ -12,6 +12,7 @@ import { Label } from '../ui/label'
 import { useCreateReviewMutation } from '@types'
 import { useNavigate } from 'react-router-dom'
 import { User } from '@types'
+import { useAddReviewToUserMutation } from '@types'
 
 const ReviewSchema = z.object({
   title: z.string().min(1, 'Title is required').max(50, 'Title cannot exceed 50 characters'),
@@ -29,6 +30,7 @@ type ReviewDialogProps = {
 
 const ReviewDialog: FC<ReviewDialogProps> = ({ user, destinationId, refetch, onReviewSubmit }) => {
   const [createReview] = useCreateReviewMutation()
+  const [addReviewToUser] = useAddReviewToUserMutation()
   const navigate = useNavigate()
   const [isOpen, setIsOpen] = useState(false)
 
@@ -46,7 +48,7 @@ const ReviewDialog: FC<ReviewDialogProps> = ({ user, destinationId, refetch, onR
 
   const onSubmit = async (data: ReviewSchema) => {
     try {
-      const res = await createReview({
+      const reviewResponse = await createReview({
         variables: {
           destinationid: destinationId,
           rating: data.rating,
@@ -56,16 +58,36 @@ const ReviewDialog: FC<ReviewDialogProps> = ({ user, destinationId, refetch, onR
         },
       })
 
-      if (res.errors) {
-        console.error('Mutation error:', res.errors)
-      } else {
-        reset()
-        refetch()
-        onReviewSubmit()
-        setIsOpen(false)
+      if (reviewResponse.errors) {
+        console.error('Review creation error:', reviewResponse.errors)
+        return
       }
+
+      const reviewID = reviewResponse.data?.createReview?.id
+      if (!reviewID) {
+        console.error('No review ID returned from createReview mutation')
+        return
+      }
+
+      const userID = user?.id
+      if (userID) {
+        const userResponse = await addReviewToUser({
+          variables: { userID, reviewID },
+        })
+
+        if (userResponse.errors) {
+          console.error('Error linking review to user:', userResponse.errors)
+        }
+      } else {
+        console.error('No user ID found. User may not be logged in.')
+      }
+
+      reset()
+      refetch()
+      onReviewSubmit()
+      setIsOpen(false)
     } catch (error) {
-      console.error('Error during review creation:', error)
+      console.error('Error during review creation and linking to user:', error)
     }
   }
 
