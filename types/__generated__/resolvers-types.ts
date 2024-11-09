@@ -54,6 +54,7 @@ export type LoginInput = {
 
 export type Mutation = {
   __typename?: 'Mutation'
+  addReviewToUser: User
   createDestination?: Maybe<Destination>
   createDestinations: Array<Destination>
   createReview?: Maybe<Review>
@@ -65,6 +66,11 @@ export type Mutation = {
   deleteUser: User
   login: UserData
   updateUser: User
+}
+
+export type MutationAddReviewToUserArgs = {
+  reviewID: Scalars['ID']['input']
+  userID: Scalars['ID']['input']
 }
 
 export type MutationCreateDestinationArgs = {
@@ -363,6 +369,12 @@ export type MutationResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation'],
 > = ResolversObject<{
+  addReviewToUser?: Resolver<
+    ResolversTypes['User'],
+    ParentType,
+    ContextType,
+    RequireFields<MutationAddReviewToUserArgs, 'reviewID' | 'userID'>
+  >
   createDestination?: Resolver<
     Maybe<ResolversTypes['Destination']>,
     ParentType,
@@ -681,6 +693,16 @@ export type LoginMutation = {
     token: string
     user: { __typename?: 'User'; id: string; name: string; username: string }
   }
+}
+
+export type AddReviewToUserMutationVariables = Exact<{
+  userID: Scalars['ID']['input']
+  reviewID: Scalars['ID']['input']
+}>
+
+export type AddReviewToUserMutation = {
+  __typename?: 'Mutation'
+  addReviewToUser: { __typename?: 'User'; id: string; name: string; username: string }
 }
 
 export const GetAllDestinationsDocument = gql`
@@ -1204,3 +1226,47 @@ export function useLoginMutation(baseOptions?: Apollo.MutationHookOptions<LoginM
 export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>
 export type LoginMutationResult = Apollo.MutationResult<LoginMutation>
 export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>
+export const AddReviewToUserDocument = gql`
+  mutation addReviewToUser($userID: ID!, $reviewID: ID!) {
+    addReviewToUser(userID: $userID, reviewID: $reviewID) {
+      id
+      name
+      username
+    }
+  }
+`
+export type AddReviewToUserMutationFn = Apollo.MutationFunction<
+  AddReviewToUserMutation,
+  AddReviewToUserMutationVariables
+>
+
+/**
+ * __useAddReviewToUserMutation__
+ *
+ * To run a mutation, you first call `useAddReviewToUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddReviewToUserMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addReviewToUserMutation, { data, loading, error }] = useAddReviewToUserMutation({
+ *   variables: {
+ *      userID: // value for 'userID'
+ *      reviewID: // value for 'reviewID'
+ *   },
+ * });
+ */
+export function useAddReviewToUserMutation(
+  baseOptions?: Apollo.MutationHookOptions<AddReviewToUserMutation, AddReviewToUserMutationVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useMutation<AddReviewToUserMutation, AddReviewToUserMutationVariables>(AddReviewToUserDocument, options)
+}
+export type AddReviewToUserMutationHookResult = ReturnType<typeof useAddReviewToUserMutation>
+export type AddReviewToUserMutationResult = Apollo.MutationResult<AddReviewToUserMutation>
+export type AddReviewToUserMutationOptions = Apollo.BaseMutationOptions<
+  AddReviewToUserMutation,
+  AddReviewToUserMutationVariables
+>
