@@ -6,6 +6,7 @@ import ReviewCard from '@/components/molecules/ReviewCard'
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel'
 import { useToast } from '@/hooks/use-toast'
 import { Toaster } from '@/components/ui/toaster'
+import { useAuth } from '@/lib/context/auth-context'
 
 const DestinationDetailsPage = () => {
   const { id } = useParams<{ id: string }>()
@@ -17,6 +18,7 @@ const DestinationDetailsPage = () => {
     variables: { destinationid: id as string },
   })
 
+  const { user } = useAuth()
   const toast = useToast()
 
   const handleReviewToast = () => {
@@ -61,7 +63,12 @@ const DestinationDetailsPage = () => {
       {/* Responsive Carousel reviews */}
       <section className="mt-4 relative">
         <div className="text-center mb-6">
-          <ReviewDialog destinationId={destination.id} refetch={reviewRes.refetch} onReviewSubmit={handleReviewToast} />
+          <ReviewDialog
+            destinationId={destination.id}
+            refetch={reviewRes.refetch}
+            onReviewSubmit={handleReviewToast}
+            user={user}
+          />
         </div>
         <Carousel className="relative lg:mx-36">
           <CarouselContent
