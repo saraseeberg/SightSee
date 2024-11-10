@@ -27,3 +27,14 @@ mutation addReviewToUser($userID: ID!, $reviewID: ID!) {
     username
   }
 }
+
+query getReviewsByUserID($id: ID!) {
+  getReviewsByUserID(id: $id) {
+    id
+    title
+    text
+    rating
+    username
+    destinationid
+  }
+}
