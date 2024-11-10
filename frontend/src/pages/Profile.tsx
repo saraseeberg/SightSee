@@ -3,11 +3,15 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { useAuth } from '@/lib/context/auth-context'
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useGetReviewsByUserIdQuery } from '@types'
 
 const Profile = () => {
   const navigate = useNavigate()
   const burgersEaten = localStorage.getItem('eatenBurger') || 0
   const { user } = useAuth()
+  const { data } = useGetReviewsByUserIdQuery({
+    variables: { id: user?.id as string },
+  })
 
   useEffect(() => {
     if (!user) {
@@ -16,7 +20,6 @@ const Profile = () => {
   }, [user, navigate])
 
   if (!user) return null
-  console.log(user.reviews?.length)
 
   return (
     <main className="flex flex-col items-center my-2 px-2 md:mx-[10%] gap-10 ">
@@ -42,11 +45,12 @@ const Profile = () => {
           className="row-span-2 max-md:row-start-2 max-md:col-span-2"
         >
           <ul className="flex flex-col gap-2 border border-border rounded-md h-48 overflow-y-scroll scroll">
-            {user.reviews?.map((review) => (
+            {data?.getReviewsByUserID?.map((review) => (
               // Change with a ReviewCard component
               <li key={review.title} className="flex gap-2 border-2 border-red-500">
                 <span>{review.title}</span>
                 <span>{review.rating}</span>
+                <span>{review.text}</span>
               </li>
             ))}
           </ul>
