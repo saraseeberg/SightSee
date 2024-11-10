@@ -139,6 +139,7 @@ export type Query = {
   getReviewByID?: Maybe<Review>
   getReviews?: Maybe<Array<Review>>
   getReviewsByDestinationID?: Maybe<Array<Review>>
+  getReviewsByUserID?: Maybe<Array<Review>>
   getUserByID?: Maybe<User>
   getUsers?: Maybe<Array<User>>
   getUsersByID?: Maybe<Array<User>>
@@ -166,6 +167,10 @@ export type QueryGetReviewByIdArgs = {
 
 export type QueryGetReviewsByDestinationIdArgs = {
   destinationid: Scalars['ID']['input']
+}
+
+export type QueryGetReviewsByUserIdArgs = {
+  id: Scalars['ID']['input']
 }
 
 export type QueryGetUserByIdArgs = {
@@ -474,6 +479,12 @@ export type QueryResolvers<
     ContextType,
     RequireFields<QueryGetReviewsByDestinationIdArgs, 'destinationid'>
   >
+  getReviewsByUserID?: Resolver<
+    Maybe<Array<ResolversTypes['Review']>>,
+    ParentType,
+    ContextType,
+    RequireFields<QueryGetReviewsByUserIdArgs, 'id'>
+  >
   getUserByID?: Resolver<
     Maybe<ResolversTypes['User']>,
     ParentType,
@@ -703,6 +714,23 @@ export type AddReviewToUserMutationVariables = Exact<{
 export type AddReviewToUserMutation = {
   __typename?: 'Mutation'
   addReviewToUser: { __typename?: 'User'; id: string; name: string; username: string }
+}
+
+export type GetReviewsByUserIdQueryVariables = Exact<{
+  id: Scalars['ID']['input']
+}>
+
+export type GetReviewsByUserIdQuery = {
+  __typename?: 'Query'
+  getReviewsByUserID?: Array<{
+    __typename?: 'Review'
+    id: string
+    title: string
+    text: string
+    rating: number
+    username: string
+    destinationid: string
+  }> | null
 }
 
 export const GetAllDestinationsDocument = gql`
@@ -1269,4 +1297,67 @@ export type AddReviewToUserMutationResult = Apollo.MutationResult<AddReviewToUse
 export type AddReviewToUserMutationOptions = Apollo.BaseMutationOptions<
   AddReviewToUserMutation,
   AddReviewToUserMutationVariables
+>
+export const GetReviewsByUserIdDocument = gql`
+  query getReviewsByUserID($id: ID!) {
+    getReviewsByUserID(id: $id) {
+      id
+      title
+      text
+      rating
+      username
+      destinationid
+    }
+  }
+`
+
+/**
+ * __useGetReviewsByUserIdQuery__
+ *
+ * To run a query within a React component, call `useGetReviewsByUserIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetReviewsByUserIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetReviewsByUserIdQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetReviewsByUserIdQuery(
+  baseOptions: Apollo.QueryHookOptions<GetReviewsByUserIdQuery, GetReviewsByUserIdQueryVariables> &
+    ({ variables: GetReviewsByUserIdQueryVariables; skip?: boolean } | { skip: boolean }),
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useQuery<GetReviewsByUserIdQuery, GetReviewsByUserIdQueryVariables>(GetReviewsByUserIdDocument, options)
+}
+export function useGetReviewsByUserIdLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<GetReviewsByUserIdQuery, GetReviewsByUserIdQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useLazyQuery<GetReviewsByUserIdQuery, GetReviewsByUserIdQueryVariables>(
+    GetReviewsByUserIdDocument,
+    options,
+  )
+}
+export function useGetReviewsByUserIdSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<GetReviewsByUserIdQuery, GetReviewsByUserIdQueryVariables>,
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions }
+  return Apollo.useSuspenseQuery<GetReviewsByUserIdQuery, GetReviewsByUserIdQueryVariables>(
+    GetReviewsByUserIdDocument,
+    options,
+  )
+}
+export type GetReviewsByUserIdQueryHookResult = ReturnType<typeof useGetReviewsByUserIdQuery>
+export type GetReviewsByUserIdLazyQueryHookResult = ReturnType<typeof useGetReviewsByUserIdLazyQuery>
+export type GetReviewsByUserIdSuspenseQueryHookResult = ReturnType<typeof useGetReviewsByUserIdSuspenseQuery>
+export type GetReviewsByUserIdQueryResult = Apollo.QueryResult<
+  GetReviewsByUserIdQuery,
+  GetReviewsByUserIdQueryVariables
 >

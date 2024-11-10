@@ -28,6 +28,20 @@ const UserResolver: Resolvers = {
       const user = rows[0] as User
       return user
     },
+    getReviewsByUserID: async (_: unknown, { id }: { id: string }) => {
+      try {
+        const query = `
+          SELECT * FROM reviews 
+          WHERE id = ANY(
+            SELECT UNNEST(reviews) FROM users WHERE id = $1
+          )
+        `
+        const { rows } = await db.query(query, [id])
+        return rows
+      } catch (error) {
+        throw new ApolloError(`Failed to fetch reviews: ${error}`, 'INTERNAL_SERVER_ERROR')
+      }
+    },
   },
 
   Mutation: {
