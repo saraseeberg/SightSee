@@ -54,6 +54,7 @@ export type LoginInput = {
 
 export type Mutation = {
   __typename?: 'Mutation'
+  addReviewToUser: User
   createDestination?: Maybe<Destination>
   createDestinations: Array<Destination>
   createReview?: Maybe<Review>
@@ -65,6 +66,11 @@ export type Mutation = {
   deleteUser: User
   login: UserData
   updateUser: User
+}
+
+export type MutationAddReviewToUserArgs = {
+  reviewID: Scalars['ID']['input']
+  userID: Scalars['ID']['input']
 }
 
 export type MutationCreateDestinationArgs = {
@@ -133,6 +139,7 @@ export type Query = {
   getReviewByID?: Maybe<Review>
   getReviews?: Maybe<Array<Review>>
   getReviewsByDestinationID?: Maybe<Array<Review>>
+  getReviewsByUserID?: Maybe<Array<Review>>
   getUserByID?: Maybe<User>
   getUsers?: Maybe<Array<User>>
   getUsersByID?: Maybe<Array<User>>
@@ -160,6 +167,10 @@ export type QueryGetReviewByIdArgs = {
 
 export type QueryGetReviewsByDestinationIdArgs = {
   destinationid: Scalars['ID']['input']
+}
+
+export type QueryGetReviewsByUserIdArgs = {
+  id: Scalars['ID']['input']
 }
 
 export type QueryGetUserByIdArgs = {
@@ -363,6 +374,12 @@ export type MutationResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation'],
 > = ResolversObject<{
+  addReviewToUser?: Resolver<
+    ResolversTypes['User'],
+    ParentType,
+    ContextType,
+    RequireFields<MutationAddReviewToUserArgs, 'reviewID' | 'userID'>
+  >
   createDestination?: Resolver<
     Maybe<ResolversTypes['Destination']>,
     ParentType,
@@ -461,6 +478,12 @@ export type QueryResolvers<
     ParentType,
     ContextType,
     RequireFields<QueryGetReviewsByDestinationIdArgs, 'destinationid'>
+  >
+  getReviewsByUserID?: Resolver<
+    Maybe<Array<ResolversTypes['Review']>>,
+    ParentType,
+    ContextType,
+    RequireFields<QueryGetReviewsByUserIdArgs, 'id'>
   >
   getUserByID?: Resolver<
     Maybe<ResolversTypes['User']>,
@@ -681,6 +704,33 @@ export type LoginMutation = {
     token: string
     user: { __typename?: 'User'; id: string; name: string; username: string }
   }
+}
+
+export type AddReviewToUserMutationVariables = Exact<{
+  userID: Scalars['ID']['input']
+  reviewID: Scalars['ID']['input']
+}>
+
+export type AddReviewToUserMutation = {
+  __typename?: 'Mutation'
+  addReviewToUser: { __typename?: 'User'; id: string; name: string; username: string }
+}
+
+export type GetReviewsByUserIdQueryVariables = Exact<{
+  id: Scalars['ID']['input']
+}>
+
+export type GetReviewsByUserIdQuery = {
+  __typename?: 'Query'
+  getReviewsByUserID?: Array<{
+    __typename?: 'Review'
+    id: string
+    title: string
+    text: string
+    rating: number
+    username: string
+    destinationid: string
+  }> | null
 }
 
 export const GetAllDestinationsDocument = gql`
@@ -1204,3 +1254,110 @@ export function useLoginMutation(baseOptions?: Apollo.MutationHookOptions<LoginM
 export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>
 export type LoginMutationResult = Apollo.MutationResult<LoginMutation>
 export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>
+export const AddReviewToUserDocument = gql`
+  mutation addReviewToUser($userID: ID!, $reviewID: ID!) {
+    addReviewToUser(userID: $userID, reviewID: $reviewID) {
+      id
+      name
+      username
+    }
+  }
+`
+export type AddReviewToUserMutationFn = Apollo.MutationFunction<
+  AddReviewToUserMutation,
+  AddReviewToUserMutationVariables
+>
+
+/**
+ * __useAddReviewToUserMutation__
+ *
+ * To run a mutation, you first call `useAddReviewToUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddReviewToUserMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addReviewToUserMutation, { data, loading, error }] = useAddReviewToUserMutation({
+ *   variables: {
+ *      userID: // value for 'userID'
+ *      reviewID: // value for 'reviewID'
+ *   },
+ * });
+ */
+export function useAddReviewToUserMutation(
+  baseOptions?: Apollo.MutationHookOptions<AddReviewToUserMutation, AddReviewToUserMutationVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useMutation<AddReviewToUserMutation, AddReviewToUserMutationVariables>(AddReviewToUserDocument, options)
+}
+export type AddReviewToUserMutationHookResult = ReturnType<typeof useAddReviewToUserMutation>
+export type AddReviewToUserMutationResult = Apollo.MutationResult<AddReviewToUserMutation>
+export type AddReviewToUserMutationOptions = Apollo.BaseMutationOptions<
+  AddReviewToUserMutation,
+  AddReviewToUserMutationVariables
+>
+export const GetReviewsByUserIdDocument = gql`
+  query getReviewsByUserID($id: ID!) {
+    getReviewsByUserID(id: $id) {
+      id
+      title
+      text
+      rating
+      username
+      destinationid
+    }
+  }
+`
+
+/**
+ * __useGetReviewsByUserIdQuery__
+ *
+ * To run a query within a React component, call `useGetReviewsByUserIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetReviewsByUserIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetReviewsByUserIdQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetReviewsByUserIdQuery(
+  baseOptions: Apollo.QueryHookOptions<GetReviewsByUserIdQuery, GetReviewsByUserIdQueryVariables> &
+    ({ variables: GetReviewsByUserIdQueryVariables; skip?: boolean } | { skip: boolean }),
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useQuery<GetReviewsByUserIdQuery, GetReviewsByUserIdQueryVariables>(GetReviewsByUserIdDocument, options)
+}
+export function useGetReviewsByUserIdLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<GetReviewsByUserIdQuery, GetReviewsByUserIdQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useLazyQuery<GetReviewsByUserIdQuery, GetReviewsByUserIdQueryVariables>(
+    GetReviewsByUserIdDocument,
+    options,
+  )
+}
+export function useGetReviewsByUserIdSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<GetReviewsByUserIdQuery, GetReviewsByUserIdQueryVariables>,
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions }
+  return Apollo.useSuspenseQuery<GetReviewsByUserIdQuery, GetReviewsByUserIdQueryVariables>(
+    GetReviewsByUserIdDocument,
+    options,
+  )
+}
+export type GetReviewsByUserIdQueryHookResult = ReturnType<typeof useGetReviewsByUserIdQuery>
+export type GetReviewsByUserIdLazyQueryHookResult = ReturnType<typeof useGetReviewsByUserIdLazyQuery>
+export type GetReviewsByUserIdSuspenseQueryHookResult = ReturnType<typeof useGetReviewsByUserIdSuspenseQuery>
+export type GetReviewsByUserIdQueryResult = Apollo.QueryResult<
+  GetReviewsByUserIdQuery,
+  GetReviewsByUserIdQueryVariables
+>

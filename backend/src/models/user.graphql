@@ -30,6 +30,7 @@ type Query {
   getUsers: [User!]
   getUsersByID(ids: [ID!]!): [User!]
   getUserByID(id: ID!): User
+  getReviewsByUserID(id: ID!): [Review!]
 }
 
 type Mutation {
@@ -37,4 +38,5 @@ type Mutation {
   updateUser(user: UserInput!): User!
   deleteUser(id: ID!): User!
   login(data: LoginInput!): UserData!
+  addReviewToUser(userID: ID!, reviewID: ID!): User!
 }

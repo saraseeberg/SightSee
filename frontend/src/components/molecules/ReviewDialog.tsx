@@ -1,5 +1,5 @@
 import { Dialog, DialogContent, DialogHeader } from '@/components/ui/dialog'
-import { DialogClose, DialogDescription, DialogTitle, DialogTrigger } from '@radix-ui/react-dialog'
+import { DialogDescription, DialogTitle, DialogTrigger } from '@radix-ui/react-dialog'
 import { Icon } from '@iconify/react/dist/iconify.js'
 import { Button } from '../ui/button'
 import { Input } from '../ui/input'
@@ -10,6 +10,9 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { FC, useState } from 'react'
 import { Label } from '../ui/label'
 import { useCreateReviewMutation } from '@types'
+import { useNavigate } from 'react-router-dom'
+import { User } from '@types'
+import { useAddReviewToUserMutation } from '@types'
 
 const ReviewSchema = z.object({
   title: z.string().min(1, 'Title is required').max(50, 'Title cannot exceed 50 characters'),
@@ -22,10 +25,14 @@ type ReviewDialogProps = {
   destinationId: string
   refetch: () => void
   onReviewSubmit: () => void
+  user: User | null
 }
 
-const ReviewDialog: FC<ReviewDialogProps> = ({ destinationId, refetch, onReviewSubmit }) => {
+const ReviewDialog: FC<ReviewDialogProps> = ({ user, destinationId, refetch, onReviewSubmit }) => {
   const [createReview] = useCreateReviewMutation()
+  const [addReviewToUser] = useAddReviewToUserMutation()
+  const navigate = useNavigate()
+  const [isOpen, setIsOpen] = useState(false)
 
   const {
     register,
@@ -40,19 +47,48 @@ const ReviewDialog: FC<ReviewDialogProps> = ({ destinationId, refetch, onReviewS
   const [userRating, setUserRating] = useState(0)
 
   const onSubmit = async (data: ReviewSchema) => {
-    const res = await createReview({
-      variables: {
-        destinationid: destinationId,
-        rating: data.rating,
-        text: data.description,
-        title: data.title,
-        username: 'LotteTotten27',
-      },
-    })
-    console.log(res)
-    reset()
-    refetch()
-    onReviewSubmit()
+    try {
+      const reviewResponse = await createReview({
+        variables: {
+          destinationid: destinationId,
+          rating: data.rating,
+          text: data.description,
+          title: data.title,
+          username: user?.username || 'Anonymous',
+        },
+      })
+
+      if (reviewResponse.errors) {
+        console.error('Review creation error:', reviewResponse.errors)
+        return
+      }
+
+      const reviewID = reviewResponse.data?.createReview?.id
+      if (!reviewID) {
+        console.error('No review ID returned from createReview mutation')
+        return
+      }
+
+      const userID = user?.id
+      if (userID) {
+        const userResponse = await addReviewToUser({
+          variables: { userID, reviewID },
+        })
+
+        if (userResponse.errors) {
+          console.error('Error linking review to user:', userResponse.errors)
+        }
+      } else {
+        console.error('No user ID found. User may not be logged in.')
+      }
+
+      reset()
+      refetch()
+      onReviewSubmit()
+      setIsOpen(false)
+    } catch (error) {
+      console.error('Error during review creation and linking to user:', error)
+    }
   }
 
   const handleStarClick = (star: number) => {
@@ -61,9 +97,19 @@ const ReviewDialog: FC<ReviewDialogProps> = ({ destinationId, refetch, onReviewS
   }
 
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button>Write a Review</Button>
+        <Button
+          onClick={() => {
+            if (!user) {
+              navigate('/login')
+            } else {
+              setIsOpen(true)
+            }
+          }}
+        >
+          Write a Review
+        </Button>
       </DialogTrigger>
       <DialogContent className="max-w-md p-6 rounded-lg shadow-lg text-content">
         <DialogHeader>
@@ -102,11 +148,10 @@ const ReviewDialog: FC<ReviewDialogProps> = ({ destinationId, refetch, onReviewS
               {...register('description', { required: true })}
             />
           </div>
-          <DialogClose asChild>
-            <Button type="submit" className="w-full">
-              Submit Review
-            </Button>
-          </DialogClose>
+
+          <Button type="submit" className="w-full">
+            Submit Review
+          </Button>
         </form>
       </DialogContent>
     </Dialog>

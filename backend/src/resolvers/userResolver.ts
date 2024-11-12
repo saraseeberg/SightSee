@@ -28,6 +28,20 @@ const UserResolver: Resolvers = {
       const user = rows[0] as User
       return user
     },
+    getReviewsByUserID: async (_: unknown, { id }: { id: string }) => {
+      try {
+        const query = `
+          SELECT * FROM reviews 
+          WHERE id = ANY(
+            SELECT UNNEST(reviews) FROM users WHERE id = $1
+          )
+        `
+        const { rows } = await db.query(query, [id])
+        return rows
+      } catch (error) {
+        throw new ApolloError(`Failed to fetch reviews: ${error}`, 'INTERNAL_SERVER_ERROR')
+      }
+    },
   },
 
   Mutation: {
@@ -91,6 +105,18 @@ const UserResolver: Resolvers = {
       }
     },
 
+    addReviewToUser: async (_: unknown, { userID, reviewID }: { userID: string; reviewID: string }) => {
+      try {
+        const query = 'UPDATE users SET reviews = array_append(reviews, $2) WHERE id = $1 RETURNING *'
+        console.log('Adding review to user with id: ', userID)
+        const { rows } = await db.query(query, [userID, reviewID])
+        console.log('Added review to user: ', userID)
+        return rows[0] as User
+      } catch (error) {
+        throw new ApolloError(('Failed to add review to user: ' + error) as string, 'INTERNAL_SERVER_ERROR')
+      }
+    },
+
     deleteUser: async (_: unknown, { id }: { id: string }) => {
       try {
         const query = 'DELETE FROM users WHERE id = $1 RETURNING *'
@@ -136,6 +162,18 @@ const UserResolver: Resolvers = {
         }
       } catch (error) {
         throw new Error(error as string)
+      }
+    },
+  },
+
+  User: {
+    reviews: async (user: User) => {
+      try {
+        const query = 'SELECT * FROM reviews WHERE id = ANY($1)'
+        const { rows } = await db.query(query, [user.reviews])
+        return rows
+      } catch (error) {
+        throw new ApolloError(`Failed to fetch reviews: ${error}`, 'INTERNAL_SERVER_ERROR')
       }
     },
   },
