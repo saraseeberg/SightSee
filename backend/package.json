@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "ts-node-dev src/server.ts",
-    "lint": "eslint . && npx prettier --write ."
+    "lint": "eslint . && npx prettier --write .",
+    "build": "tsc -b && cpy src/models/**/* dist/backend/src/models --parents"
   },
   "dependencies": {
     "@graphql-tools/load-files": "^7.0.0",
@@ -26,6 +27,7 @@
     "@types/jsonwebtoken": "^9.0.7",
     "@types/node": "^16.18.114",
     "@types/pg": "^8.11.10",
+    "cpy-cli": "^5.0.0",
     "typescript": "^4.9.5"
   }
 }
