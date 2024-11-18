@@ -1,18 +1,17 @@
 import { Dialog, DialogContent, DialogHeader } from '@/components/ui/dialog'
-import { DialogDescription, DialogTitle, DialogTrigger } from '@radix-ui/react-dialog'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { Icon } from '@iconify/react/dist/iconify.js'
+import { DialogDescription, DialogTitle, DialogTrigger } from '@radix-ui/react-dialog'
+import { useAddReviewToUserMutation, useCreateReviewMutation, User } from '@types'
+import { FC, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { useNavigate } from 'react-router-dom'
+import { z } from 'zod'
+import { ConfettiStars } from '../atoms/ConfettiStars'
 import { Button } from '../ui/button'
 import { Input } from '../ui/input'
-import { Textarea } from '../ui/textarea'
-import { useForm } from 'react-hook-form'
-import { z } from 'zod'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { FC, useState } from 'react'
 import { Label } from '../ui/label'
-import { useCreateReviewMutation } from '@types'
-import { useNavigate } from 'react-router-dom'
-import { User } from '@types'
-import { useAddReviewToUserMutation } from '@types'
+import { Textarea } from '../ui/textarea'
 
 const ReviewSchema = z.object({
   title: z.string().min(1, 'Title is required').max(50, 'Title cannot exceed 50 characters'),
@@ -33,6 +32,7 @@ const ReviewDialog: FC<ReviewDialogProps> = ({ user, destinationId, refetch, onR
   const [addReviewToUser] = useAddReviewToUserMutation()
   const navigate = useNavigate()
   const [isOpen, setIsOpen] = useState(false)
+  const [showConfetti, setShowConfetti] = useState(false)
 
   const {
     register,
@@ -68,7 +68,6 @@ const ReviewDialog: FC<ReviewDialogProps> = ({ user, destinationId, refetch, onR
         console.error('No review ID returned from createReview mutation')
         return
       }
-
       const userID = user?.id
       if (userID) {
         const userResponse = await addReviewToUser({
@@ -81,8 +80,15 @@ const ReviewDialog: FC<ReviewDialogProps> = ({ user, destinationId, refetch, onR
       } else {
         console.error('No user ID found. User may not be logged in.')
       }
+      if (data.rating === 5) {
+        setShowConfetti(true);
+        setTimeout(() => {
+          setShowConfetti(false);
+        }, 500); 
+      }
 
       reset()
+      setUserRating(0);
       refetch()
       onReviewSubmit()
       setIsOpen(false)
@@ -125,7 +131,7 @@ const ReviewDialog: FC<ReviewDialogProps> = ({ user, destinationId, refetch, onR
               {[1, 2, 3, 4, 5].map((star) => (
                 <Icon
                   key={star}
-                  icon={star <= userRating ? 'ic:round-star' : 'ic:round-star-outline'}
+                  icon={star <= userRating ? "ic:round-star" : "ic:round-star-outline"}
                   onClick={() => handleStarClick(star)}
                   className="text-yellow-400 cursor-pointer w-8 h-8 mr-1"
                   aria-label={`Rate ${star} star`}
@@ -148,10 +154,10 @@ const ReviewDialog: FC<ReviewDialogProps> = ({ user, destinationId, refetch, onR
               {...register('description', { required: true })}
             />
           </div>
-
           <Button type="submit" className="w-full">
             Submit Review
           </Button>
+          <ConfettiStars trigger={showConfetti} />
         </form>
       </DialogContent>
     </Dialog>
