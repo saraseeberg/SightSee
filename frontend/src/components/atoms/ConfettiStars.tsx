@@ -39,5 +39,5 @@ export function ConfettiStars({ trigger }: ConfettiStarsProps) {
     }
   }, [trigger]);
 
-  return null; // This component only handles side effects (no visible UI).
+  return null;
 }
