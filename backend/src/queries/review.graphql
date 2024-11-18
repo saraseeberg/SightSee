@@ -17,3 +17,20 @@ query getReviewsByDestinationID($destinationid: ID!) {
     text
   }
 }
+
+query getReviewByUserID($id: ID!) {
+  getReviewsByUserID(id: $id) {
+    id
+    title
+    text
+    rating
+    destinationid
+    destination {
+      id
+      title
+    }
+  }
+}
+
+
+
