@@ -1,9 +1,9 @@
-import { useEffect } from "react";
-import confetti from "canvas-confetti";
+import { useEffect } from 'react'
+import confetti from 'canvas-confetti'
 
 type ConfettiStarsProps = {
-  trigger: boolean;
-};
+  trigger: boolean
+}
 
 export function ConfettiStars({ trigger }: ConfettiStarsProps) {
   useEffect(() => {
@@ -14,30 +14,30 @@ export function ConfettiStars({ trigger }: ConfettiStarsProps) {
         gravity: 0,
         decay: 0.94,
         startVelocity: 30,
-        colors: ["#FFE400", "#FFBD00", "#E89400", "#FFCA6C", "#FDFFB8"],
-      };
+        colors: ['#FFE400', '#FFBD00', '#E89400', '#FFCA6C', '#FDFFB8'],
+      }
 
       const shoot = () => {
         confetti({
           ...defaults,
           particleCount: 40,
           scalar: 1.2,
-          shapes: ["star"],
-        });
+          shapes: ['star'],
+        })
 
         confetti({
           ...defaults,
           particleCount: 10,
           scalar: 0.75,
-          shapes: ["circle"],
-        });
-      };
+          shapes: ['circle'],
+        })
+      }
 
-      setTimeout(shoot, 0);
-      setTimeout(shoot, 100);
-      setTimeout(shoot, 200);
+      setTimeout(shoot, 0)
+      setTimeout(shoot, 100)
+      setTimeout(shoot, 200)
     }
-  }, [trigger]);
+  }, [trigger])
 
-  return null;
+  return null
 }

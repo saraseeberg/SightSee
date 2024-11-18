@@ -81,14 +81,14 @@ const ReviewDialog: FC<ReviewDialogProps> = ({ user, destinationId, refetch, onR
         console.error('No user ID found. User may not be logged in.')
       }
       if (data.rating === 5) {
-        setShowConfetti(true);
+        setShowConfetti(true)
         setTimeout(() => {
-          setShowConfetti(false);
-        }, 500); 
+          setShowConfetti(false)
+        }, 500)
       }
 
       reset()
-      setUserRating(0);
+      setUserRating(0)
       refetch()
       onReviewSubmit()
       setIsOpen(false)
@@ -131,7 +131,7 @@ const ReviewDialog: FC<ReviewDialogProps> = ({ user, destinationId, refetch, onR
               {[1, 2, 3, 4, 5].map((star) => (
                 <Icon
                   key={star}
-                  icon={star <= userRating ? "ic:round-star" : "ic:round-star-outline"}
+                  icon={star <= userRating ? 'ic:round-star' : 'ic:round-star-outline'}
                   onClick={() => handleStarClick(star)}
                   className="text-yellow-400 cursor-pointer w-8 h-8 mr-1"
                   aria-label={`Rate ${star} star`}

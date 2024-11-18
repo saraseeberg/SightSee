@@ -46,10 +46,13 @@ const Profile = () => {
           className="row-span-2 max-md:row-start-2 max-md:col-span-2"
         >
           <ul className="flex flex-col gap-2  rounded-md h-48 overflow-y-scroll scroll">
-            {data?.getReviewsByUserID?.slice().reverse().map((review) => (
-              // Change with a ReviewCard component
-              <SmallReviewCard review={review as Review} />
-            ))}
+            {data?.getReviewsByUserID
+              ?.slice()
+              .reverse()
+              .map((review) => (
+                // Change with a ReviewCard component
+                <SmallReviewCard review={review as Review} />
+              ))}
           </ul>
         </StatisticsCard>
         <StatisticsCard
