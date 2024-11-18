@@ -2,9 +2,14 @@ import { ApolloServer } from 'apollo-server-express'
 import express from 'express'
 import { loadFilesSync } from '@graphql-tools/load-files'
 import { mergeResolvers, mergeTypeDefs } from '@graphql-tools/merge'
+import cors from 'cors'
+import AdminResolver from './resolvers/adminResolver'
+import DestinationResolver from './resolvers/destinationResolver'
+import reviewResolver from './resolvers/reviewResolver'
+import UserResolver from './resolvers/userResolver'
 
-const typesArray = loadFilesSync('./src/models/*.graphql')
-const resolversArray = loadFilesSync('./src/resolvers/*.ts')
+const typesArray = loadFilesSync(__dirname +'/models/*.graphql')
+const resolversArray = [AdminResolver, DestinationResolver, reviewResolver, UserResolver]
 
 export const typeDefs = mergeTypeDefs(typesArray)
 export const resolvers = mergeResolvers(resolversArray)
@@ -15,15 +20,18 @@ const startServer = async () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const app = express() as any
 
+  app.use(cors())
+
   const server = new ApolloServer({
     typeDefs,
     resolvers,
+    cache: "bounded",
   })
   await server.start()
   server.applyMiddleware({ app })
-  app.listen({ port: 4000 }, () => {
+  app.listen({ port: 3001 }, () => {
     console.log('\x1b[35m--------------------------------- \n')
-    console.log('🚀 Server is running on http://localhost:4000/graphql\n')
+    console.log('🚀 Server is running on http://localhost:3001/graphql\n')
     console.log('--------------------------------- \x1b[0m\n')
   })
 }
