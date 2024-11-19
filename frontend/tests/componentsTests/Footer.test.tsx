@@ -10,16 +10,11 @@ describe('Footer Component', () => {
     render(
       <MemoryRouter>
         <Footer />
-      </MemoryRouter>
+      </MemoryRouter>,
     )
-    
-    //Sjekker om teksten er rendret
+
     expect(screen.getByText("Don't miss out on our newsletter")).toBeInTheDocument()
-
-    //Sjekker at input felt for mail er til stede
     expect(screen.getByPlaceholderText('Your Email')).toBeInTheDocument()
-
-    //Sjekker at abonnere button er til stede
     expect(screen.getByRole('button', { name: /subscribe/i })).toBeInTheDocument()
   })
 })

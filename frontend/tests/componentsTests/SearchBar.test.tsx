@@ -6,7 +6,7 @@ import SearchBar from '../../src/components/SearchBar'
 import React from 'react'
 
 const mockApolloClient = new ApolloClient({
-  uri: 'https://mockapi', 
+  uri: 'https://mockapi',
   cache: new InMemoryCache(),
 })
 
@@ -17,7 +17,7 @@ describe('SearchBar Component', () => {
         <BrowserRouter>
           <SearchBar />
         </BrowserRouter>
-      </ApolloProvider>
+      </ApolloProvider>,
     )
 
     expect(screen.getByPlaceholderText('Search...')).toBeInTheDocument()
