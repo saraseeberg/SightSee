@@ -8,7 +8,7 @@ import DestinationResolver from './resolvers/destinationResolver'
 import reviewResolver from './resolvers/reviewResolver'
 import UserResolver from './resolvers/userResolver'
 
-const typesArray = loadFilesSync(__dirname +'/models/*.graphql')
+const typesArray = loadFilesSync(__dirname + '/models/*.graphql')
 const resolversArray = [AdminResolver, DestinationResolver, reviewResolver, UserResolver]
 
 export const typeDefs = mergeTypeDefs(typesArray)
@@ -25,7 +25,7 @@ const startServer = async () => {
   const server = new ApolloServer({
     typeDefs,
     resolvers,
-    cache: "bounded",
+    cache: 'bounded',
   })
   await server.start()
   server.applyMiddleware({ app })

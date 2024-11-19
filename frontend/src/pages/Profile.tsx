@@ -5,7 +5,6 @@ import { useAuth } from '@/lib/context/auth-context'
 import { Review, useGetReviewByUserIdQuery } from '@types'
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useGetReviewsByUserIdQuery } from '@types'
 
 const Profile = () => {
   const navigate = useNavigate()
