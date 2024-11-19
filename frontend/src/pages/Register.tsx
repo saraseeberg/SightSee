@@ -3,7 +3,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/com
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Icon } from '@iconify/react/dist/iconify.js'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -32,16 +32,21 @@ export type RegisterWriteSchema = z.infer<typeof RegisterSchema>
 
 function Register() {
   const { registerUser } = useAuth()
+  const navigate = useNavigate()
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors },
   } = useForm<RegisterWriteSchema>({
     resolver: zodResolver(RegisterSchema),
   })
 
   const onSubmit = async (data: RegisterWriteSchema) => {
-    await registerUser(data.name, data.username, data.password)
+    const { error } = await registerUser(data.name, data.username, data.password)
+    if (error) {
+      setError('root', { message: error })
+    } else navigate('/')
   }
 
   return (

@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - VM-branch
 
 jobs:
   deploy:
@@ -20,11 +19,9 @@ jobs:
         with:
           node-version: '22.8.0'
 
-      - name: Install and Build Frontend
-        working-directory: frontend
+      - name: Install common dependencies
         run: |
           npm install
-          npm run build
 
       - name: Install and Build Backend
         working-directory: backend
@@ -37,18 +34,26 @@ jobs:
           npm install
           npm run build
 
+      - name: Install and Build Frontend
+        working-directory: frontend
+        env:
+          VITE_BACKEND_URL: ${{ secrets.VITE_BACKEND_URL }}
+        run: |
+          npm install
+          npm run build
+
       - name: Deploy Frontend
         run: |
           rsync -av --delete --exclude='.htaccess' ./frontend/dist/ /var/www/html/project2/
 
       - name: Deploy Backend
         run: |
-          pm2 delete "apollo-express-server" || true
+          pm2 delete "backend-server" || true
 
           cat <<EOF > ecosystem.config.js
           module.exports = {
             apps: [{
-              name: 'apollo-express-server',
+              name: 'backend-server',
               script: './backend/dist/backend/src/server.js',
               env: {
                 DB_USER: '${{ secrets.DB_USER }}',

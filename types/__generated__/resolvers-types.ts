@@ -183,6 +183,7 @@ export type QueryGetUsersByIdArgs = {
 
 export type Review = {
   __typename?: 'Review'
+  destination: Destination
   destinationid: Scalars['ID']['output']
   id: Scalars['ID']['output']
   rating: Scalars['Int']['output']
@@ -504,6 +505,7 @@ export type ReviewResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['Review'] = ResolversParentTypes['Review'],
 > = ResolversObject<{
+  destination?: Resolver<ResolversTypes['Destination'], ParentType, ContextType>
   destinationid?: Resolver<ResolversTypes['ID'], ParentType, ContextType>
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>
   rating?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
@@ -674,6 +676,23 @@ export type GetReviewsByDestinationIdQuery = {
     title: string
     username: string
     text: string
+  }> | null
+}
+
+export type GetReviewByUserIdQueryVariables = Exact<{
+  id: Scalars['ID']['input']
+}>
+
+export type GetReviewByUserIdQuery = {
+  __typename?: 'Query'
+  getReviewsByUserID?: Array<{
+    __typename?: 'Review'
+    id: string
+    title: string
+    text: string
+    rating: number
+    destinationid: string
+    destination: { __typename?: 'Destination'; id: string; title: string }
   }> | null
 }
 
@@ -1173,6 +1192,69 @@ export type GetReviewsByDestinationIdQueryResult = Apollo.QueryResult<
   GetReviewsByDestinationIdQuery,
   GetReviewsByDestinationIdQueryVariables
 >
+export const GetReviewByUserIdDocument = gql`
+  query getReviewByUserID($id: ID!) {
+    getReviewsByUserID(id: $id) {
+      id
+      title
+      text
+      rating
+      destinationid
+      destination {
+        id
+        title
+      }
+    }
+  }
+`
+
+/**
+ * __useGetReviewByUserIdQuery__
+ *
+ * To run a query within a React component, call `useGetReviewByUserIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetReviewByUserIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetReviewByUserIdQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetReviewByUserIdQuery(
+  baseOptions: Apollo.QueryHookOptions<GetReviewByUserIdQuery, GetReviewByUserIdQueryVariables> &
+    ({ variables: GetReviewByUserIdQueryVariables; skip?: boolean } | { skip: boolean }),
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useQuery<GetReviewByUserIdQuery, GetReviewByUserIdQueryVariables>(GetReviewByUserIdDocument, options)
+}
+export function useGetReviewByUserIdLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<GetReviewByUserIdQuery, GetReviewByUserIdQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useLazyQuery<GetReviewByUserIdQuery, GetReviewByUserIdQueryVariables>(
+    GetReviewByUserIdDocument,
+    options,
+  )
+}
+export function useGetReviewByUserIdSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<GetReviewByUserIdQuery, GetReviewByUserIdQueryVariables>,
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions }
+  return Apollo.useSuspenseQuery<GetReviewByUserIdQuery, GetReviewByUserIdQueryVariables>(
+    GetReviewByUserIdDocument,
+    options,
+  )
+}
+export type GetReviewByUserIdQueryHookResult = ReturnType<typeof useGetReviewByUserIdQuery>
+export type GetReviewByUserIdLazyQueryHookResult = ReturnType<typeof useGetReviewByUserIdLazyQuery>
+export type GetReviewByUserIdSuspenseQueryHookResult = ReturnType<typeof useGetReviewByUserIdSuspenseQuery>
+export type GetReviewByUserIdQueryResult = Apollo.QueryResult<GetReviewByUserIdQuery, GetReviewByUserIdQueryVariables>
 export const CreateUserDocument = gql`
   mutation createUser($username: String!, $password: String!, $name: String!) {
     createUser(username: $username, password: $password, name: $name) {
