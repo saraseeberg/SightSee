@@ -108,15 +108,26 @@ Make sure you have [Node.js](https://nodejs.org/) and [npm](https://www.npmjs.co
 
 ## How To Test
 
+### End to end tests
+
 How to run the tests in development mode, follow these steps:
 
 1.  Run both the backend and frontend,
     see **step 3 and 4 under the "How To Run"** section
-2.  **Open a `new ternimal` and run the e2e test**:
+2.  **Open a `new terminal` and run the e2e test**:
 
     ```bash
     npx cypress open
     ```
+### Components tests
+Open a terminal and navigate to the frontend file:
+```bash
+    cd frontend
+```
+Then run the tests from there:
+```bash
+    npm run test
+```
 
 ## Design and Technology Choices
 
