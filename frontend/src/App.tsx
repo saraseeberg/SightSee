@@ -1,4 +1,4 @@
-import { HashRouter, Route, Routes } from 'react-router-dom'
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import CenterLayout from './layouts/CenterLayout'
 import MainLayout from './layouts/MainLayout'
 import Browse from './pages/Browse'
@@ -11,11 +11,39 @@ import DestinationDetailsPage from './pages/DestinationDetail'
 import { AuthProvider } from './lib/context/auth-context'
 
 // The app uses a hashrouter, therefore navigating to different routes use /#/Browse or /#/Search
+
+const router = createBrowserRouter(
+  [
+    {
+      path: '/*',
+      element: <MainLayout />,
+      children: [
+        { index: true, element: <Home /> },
+        { path: 'browse', element: <Browse /> },
+        { path: 'destination/:id', element: <DestinationDetailsPage /> },
+        { path: 'profile', element: <Profile /> },
+      ],
+    },
+    {
+      path: '/*',
+      element: <CenterLayout />,
+      children: [
+        { path: 'login', element: <Login /> },
+        { path: 'register', element: <Register /> },
+        { path: '*', element: <Error404 /> },
+      ],
+    },
+  ],
+  {
+    basename: '/project2',
+  },
+)
+
 function App() {
   return (
-    <HashRouter>
-      <AuthProvider>
-        <Routes>
+    <AuthProvider>
+      <RouterProvider router={router} />
+      {/* <Routes>
           <Route path="/" element={<MainLayout />}>
             <Route index element={<Home />} />
             <Route path="/browse" element={<Browse />} />
@@ -27,9 +55,8 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path="*" element={<Error404 />} />
           </Route>
-        </Routes>
-      </AuthProvider>
-    </HashRouter>
+        </Routes> */}
+    </AuthProvider>
   )
 }
 

@@ -6,7 +6,7 @@ import { useAuth } from '@/lib/context/auth-context'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Icon } from '@iconify/react/dist/iconify.js'
 import { useForm } from 'react-hook-form'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { z } from 'zod'
 
 const LoginSchema = z.object({
@@ -18,6 +18,7 @@ export type LoginWriteSchema = z.infer<typeof LoginSchema>
 
 function Login() {
   const { loginUser } = useAuth()
+  const navigate = useNavigate()
   const {
     register,
     handleSubmit,
@@ -36,7 +37,7 @@ function Login() {
     console.log(error)
     if (error) {
       setError('root', { message: 'Username or password is incorrect' })
-    }
+    } else navigate('/')
   }
 
   return (

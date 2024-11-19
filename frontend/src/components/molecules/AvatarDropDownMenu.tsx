@@ -8,13 +8,14 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
 } from '../ui/dropdown-menu'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { profileMenuLinks } from '@/lib/data/profileMenuLinks'
 import { Button } from '../ui/button'
 import { useAuth } from '@/lib/context/auth-context'
 
 const AvatarDropDownMenu = () => {
   const { isLoggedIn, logout, user } = useAuth()
+  const navigate = useNavigate()
 
   if (!isLoggedIn || !user) {
     return <Button href="/login">Logg inn</Button>
@@ -51,7 +52,10 @@ const AvatarDropDownMenu = () => {
         <DropdownMenuSeparator />
         <DropdownMenuItem>
           <button
-            onClick={logout}
+            onClick={() => {
+              logout()
+              navigate('/')
+            }}
             className="flex gap-2 items-center hover:bg-accent-1 w-full px-3 py-2 rounded-md group hover:text-white"
           >
             <Icon icon="mdi:logout" className="group-hover:translate-x-1 duration-200 transition-all" />
