@@ -18,6 +18,18 @@ const reviewResolver: ReviewResolvers = {
       const { rows } = await db.query(query, [destinationid])
       return rows
     },
+    getReviewsByUserID: async (_: unknown, { id }: { id: string }) => {
+      const query = 'SELECT * FROM reviews WHERE username = $1'
+      const { rows } = await db.query(query, [id])
+      return rows
+    },
+  },
+  Review: {
+    destination: async (review: Review) => {
+      const query = 'SELECT * FROM destinations WHERE id = $1'
+      const { rows } = await db.query(query, [review.destinationid])
+      return rows[0]
+    },
   },
 
   Mutation: {
