@@ -119,12 +119,17 @@ How to run the tests in development mode, follow these steps:
     ```bash
     npx cypress open
     ```
+
 ### Components tests
+
 Open a terminal and navigate to the frontend file:
+
 ```bash
     cd frontend
 ```
+
 Then run the tests from there:
+
 ```bash
     npm run test
 ```

@@ -3,6 +3,7 @@ import { render, screen } from '@testing-library/react'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import HeroCarousel from '../../../src/components/molecules/HeroCarousel'
 import { carouselData } from '../../../src/lib/data/heroCarouselData'
+import '@testing-library/jest-dom'
 
 vi.mock('../../../src/components/ui/carousel', () => ({
   Carousel: ({ children }: { children: React.ReactNode }) => <div data-testid="carousel">{children}</div>,

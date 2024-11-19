@@ -2,6 +2,7 @@ import React from 'react'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { describe, it, expect, vi } from 'vitest'
 import CategoryDropdown from '../../../src/components/molecules/CategoryDropdown'
+import '@testing-library/jest-dom'
 
 describe('CategoryDropdown', () => {
   const mockOnSelectCategory = vi.fn()

@@ -2,6 +2,7 @@ import React from 'react'
 import { render, screen } from '@testing-library/react'
 import { describe, it, expect, vi } from 'vitest'
 import StarRating from '../../../src/components/molecules/StarRating'
+import '@testing-library/jest-dom'
 
 vi.mock('@iconify/react', () => ({
   Icon: ({ icon, className, 'data-testid': testId }: { icon: string; className: string; 'data-testid': string }) => (

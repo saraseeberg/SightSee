@@ -2,6 +2,7 @@ import React from 'react'
 import { render, screen } from '@testing-library/react'
 import { describe, it, expect, vi } from 'vitest'
 import StatisticsCard from '../../../src/components/molecules/StatisticsCard'
+import '@testing-library/jest-dom'
 
 vi.mock('../../../src/components/ui/number-ticker', () => ({
   default: ({ value }: { value: number }) => <span>{value}</span>,

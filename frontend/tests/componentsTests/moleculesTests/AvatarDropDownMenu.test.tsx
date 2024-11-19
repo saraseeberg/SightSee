@@ -4,6 +4,7 @@ import { describe, it, expect, vi, Mock } from 'vitest'
 import AvatarDropDownMenu from '../../../src/components/molecules/AvatarDropDownMenu'
 import { useAuth } from '../../../src/lib/context/auth-context'
 import { BrowserRouter } from 'react-router-dom'
+import '@testing-library/jest-dom'
 
 vi.mock('../../../src/lib/context/auth-context', () => ({
   useAuth: vi.fn(),

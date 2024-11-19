@@ -2,6 +2,7 @@ import React from 'react'
 import { render, screen } from '@testing-library/react'
 import { describe, it, expect, vi } from 'vitest'
 import SortingDropdown from '../../../src/components/molecules/SortingDropdown'
+import '@testing-library/jest-dom'
 
 describe('SortingDropdown', () => {
   const mockOnSelectedSorting = vi.fn()

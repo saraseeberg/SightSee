@@ -2,6 +2,7 @@ import React from 'react'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { describe, it, expect, vi } from 'vitest'
 import BrowseCard from '../../../src/components/molecules/BrowseCard'
+import '@testing-library/jest-dom'
 
 vi.mock('@iconify/react', () => ({
   Icon: vi.fn(({ icon }: { icon: string }) => <span data-testid={`icon-${icon}`} />),

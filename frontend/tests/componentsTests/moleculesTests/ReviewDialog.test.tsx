@@ -4,6 +4,7 @@ import { describe, it, vi, beforeEach, expect } from 'vitest'
 import { BrowserRouter as Router } from 'react-router-dom'
 import { MockedProvider } from '@apollo/client/testing'
 import ReviewDialog from '../../../src/components/molecules/ReviewDialog'
+import '@testing-library/jest-dom'
 
 const mockRefetch = vi.fn()
 const mockOnReviewSubmit = vi.fn()
