@@ -13,15 +13,20 @@ const StarRating: React.FC<StarRatingProps> = ({ rating }) => {
     <div className="flex items-center mb-1 mt-0">
       {/* Render full stars */}
       {[...Array(fullStars)].map((_, i) => (
-        <Icon key={`full-${i}`} icon="ic:round-star" className="text-yellow-400 w-6 h-6" />
+        <Icon key={`full-${i}`} icon="ic:round-star" className="text-yellow-400 w-6 h-6" data-testid="full-star" />
       ))}
 
       {/* Render half star if necessary */}
-      {hasHalfStar && <Icon icon="ic:round-star-half" className="text-yellow-400 w-6 h-6" />}
+      {hasHalfStar && <Icon icon="ic:round-star-half" className="text-yellow-400 w-6 h-6" data-testid="half-star" />}
 
       {/* Render empty stars */}
       {[...Array(emptyStars)].map((_, i) => (
-        <Icon key={`empty-${i}`} icon="ic:round-star-outline" className="text-yellow-400 w-6 h-6" />
+        <Icon
+          key={`empty-${i}`}
+          icon="ic:round-star-outline"
+          className="text-yellow-400 w-6 h-6"
+          data-testid="empty-star"
+        />
       ))}
     </div>
   )
