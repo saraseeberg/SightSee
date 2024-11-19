@@ -17,7 +17,7 @@ const BrowseCard: React.FC<CardDataProps> = ({ card, onClick, ...props }) => {
       <Card className="overflow-hidden p-0">
         <CardContent className="relative p-0">
           <figure className="relative">
-            <img src={card.image} alt={card.alt} className="w-full h-96 object-cover" />
+            <img src={card.image || ''} alt={card.alt || 'Image'} className="w-full h-96 object-cover" />
             <figcaption className="sr-only">{card.title}</figcaption>
             <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-90"></div>
             <div className="absolute bottom-2 w-full pl-2 pr-2 text-white">
