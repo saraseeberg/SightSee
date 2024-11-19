@@ -1,6 +1,5 @@
 import { useCreateUserMutation, useLoginMutation, User } from '@types'
 import { createContext, useContext, useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 
 type AuthContextType = {
   user: User | null
@@ -16,7 +15,6 @@ type Props = { children: React.ReactNode }
 const AuthContext = createContext<AuthContextType>({} as AuthContextType)
 
 const AuthProvider = ({ children }: Props) => {
-  const navigate = useNavigate()
   const [createUser] = useCreateUserMutation()
   const [login] = useLoginMutation()
   const [user, setUser] = useState<User | null>(null)
@@ -53,7 +51,6 @@ const AuthProvider = ({ children }: Props) => {
       setToken(token)
       localStorage.setItem('user', JSON.stringify(user))
       localStorage.setItem('token', token)
-      navigate('/')
       return {}
     } catch (error) {
       return { error: error as string }
@@ -79,7 +76,6 @@ const AuthProvider = ({ children }: Props) => {
       setToken(token)
       localStorage.setItem('user', JSON.stringify(user))
       localStorage.setItem('token', token)
-      navigate('/')
       return {}
     } catch (error: unknown) {
       return { error: error as string }
@@ -95,7 +91,6 @@ const AuthProvider = ({ children }: Props) => {
     setToken(null)
     localStorage.removeItem('user')
     localStorage.removeItem('token')
-    navigate('/')
   }
 
   return (

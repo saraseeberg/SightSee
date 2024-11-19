@@ -1,4 +1,4 @@
-import { createBrowserRouter, HashRouter, Route, RouterProvider, Routes } from 'react-router-dom'
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import CenterLayout from './layouts/CenterLayout'
 import MainLayout from './layouts/MainLayout'
 import Browse from './pages/Browse'
