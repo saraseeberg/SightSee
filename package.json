@@ -11,7 +11,6 @@
     "build": "npm run build --workspace frontend",
     "lint": "eslint . && npx prettier --write .",
     "generate-types": "graphql-codegen --config codegen.yml",
-    "prepare": "husky install",
     "cypress:open": "npx cypress open"
   },
   "dependencies": {
@@ -28,7 +27,6 @@
     "embla-carousel-react": "^8.3.0",
     "framer-motion": "^11.10.0",
     "graphql": "^16.9.0",
-    "i": "^0.3.7",
     "lucide-react": "^0.447.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -59,7 +57,6 @@
     "eslint-plugin-react-refresh": "^0.4.9",
     "globals": "^15.9.0",
     "graphql": "^16.9.0",
-    "husky": "^9.1.6",
     "jsdom": "^25.0.1",
     "lint-staged": "^15.2.10",
     "postcss": "^8.4.47",
@@ -73,6 +70,5 @@
   "lint-staged": {
     "*.js": "eslint --cache --fix",
     "*.{ts, tsx}": "prettier --write"
-  },
-  "type": "module"
+  }
 }
