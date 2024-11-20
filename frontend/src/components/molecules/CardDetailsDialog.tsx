@@ -4,13 +4,13 @@ import { Link } from 'react-router-dom'
 import StarRating from './StarRating'
 import { Button } from '@/components/ui/button'
 import { Destination } from '@types'
+import SaveToggle from '@/components/atoms/SaveToggle'
 
 type CardDetailsDialogProps = {
   selectedCard: Partial<Destination> | null
   openDialog: boolean
   setOpenDialog: (open: boolean) => void
 }
-
 const CardDetailsDialog: React.FC<CardDetailsDialogProps> = ({ selectedCard, openDialog, setOpenDialog }) => {
   if (!selectedCard) return null
 
@@ -20,7 +20,10 @@ const CardDetailsDialog: React.FC<CardDetailsDialogProps> = ({ selectedCard, ope
         <article className="flex">
           <img src={selectedCard.image} alt={selectedCard.title} className="w-48 h-64 object-cover" />
           <div className="flex flex-col gap-2 ml-4">
-            <DialogTitle className="text-xl text-content">{selectedCard.title}</DialogTitle>
+            <div className="flex flex-row gap-1">
+              <DialogTitle className="text-xl text-content">{selectedCard.title}</DialogTitle>
+              {selectedCard.id && <SaveToggle destinationId={selectedCard.id} />}
+            </div>
             <DialogDescription className="text-base">
               {selectedCard.region}, {selectedCard.country}
             </DialogDescription>
