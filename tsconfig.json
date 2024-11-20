@@ -3,7 +3,6 @@
     "composite": true,
     "baseUrl": ".",
     "paths": {
-      "@types": ["types/__generated__/resolvers-types.ts"],
       "@backend/*": ["backend/src/*"],
       "@frontend/*": ["frontend/src/*"]
     }

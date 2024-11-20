@@ -16,7 +16,7 @@ import {
 } from '@/components/ui/pagination'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Icon } from '@iconify/react/dist/iconify.js'
-import { Destination, useGetAllDestinationsQuery } from '@types'
+import { Destination, useGetAllDestinationsQuery } from '@Types/__generated__/resolvers-types'
 import { useEffect, useState } from 'react'
 import { useLocation, useSearchParams } from 'react-router-dom'
 

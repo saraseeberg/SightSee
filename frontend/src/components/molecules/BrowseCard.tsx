@@ -1,6 +1,6 @@
 import { Card, CardContent } from '@components/ui/card'
 import { Icon } from '@iconify/react'
-import { Destination } from '@types'
+import { Destination } from '@Types/__generated__/resolvers-types'
 
 export type CardDataProps = {
   className?: string

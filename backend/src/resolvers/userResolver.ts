@@ -1,8 +1,9 @@
-import { LoginInput, Resolvers, User, UserInput } from '@types'
+import { LoginInput, Resolvers, User, UserInput } from '@Types/__generated__/resolvers-types'
 import db from '../db'
 import bcrypt from 'bcrypt'
 import { ApolloError, AuthenticationError } from 'apollo-server-express'
 import jwt from 'jsonwebtoken'
+import { EditUserSchema } from '@Types/schema/editUserSchema'
 
 const UserResolver: Resolvers = {
   Query: {
@@ -31,7 +32,7 @@ const UserResolver: Resolvers = {
     getReviewsByUserID: async (_: unknown, { id }: { id: string }) => {
       try {
         const query = `
-          SELECT * FROM reviews 
+          SELECT * FROM reviews
           WHERE id = ANY(
             SELECT UNNEST(reviews) FROM users WHERE id = $1
           )
@@ -87,6 +88,8 @@ const UserResolver: Resolvers = {
 
     updateUser: async (_: unknown, { user }: { user: UserInput }) => {
       try {
+
+        EditUserSchema.parse(user)
         const query =
           'UPDATE users SET name = $2, username = $3, hashedpassword = $4, reviews = $5, favorites = $6 WHERE id = $1 RETURNING *'
         console.log('Updating user with id: ', user.id)
