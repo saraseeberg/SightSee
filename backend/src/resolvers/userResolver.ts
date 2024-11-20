@@ -42,6 +42,20 @@ const UserResolver: Resolvers = {
         throw new ApolloError(`Failed to fetch reviews: ${error}`, 'INTERNAL_SERVER_ERROR')
       }
     },
+    getFavoritesByUserID: async (_: unknown, { id }: { id: string }) => {
+      try {
+        const query = `
+          SELECT * FROM destinations 
+          WHERE id = ANY(
+            SELECT UNNEST(favorites) FROM users WHERE id = $1
+          )
+        `
+        const { rows } = await db.query(query, [id])
+        return rows
+      } catch (error) {
+        throw new ApolloError(`Failed to fetch favorites: ${error}`, 'INTERNAL_SERVER_ERROR')
+      }
+    },
   },
 
   Mutation: {
@@ -114,6 +128,69 @@ const UserResolver: Resolvers = {
         return rows[0] as User
       } catch (error) {
         throw new ApolloError(('Failed to add review to user: ' + error) as string, 'INTERNAL_SERVER_ERROR')
+      }
+    },
+
+    addFavoriteToUser: async (_: unknown, { userID, destinationID }: { userID: string; destinationID: string }) => {
+      try {
+        const addFavoriteQuery = `
+          UPDATE users 
+          SET favorites = array_append(favorites, $2) 
+          WHERE id = $1 
+          RETURNING *
+        `
+        console.log('Adding favorite to user with id:', userID)
+        const { rows: userRows } = await db.query(addFavoriteQuery, [userID, destinationID])
+        const user = userRows[0]
+
+        // Fetch the full Destination objects for the updated favorites
+        const getFavoritesQuery = `
+          SELECT * 
+          FROM destinations 
+          WHERE id = ANY($1)
+        `
+        const { rows: favorites } = await db.query(getFavoritesQuery, [user.favorites])
+        console.log('Fetched favorites:', favorites)
+
+        // Attach the resolved favorites to the user object
+        return {
+          ...user,
+          favorites,
+        }
+      } catch (error) {
+        throw new ApolloError('Failed to add favorite to user: ' + error, 'INTERNAL_SERVER_ERROR')
+      }
+    },
+
+    removeFavoriteFromUser: async (
+      _: unknown,
+      { userID, destinationID }: { userID: string; destinationID: string },
+    ) => {
+      try {
+        const removeFavoriteQuery = `
+          UPDATE users 
+          SET favorites = array_remove(favorites, $2) 
+          WHERE id = $1 
+          RETURNING *;
+        `
+        console.log('Removing favorite from user with id:', userID)
+        const { rows: userRows } = await db.query(removeFavoriteQuery, [userID, destinationID])
+        const user = userRows[0]
+
+        const getFavoritesQuery = `
+          SELECT * 
+          FROM destinations 
+          WHERE id = ANY($1);
+        `
+        const { rows: favorites } = await db.query(getFavoritesQuery, [user.favorites])
+        console.log('Updated favorites:', favorites)
+
+        return {
+          ...user,
+          favorites,
+        }
+      } catch (error) {
+        throw new ApolloError('Failed to remove favorite from user: ' + error, 'INTERNAL_SERVER_ERROR')
       }
     },
 

@@ -28,6 +28,22 @@ mutation addReviewToUser($userID: ID!, $reviewID: ID!) {
   }
 }
 
+mutation addFavoriteToUser($userID: ID!, $destinationID: ID!) {
+  addFavoriteToUser(userID: $userID, destinationID: $destinationID) {
+    id
+    name
+    username
+  }
+}
+
+mutation removeFavoriteFromUser($userID: ID!, $destinationID: ID!) {
+  removeFavoriteFromUser(userID: $userID, destinationID: $destinationID) {
+    id
+    name
+    username
+  }
+}
+
 query getReviewsByUserID($id: ID!) {
   getReviewsByUserID(id: $id) {
     id
@@ -36,5 +52,18 @@ query getReviewsByUserID($id: ID!) {
     rating
     username
     destinationid
+  }
+}
+
+query getFavoritesByUserID($id: ID!) {
+  getFavoritesByUserID(id: $id) {
+    id
+    title
+    region
+    rating
+    description
+    image
+    alt
+    country
   }
 }
