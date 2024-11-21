@@ -1,30 +1,22 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { Icon } from '@iconify/react'
 import { useAuth } from '@/lib/context/auth-context'
-import { useAddFavoriteToUserMutation, useRemoveFavoriteFromUserMutation, useGetFavoritesByUserIdQuery } from '@types'
+import { useAddFavoriteToUserMutation, useRemoveFavoriteFromUserMutation } from '@types'
+import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from '@radix-ui/react-tooltip'
 
 type SaveToggleProps = {
   destinationId: string
   onToggle?: (isSaved: boolean) => void
+  isInitiallySaved: boolean
+  className?: string
 }
 
-const SaveToggle: React.FC<SaveToggleProps> = ({ destinationId, onToggle }) => {
+const SaveToggle: React.FC<SaveToggleProps> = ({ destinationId, isInitiallySaved, onToggle, className }) => {
   const { user } = useAuth()
-  const [isSaved, setIsSaved] = useState(false)
+  const [isSaved, setIsSaved] = useState(isInitiallySaved)
 
   const [addFavorite] = useAddFavoriteToUserMutation()
   const [removeFavorite] = useRemoveFavoriteFromUserMutation()
-  const { data, loading, error } = useGetFavoritesByUserIdQuery({
-    variables: { id: user?.id || '' },
-    skip: !user,
-  })
-
-  useEffect(() => {
-    if (data?.getFavoritesByUserID && !loading) {
-      const isDestinationSaved = data.getFavoritesByUserID.some((favorite) => favorite.id === destinationId)
-      setIsSaved(isDestinationSaved)
-    }
-  }, [data, loading, destinationId])
 
   const handleSaveToggle = async () => {
     if (!user) return
@@ -33,44 +25,35 @@ const SaveToggle: React.FC<SaveToggleProps> = ({ destinationId, onToggle }) => {
 
     try {
       if (newSaveState) {
-        const response = await addFavorite({
-          variables: { userID: user.id, destinationID: destinationId },
-        })
-        if (response.errors) {
-          console.error('Error adding favorite:', response.errors)
-          return
-        }
+        await addFavorite({ variables: { userID: user.id, destinationID: destinationId } })
       } else {
-        const response = await removeFavorite({
-          variables: { userID: user.id, destinationID: destinationId },
-        })
-        if (response.errors) {
-          console.error('Error removing favorite:', response.errors)
-          return
-        }
+        await removeFavorite({ variables: { userID: user.id, destinationID: destinationId } })
       }
 
       setIsSaved(newSaveState)
-      if (onToggle) {
-        onToggle(newSaveState)
-      }
-    } catch (err) {
-      console.error('Error toggling save state:', err)
+      if (onToggle) onToggle(newSaveState)
+    } catch (error) {
+      console.error('Error toggling save state:', error)
     }
   }
 
-  if (!user || loading) return null
-  if (error) {
-    console.error('Error fetching favorites:', error)
-    return null
-  }
-
   return (
-    <Icon
-      icon={isSaved ? 'ic:baseline-bookmark' : 'ic:baseline-bookmark-border'}
-      className="text-content size-7 cursor-pointer"
-      onClick={handleSaveToggle}
-    />
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger>
+          <Icon
+            icon={isSaved ? 'ic:baseline-bookmark' : 'ic:baseline-bookmark-border'}
+            className={`cursor-pointer ${className}`}
+            onClick={handleSaveToggle}
+          />
+        </TooltipTrigger>
+        <TooltipContent
+          className="text-background bg-content text-sm pl-2 pr-2 rounded-md"
+        >
+          {isSaved ? 'Remove from saved destinations' : 'Save this destination'}
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
   )
 }
 
