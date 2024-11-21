@@ -1,8 +1,9 @@
 import SmallReviewCard from '@/components/atoms/SmallReviewCard'
 import StatisticsCard from '@/components/molecules/StatisticsCard'
+import SmallSavedDestinationCard from '@/components/atoms/SmallSavedDestinationCard'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { useAuth } from '@/lib/context/auth-context'
-import { Review, useGetReviewByUserIdQuery } from '@types'
+import { Review, useGetReviewByUserIdQuery, useGetFavoritesByUserIdQuery } from '@types'
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
@@ -11,6 +12,9 @@ const Profile = () => {
   const burgersEaten = localStorage.getItem('eatenBurger') || 0
   const { user } = useAuth()
   const { data } = useGetReviewByUserIdQuery({
+    variables: { id: user?.id as string },
+  })
+  const { data: favoritesData } = useGetFavoritesByUserIdQuery({
     variables: { id: user?.id as string },
   })
 
@@ -42,17 +46,14 @@ const Profile = () => {
         />
         <StatisticsCard
           title="Recent reviews"
-          description="List of yout recent reviews"
+          description="List of your recent reviews"
           className="row-span-2 max-md:row-start-2 max-md:col-span-2"
         >
           <ul className="flex flex-col gap-2  rounded-md h-48 overflow-y-scroll scroll">
             {data?.getReviewsByUserID
               ?.slice()
               .reverse()
-              .map((review) => (
-                // Change with a ReviewCard component
-                <SmallReviewCard review={review as Review} />
-              ))}
+              .map((review) => <SmallReviewCard review={review as Review} />)}
           </ul>
         </StatisticsCard>
         <StatisticsCard
@@ -60,6 +61,19 @@ const Profile = () => {
           description="Burgers eaten. If you know you know"
           number={burgersEaten as number}
         ></StatisticsCard>
+      </section>
+      <section className="w-full">
+        <StatisticsCard
+          title="Saved Destinations"
+          description="List of your saved destinations"
+          className="row-span-2 max-md:row-start-2 max-md:col-span-2"
+        >
+          <ul className="grid grid-cols-1 lg:grid-cols-2 gap-4 rounded-md overflow-y-scroll max-h-72 p-2">
+            {favoritesData?.getFavoritesByUserID?.map((destination) => (
+              <SmallSavedDestinationCard destination={destination} />
+            ))}
+          </ul>
+        </StatisticsCard>
       </section>
     </main>
   )
