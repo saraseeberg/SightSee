@@ -5,9 +5,9 @@ export const profileMenuLinks = [
     href: '/profile',
   },
   {
-    title: 'Saved Destinations',
-    icon: 'ic:baseline-airplane-ticket',
-    href: '/profile/saved',
+    title: 'Settings',
+    icon: 'ic:round-settings',
+    href: '/settings',
   },
 ]
 

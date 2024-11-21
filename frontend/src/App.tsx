@@ -9,6 +9,7 @@ import Profile from './pages/Profile'
 import Register from './pages/Register'
 import DestinationDetailsPage from './pages/DestinationDetail'
 import { AuthProvider } from './lib/context/auth-context'
+import { Settings } from './pages/Settings'
 
 // The app uses a hashrouter, therefore navigating to different routes use /#/Browse or /#/Search
 
@@ -22,6 +23,7 @@ const router = createBrowserRouter(
         { path: 'browse', element: <Browse /> },
         { path: 'destination/:id', element: <DestinationDetailsPage /> },
         { path: 'profile', element: <Profile /> },
+        { path: 'settings', element: <Settings /> },
       ],
     },
     {
