@@ -14,12 +14,17 @@ type CardDetailsDialogProps = {
   favorites: string[]
   onToggleFavorite: (destinationId: string, isSaved: boolean) => void
 }
-const CardDetailsDialog: React.FC<CardDetailsDialogProps> = ({ selectedCard, openDialog, setOpenDialog, favorites,
-  onToggleFavorite,}) => {
-  if (!selectedCard) return null
+const CardDetailsDialog: React.FC<CardDetailsDialogProps> = ({
+  selectedCard,
+  openDialog,
+  setOpenDialog,
+  favorites,
+  onToggleFavorite,
+}) => {
   const { user } = useAuth()
+  if (!selectedCard) return null
 
-const isFavorite = favorites.includes(selectedCard.id || '');
+  const isFavorite = favorites.includes(selectedCard.id || '')
   return (
     <Dialog open={openDialog} onOpenChange={setOpenDialog}>
       <DialogContent>
@@ -28,6 +33,7 @@ const isFavorite = favorites.includes(selectedCard.id || '');
           <div className="flex flex-col gap-2 ml-4">
             <div className="flex flex-row gap-1">
               <DialogTitle className="text-xl text-content">{selectedCard.title}</DialogTitle>
+
               {user && selectedCard.id && (
                 <SaveToggle
                   destinationId={selectedCard.id}
