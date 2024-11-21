@@ -1,8 +1,8 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Icon } from '@iconify/react'
 import { useAuth } from '@/lib/context/auth-context'
 import { useAddFavoriteToUserMutation, useRemoveFavoriteFromUserMutation } from '@types'
-import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from '@radix-ui/react-tooltip'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip'
 
 type SaveToggleProps = {
   destinationId: string
@@ -17,6 +17,10 @@ const SaveToggle: React.FC<SaveToggleProps> = ({ destinationId, isInitiallySaved
 
   const [addFavorite] = useAddFavoriteToUserMutation()
   const [removeFavorite] = useRemoveFavoriteFromUserMutation()
+
+  useEffect(() => {
+    setIsSaved(isInitiallySaved)
+  }, [isInitiallySaved])
 
   const handleSaveToggle = async () => {
     if (!user) return
@@ -40,16 +44,14 @@ const SaveToggle: React.FC<SaveToggleProps> = ({ destinationId, isInitiallySaved
   return (
     <TooltipProvider>
       <Tooltip>
-        <TooltipTrigger>
+        <TooltipTrigger asChild>
           <Icon
             icon={isSaved ? 'ic:baseline-bookmark' : 'ic:baseline-bookmark-border'}
             className={`cursor-pointer ${className}`}
             onClick={handleSaveToggle}
           />
         </TooltipTrigger>
-        <TooltipContent
-          className="text-background bg-content text-sm pl-2 pr-2 rounded-md"
-        >
+        <TooltipContent className="text-background bg-content text-sm pl-2 pr-2 rounded-md">
           {isSaved ? 'Remove from saved destinations' : 'Save this destination'}
         </TooltipContent>
       </Tooltip>
