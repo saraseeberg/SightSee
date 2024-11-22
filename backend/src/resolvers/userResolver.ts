@@ -1,11 +1,16 @@
 import { LoginInput, Resolvers, User, UserInput } from '@Types/__generated__/resolvers-types'
+import { UpdateUserSchema } from '@Types/schema/updateUserSchema'
 import db from '../db'
 import bcrypt from 'bcrypt'
 import { ApolloError, AuthenticationError } from 'apollo-server-express'
 import jwt from 'jsonwebtoken'
-import { EditUserSchema } from '@Types/schema/editUserSchema'
+import { FileUpload, GraphQLUpload } from 'graphql-upload-minimal'
+import { s3 } from '@/s3/s3Provider'
+
+const VALID_IMAGE_TYPES = ['image/jpg', 'image/jpeg', 'image/gif', 'image/png']
 
 const UserResolver: Resolvers = {
+  Upload: GraphQLUpload,
   Query: {
     getUsers: async () => {
       const query = 'SELECT * FROM users'
@@ -88,20 +93,57 @@ const UserResolver: Resolvers = {
 
     updateUser: async (_: unknown, { user }: { user: UserInput }) => {
       try {
+        // Have to safe parse as the image is a FileUpload type and not a File type
+        const result = UpdateUserSchema.safeParse(user)
+        let imgFile = null
 
-        EditUserSchema.parse(user)
-        const query =
-          'UPDATE users SET name = $2, username = $3, hashedpassword = $4, reviews = $5, favorites = $6 WHERE id = $1 RETURNING *'
+        if (!result.success) {
+          // Manual image validation as zod does not support FileUpload type
+          const imageError = result.error.errors.find((err) => err.path.includes('image'))
+          if (imageError) {
+            imgFile = await user.image as FileUpload
+            if (!VALID_IMAGE_TYPES.includes(imgFile.mimetype)) {
+              throw new ApolloError('Invalid image type', 'VALIDATION_ERROR')
+            }
+
+          } else {
+            throw new ApolloError(result.error.message, 'VALIDATION_ERROR')
+          }
+
+        }
+
         console.log('Updating user with id: ', user.id)
-        const { rows } = await db.query(query, [
-          user.id,
-          user.name,
-          user.username,
-          user.password,
-          user.reviews,
-          user.favorites,
-        ])
-        console.log('Updated user: ', user.id)
+
+        if (imgFile) {
+          const res = await s3.upload(imgFile, user.id)
+          console.log('Uploaded image to S3: ', res)
+          user.image = res
+        }
+
+        // Form the query based on the user object
+        let query = "UPDATE users SET "
+        let index = 2
+        let end = Object.keys(user).length - 1
+        Object.entries(user).forEach(([key, val]) => {
+          if (key !== 'id' && val) {
+            query += `${key}=$${index}`
+            if (index < end) {
+              query += ', '
+            }
+            index++
+
+          } else if (!val) {
+            // If value is empty, remove the key from the object
+            delete (user as Record<string, any>)[key]
+            end--
+          }
+        })
+        query += ' WHERE id = $1 RETURNING *'
+        console.log('Query: ', query)
+        console.log('Values: ', user)
+
+        const { rows } = await db.query(query, Object.values(user))
+
         return rows[0] as User
       } catch (error) {
         throw new ApolloError(('Failed to update: ' + error) as string, 'INTERNAL_SERVER_ERROR')

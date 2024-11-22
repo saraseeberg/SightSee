@@ -29,9 +29,6 @@ const EditForm = () => {
 
   const onSubmit = async (data: UpdateUserWriteSchema) => {
     if (Object.values(data).some((value) => value !== '' && value !== undefined)) {
-      const imagebase64 = data.image && (await fileToBase64(data.image))
-      const imgPayload = JSON.stringify({ image: imagebase64, filename: data.image?.name, filetype: data.image?.type })
-
       const res = await updateUser({
         variables: {
           user: {
@@ -39,12 +36,7 @@ const EditForm = () => {
             name: data.name,
             username: data.username,
             password: data.password,
-            image: imgPayload,
-          },
-        },
-        context: {
-          headers: {
-            'Content-Type': 'multipart/form-data',
+            image: data.image,
           },
         },
       })

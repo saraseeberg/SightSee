@@ -28,6 +28,15 @@ mutation addReviewToUser($userID: ID!, $reviewID: ID!) {
   }
 }
 
+mutation updateUser($user: UserInput!) {
+  updateUser(user: $user) {
+    id
+    name
+    username
+    image
+  }
+}
+
 query getReviewsByUserID($id: ID!) {
   getReviewsByUserID(id: $id) {
     id
