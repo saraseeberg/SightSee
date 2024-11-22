@@ -1,7 +1,7 @@
 import React, { FC } from 'react'
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../ui/card'
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
-import NumberTicker from '../ui/number-ticker'
+import NumberTicker from '@/components/ui/number-ticker'
 
 interface StatisticsCardProps {
   title: string

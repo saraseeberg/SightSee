@@ -27,11 +27,11 @@ const AvatarDropDownMenu = () => {
         <div className="flex gap-2 max-md:hover:bg-content/10 p-1 rounded-md">
           <Avatar className="max-md:size-16 ">
             <AvatarImage src={'http://github.com/shadcn'} />
-            <AvatarFallback>{user.username.slice(0, 2)}</AvatarFallback>
+            <AvatarFallback>{user.name.slice(0, 2)}</AvatarFallback>
           </Avatar>
           <div className="md:hidden flex flex-col items-start justify-center">
-            <p className="text-lg font-bold">Lotte</p>
-            <p className="text-grey">LotteTotten27</p>
+            <p className="text-lg font-bold">{user.name}</p>
+            <p className="text-grey">{user.username}</p>
           </div>
         </div>
       </DropdownMenuTrigger>

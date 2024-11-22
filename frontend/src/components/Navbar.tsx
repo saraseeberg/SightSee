@@ -67,7 +67,11 @@ function Navbar() {
   }, [])
 
   return (
-    <nav className={cn('flex gap-2 sticky top-0 h-20 items-center z-50 px-5 lg:px-20 border-b-[1px] backdrop-blur-lg')}>
+    <nav
+      className={cn(
+        'flex gap-2 sticky top-0 h-20 items-center z-50 px-5 lg:px-20 border-b-[1px] border-content/20 backdrop-blur-lg',
+      )}
+    >
       <Link to="/">
         <Logo />
       </Link>
@@ -75,10 +79,6 @@ function Navbar() {
         <NavbarContent isDarkMode={isDarkMode} toggleIcon={toggleIcon} />
       </section>
       <section className="md:hidden flex justify-end w-full text-content">
-        <div className="flex w-auto">
-          <SearchBar />
-        </div>
-
         <Sheet>
           <SheetTrigger asChild>
             <button>
