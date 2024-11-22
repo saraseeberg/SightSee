@@ -1,9 +1,10 @@
 import { z } from "zod"
+import { FileUpload } from "graphql-upload-minimal"
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024 // 10MB
 const SUPPORTED_FORMATS = ['image/jpg', 'image/jpeg', 'image/gif', 'image/png']
 
-const EditUserSchema = z
+const UpdateUserSchema = z
   .object({
     name: z
       .string()
@@ -31,12 +32,15 @@ const EditUserSchema = z
       })
       .or(z.literal(null))
       .optional(),
+    reviews: z.array(z.string()).optional(),
+    favorites: z.array(z.string()).optional(),
   })
-  .refine((data) => data.password === data.confirmPassword, {
+  .refine((data) => data.password == '' || data.password === data.confirmPassword, {
     message: 'Passwords do not match',
     path: ['confirmPassword'],
   })
 
-type EditUserWriteSchema = z.infer<typeof EditUserSchema>
 
-export { EditUserSchema, EditUserWriteSchema }
+type UpdateUserWriteSchema = z.infer<typeof UpdateUserSchema>
+
+export { UpdateUserSchema, UpdateUserWriteSchema }
