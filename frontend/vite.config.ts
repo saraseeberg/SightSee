@@ -17,14 +17,14 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'jsdom',
-    setupFiles: 'tests/setup.ts',
+    setupFiles: './src/tests/setup.ts',
     css: false,
   },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
       '@components': path.resolve(__dirname, './src/components'),
-      '@types': path.resolve(__dirname, '../types/__generated__/resolvers-types.ts'),
+      '@Types': path.resolve(__dirname, '../types'),
     },
   },
 })

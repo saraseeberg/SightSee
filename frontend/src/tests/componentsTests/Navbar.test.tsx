@@ -1,9 +1,8 @@
-import React from 'react'
-import { describe, it, expect } from 'vitest'
+import { MockedProvider } from '@apollo/client/testing'
 import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
-import { MockedProvider } from '@apollo/client/testing'
-import Navbar from '../../src/components/Navbar'
+import { describe, expect, it } from 'vitest'
+import Navbar from '../../components/Navbar'
 
 // Opprett en mock Apollo Client med MockedProvider
 describe('Navbar Component', () => {

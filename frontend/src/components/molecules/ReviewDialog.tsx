@@ -2,23 +2,16 @@ import { Dialog, DialogContent, DialogHeader } from '@/components/ui/dialog'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Icon } from '@iconify/react/dist/iconify.js'
 import { DialogDescription, DialogTitle, DialogTrigger } from '@radix-ui/react-dialog'
-import { useAddReviewToUserMutation, useCreateReviewMutation, User } from '@types'
+import { useAddReviewToUserMutation, useCreateReviewMutation, User } from '@Types/__generated__/resolvers-types'
 import { FC, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
-import { z } from 'zod'
 import { ConfettiStars } from '../atoms/ConfettiStars'
 import { Button } from '../ui/button'
 import { Input } from '../ui/input'
 import { Label } from '../ui/label'
 import { Textarea } from '../ui/textarea'
-
-const ReviewSchema = z.object({
-  title: z.string().min(1, 'Title is required').max(50, 'Title cannot exceed 50 characters'),
-  description: z.string().min(10, 'Description must be at least 10 characters'),
-  rating: z.number().min(1, 'Rating must be at least 1 star').max(5, 'Rating cannot exceed 5 stars'),
-})
-type ReviewSchema = z.infer<typeof ReviewSchema>
+import { ReviewSchema, ReviewWriteSchema } from '@Types/schema/reviewSchema'
 
 type ReviewDialogProps = {
   destinationId: string
@@ -40,13 +33,13 @@ const ReviewDialog: FC<ReviewDialogProps> = ({ user, destinationId, refetch, onR
     setValue,
     reset,
     formState: { errors },
-  } = useForm<ReviewSchema>({
+  } = useForm<ReviewWriteSchema>({
     resolver: zodResolver(ReviewSchema),
   })
 
   const [userRating, setUserRating] = useState(0)
 
-  const onSubmit = async (data: ReviewSchema) => {
+  const onSubmit = async (data: ReviewWriteSchema) => {
     try {
       const reviewResponse = await createReview({
         variables: {

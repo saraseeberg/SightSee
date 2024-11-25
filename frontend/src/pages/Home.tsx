@@ -3,7 +3,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Card, CardContent } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Icon } from '@iconify/react/dist/iconify.js'
-import { useGetFeaturedDestinationsQuery } from '@types'
+import { useGetFeaturedDestinationsQuery } from '@Types/__generated__/resolvers-types'
 import { useNavigate } from 'react-router-dom'
 
 const Home = () => {

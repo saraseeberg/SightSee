@@ -1,4 +1,4 @@
-import { Destination, DestinationInput, PaginatedDestinations, Resolvers } from '@types'
+import { Destination, DestinationInput, PaginatedDestinations, Resolvers } from '@Types/__generated__/resolvers-types'
 import db from '../db'
 import { ApolloError } from 'apollo-server-express'
 

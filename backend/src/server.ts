@@ -7,6 +7,7 @@ import AdminResolver from './resolvers/adminResolver'
 import DestinationResolver from './resolvers/destinationResolver'
 import reviewResolver from './resolvers/reviewResolver'
 import UserResolver from './resolvers/userResolver'
+import { graphqlUploadExpress } from 'graphql-upload-minimal'
 
 const typesArray = loadFilesSync(__dirname + '/models/*.graphql')
 const resolversArray = [AdminResolver, DestinationResolver, reviewResolver, UserResolver]
@@ -21,11 +22,13 @@ const startServer = async () => {
   const app = express() as any
 
   app.use(cors())
+  app.use(graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 }))
 
   const server = new ApolloServer({
     typeDefs,
     resolvers,
     cache: 'bounded',
+    csrfPrevention: true,
   })
   await server.start()
   server.applyMiddleware({ app })

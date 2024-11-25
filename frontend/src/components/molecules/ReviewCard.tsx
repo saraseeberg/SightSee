@@ -1,4 +1,4 @@
-import { Review } from '@types'
+import { Review } from '@Types/__generated__/resolvers-types'
 import { FC } from 'react'
 import { Card, CardContent, CardTitle, CardDescription } from '../ui/card'
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'

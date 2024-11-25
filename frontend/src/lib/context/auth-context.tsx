@@ -1,4 +1,4 @@
-import { useCreateUserMutation, useLoginMutation, User } from '@types'
+import { useCreateUserMutation, useLoginMutation, User } from '@Types/__generated__/resolvers-types'
 import { createContext, useContext, useEffect, useState } from 'react'
 
 type AuthContextType = {

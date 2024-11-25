@@ -1,4 +1,4 @@
-import { Review } from '@types'
+import { Review } from '@Types/__generated__/resolvers-types'
 import { Link } from 'react-router-dom'
 import StarRating from '../molecules/StarRating'
 

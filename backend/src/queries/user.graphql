@@ -15,6 +15,7 @@ mutation login($username: String!, $password: String!) {
       id
       name
       username
+      image
     }
     token
   }
@@ -28,6 +29,15 @@ mutation addReviewToUser($userID: ID!, $reviewID: ID!) {
   }
 }
 
+mutation updateUser($user: UserInput!) {
+  updateUser(user: $user) {
+    id
+    name
+    username
+    image
+  }
+}
+
 query getReviewsByUserID($id: ID!) {
   getReviewsByUserID(id: $id) {
     id
@@ -36,5 +46,21 @@ query getReviewsByUserID($id: ID!) {
     rating
     username
     destinationid
+  }
+}
+
+query getMe($id: ID!) {
+  getUserByID(id: $id) {
+    id
+    name
+    username
+    image
+    reviews {
+      id
+      title
+      text
+      rating
+      destinationid
+    }
   }
 }

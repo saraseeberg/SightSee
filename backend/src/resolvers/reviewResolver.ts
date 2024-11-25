@@ -1,4 +1,4 @@
-import { Review, ReviewResolvers } from '@types'
+import { Review, ReviewResolvers } from '@Types/__generated__/resolvers-types'
 import db from '../db'
 
 const reviewResolver: ReviewResolvers = {
