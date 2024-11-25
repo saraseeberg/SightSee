@@ -1,8 +1,7 @@
-import React from 'react'
-import { render, screen } from '@testing-library/react'
-import { describe, it, expect, vi } from 'vitest'
-import ReviewCard from '../../../src/components/molecules/ReviewCard'
 import '@testing-library/jest-dom'
+import { render, screen } from '@testing-library/react'
+import { describe, expect, it, vi } from 'vitest'
+import ReviewCard from '../../../components/molecules/ReviewCard'
 
 vi.mock('../../../src/components/molecules/StarRating', () => ({
   default: vi.fn(({ rating }: { rating: number }) => <div data-testid="star-rating">{`Rating: ${rating}`}</div>),

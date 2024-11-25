@@ -1,10 +1,9 @@
-import React from 'react'
-import { render, screen } from '@testing-library/react'
-import { describe, it, expect, vi, Mock } from 'vitest'
-import AvatarDropDownMenu from '../../../src/components/molecules/AvatarDropDownMenu'
-import { useAuth } from '../../../src/lib/context/auth-context'
-import { BrowserRouter } from 'react-router-dom'
 import '@testing-library/jest-dom'
+import { render, screen } from '@testing-library/react'
+import { BrowserRouter } from 'react-router-dom'
+import { describe, expect, it, Mock, vi } from 'vitest'
+import AvatarDropDownMenu from '../../../components/molecules/AvatarDropDownMenu'
+import { useAuth } from '../../../lib/context/auth-context'
 
 vi.mock('../../../src/lib/context/auth-context', () => ({
   useAuth: vi.fn(),

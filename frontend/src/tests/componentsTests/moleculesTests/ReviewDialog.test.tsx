@@ -1,10 +1,9 @@
-import React from 'react'
-import { render, screen, fireEvent } from '@testing-library/react'
-import { describe, it, vi, beforeEach, expect } from 'vitest'
-import { BrowserRouter as Router } from 'react-router-dom'
 import { MockedProvider } from '@apollo/client/testing'
-import ReviewDialog from '../../../src/components/molecules/ReviewDialog'
 import '@testing-library/jest-dom'
+import { fireEvent, render, screen } from '@testing-library/react'
+import { BrowserRouter as Router } from 'react-router-dom'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+import ReviewDialog from '../../../components/molecules/ReviewDialog'
 
 const mockRefetch = vi.fn()
 const mockOnReviewSubmit = vi.fn()
