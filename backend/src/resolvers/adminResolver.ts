@@ -1,4 +1,3 @@
-
 import { Resolvers, Table } from '@Types/__generated__/resolvers-types'
 import db from '../db'
 import { ApolloError } from 'apollo-server-express'

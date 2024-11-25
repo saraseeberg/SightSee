@@ -1,12 +1,14 @@
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { useAuth } from '@/lib/context/auth-context'
+import { cn } from '@/lib/utils'
+import { ApolloError } from '@apollo/client'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useUpdateUserMutation } from '@Types/__generated__/resolvers-types'
+import { UpdateUserSchema, UpdateUserWriteSchema } from '@Types/schema/updateUserSchema'
 import { ReactNode, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { UpdateUserSchema, UpdateUserWriteSchema } from '@Types/schema/updateUserSchema'
-import { useUpdateUserMutation } from '@Types/__generated__/resolvers-types'
-import { useAuth } from '@/lib/context/auth-context'
 
 const EditForm = () => {
   const { user } = useAuth()
@@ -17,6 +19,7 @@ const EditForm = () => {
     handleSubmit,
     setValue,
     reset,
+    setError,
     formState: { errors },
   } = useForm<UpdateUserWriteSchema>({
     resolver: zodResolver(UpdateUserSchema),
@@ -29,22 +32,30 @@ const EditForm = () => {
 
   const onSubmit = async (data: UpdateUserWriteSchema) => {
     if (Object.values(data).some((value) => value !== '' && value !== undefined)) {
-      const res = await updateUser({
-        variables: {
-          user: {
-            id: user.id,
-            name: data.name,
-            username: data.username,
-            password: data.password,
-            image: data.image,
+      try {
+        await updateUser({
+          variables: {
+            user: {
+              id: user.id,
+              name: data.name,
+              username: data.username,
+              password: data.password,
+              image: data.image,
+            },
           },
-        },
-      })
-      if (res.errors) {
-        console.log(res.errors)
-      } else {
-        console.log('User updated')
+        })
+        alert('User updated')
         reset()
+      } catch (error) {
+        if (error instanceof ApolloError) {
+          const code = error.graphQLErrors[0].extensions?.code
+
+          if (code === 'USERNAME_TAKEN') {
+            setError('username', { message: error.message })
+          } else {
+            setError('root', { message: error.message.split(':')[1] })
+          }
+        }
       }
     }
   }
@@ -73,9 +84,15 @@ const EditForm = () => {
         <FormField label="Image">
           <div className="md:flex items-center">
             {file ? (
-              <img src={file} alt="profile" className=" w-44 aspect-square rounded-full m-4 border-2" />
+              <div className="w-44 aspect-square rounded-full m-4 bg-content/20 overflow-hidden">
+                <img src={file} alt="profile" className="w-full h-full object-cover" />
+              </div>
             ) : (
-              <div className="w-44 aspect-square rounded-full m-4 bg-content/20"></div>
+              <div
+                className={cn('w-44 aspect-square rounded-full m-4  overflow-hidden', !user.image && 'bg-content/20')}
+              >
+                <img src={user.image as string} alt={'Avatar image'} className="w-full h-full object-cover" />
+              </div>
             )}
             <div className="text-center">
               <Input
@@ -95,6 +112,7 @@ const EditForm = () => {
             </div>
           </div>
         </FormField>
+        {errors.root && <p className="text-red-500 text-sm text-center">{errors.root.message as string}</p>}
 
         <Button type="submit" variant={'default'}>
           Save
@@ -111,16 +129,6 @@ const FormField = ({ label, children }: { label: string; children: ReactNode }) 
       {children}
     </div>
   )
-}
-
-// Turn the file into base64 so we can send it as json to the server
-const fileToBase64 = (file: File) => {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader()
-    reader.onload = () => resolve(reader.result)
-    reader.onerror = (error) => reject(error)
-    reader.readAsDataURL(file)
-  })
 }
 
 export default EditForm

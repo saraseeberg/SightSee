@@ -1,5 +1,4 @@
-import { z } from "zod"
-import { FileUpload } from "graphql-upload-minimal"
+import { z } from 'zod'
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024 // 10MB
 const SUPPORTED_FORMATS = ['image/jpg', 'image/jpeg', 'image/gif', 'image/png']
@@ -39,7 +38,6 @@ const UpdateUserSchema = z
     message: 'Passwords do not match',
     path: ['confirmPassword'],
   })
-
 
 type UpdateUserWriteSchema = z.infer<typeof UpdateUserSchema>
 

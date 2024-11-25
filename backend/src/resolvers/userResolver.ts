@@ -1,11 +1,12 @@
+import { s3 } from '@/s3/s3Provider'
+import createUpdateQuery from '@/utils/createUpdateQuery'
 import { LoginInput, Resolvers, User, UserInput } from '@Types/__generated__/resolvers-types'
 import { UpdateUserSchema } from '@Types/schema/updateUserSchema'
-import db from '../db'
-import bcrypt from 'bcrypt'
 import { ApolloError, AuthenticationError } from 'apollo-server-express'
-import jwt from 'jsonwebtoken'
+import bcrypt from 'bcrypt'
 import { FileUpload, GraphQLUpload } from 'graphql-upload-minimal'
-import { s3 } from '@/s3/s3Provider'
+import jwt from 'jsonwebtoken'
+import db from '../db'
 
 const VALID_IMAGE_TYPES = ['image/jpg', 'image/jpeg', 'image/gif', 'image/png']
 
@@ -15,7 +16,11 @@ const UserResolver: Resolvers = {
     getUsers: async () => {
       const query = 'SELECT * FROM users'
       const { rows } = await db.query(query)
-      return rows as User[]
+      const users = rows as User[]
+      users.forEach(async (user) => {
+        if (user.image) user.image = await s3.get(user.image)
+      })
+      return users
     },
     getUsersByID: async (_: unknown, { ids }: { ids: string[] }) => {
       if (ids) {
@@ -25,13 +30,20 @@ const UserResolver: Resolvers = {
       }
       const query = 'SELECT * FROM users'
       const { rows } = await db.query(query)
-      return rows as User[]
+      const users = rows as User[]
+      users.forEach(async (user) => {
+        if (user.image) user.image = await s3.get(user.image)
+      })
+      return users
     },
     getUserByID: async (_: unknown, { id }: { id: string }) => {
       console.log('Getting user with id: ', id)
       const query = 'SELECT * FROM users WHERE id = $1'
       const { rows } = await db.query(query, [id])
       const user = rows[0] as User
+
+      if (user.image) user.image = await s3.get(user.image)
+
       return user
     },
     getReviewsByUserID: async (_: unknown, { id }: { id: string }) => {
@@ -92,58 +104,42 @@ const UserResolver: Resolvers = {
     },
 
     updateUser: async (_: unknown, { user }: { user: UserInput }) => {
-      try {
-        // Have to safe parse as the image is a FileUpload type and not a File type
-        const result = UpdateUserSchema.safeParse(user)
-        let imgFile = null
+      // Have to safe parse as the image is a FileUpload type and not a File type
+      const result = UpdateUserSchema.safeParse(user)
+      let imgFile = null
 
-        if (!result.success) {
-          // Manual image validation as zod does not support FileUpload type
-          const imageError = result.error.errors.find((err) => err.path.includes('image'))
-          if (imageError) {
-            imgFile = await user.image as FileUpload
-            if (!VALID_IMAGE_TYPES.includes(imgFile.mimetype)) {
-              throw new ApolloError('Invalid image type', 'VALIDATION_ERROR')
-            }
-
-          } else {
-            throw new ApolloError(result.error.message, 'VALIDATION_ERROR')
+      if (!result.success) {
+        // Manual image validation as zod does not support FileUpload type
+        const imageError = result.error.errors.find((err) => err.path.includes('image'))
+        if (imageError) {
+          imgFile = (await user.image) as FileUpload
+          if (!VALID_IMAGE_TYPES.includes(imgFile.mimetype)) {
+            throw new ApolloError('Invalid image type', 'VALIDATION_ERROR')
           }
-
+        } else {
+          throw new ApolloError(result.error.message, 'VALIDATION_ERROR')
         }
+      }
 
+      if (user.username) {
+        const isUsernameTaken = await db
+          .query('SELECT * FROM users WHERE username = $1', [user.username])
+          .then((res) => res.rows.length > 0)
+        if (isUsernameTaken) throw new ApolloError('Username is already taken', 'USERNAME_TAKEN')
+      }
+
+      try {
         console.log('Updating user with id: ', user.id)
 
         if (imgFile) {
           const res = await s3.upload(imgFile, user.id)
-          console.log('Uploaded image to S3: ', res)
           user.image = res
         }
 
-        // Form the query based on the user object
-        let query = "UPDATE users SET "
-        let index = 2
-        let end = Object.keys(user).length - 1
-        Object.entries(user).forEach(([key, val]) => {
-          if (key !== 'id' && val) {
-            query += `${key}=$${index}`
-            if (index < end) {
-              query += ', '
-            }
-            index++
+        // Create the query based on the values given in the user object
+        const { query, updatedUser } = createUpdateQuery(user)
 
-          } else if (!val) {
-            // If value is empty, remove the key from the object
-            delete (user as Record<string, any>)[key]
-            end--
-          }
-        })
-        query += ' WHERE id = $1 RETURNING *'
-        console.log('Query: ', query)
-        console.log('Values: ', user)
-
-        const { rows } = await db.query(query, Object.values(user))
-
+        const { rows } = await db.query(query, Object.values(updatedUser))
         return rows[0] as User
       } catch (error) {
         throw new ApolloError(('Failed to update: ' + error) as string, 'INTERNAL_SERVER_ERROR')
@@ -201,6 +197,8 @@ const UserResolver: Resolvers = {
           },
         )
 
+        if (user.image) user.image = await s3.get(user.image)
+        console.log('Logged in user: ', user)
         return {
           user,
           token,

@@ -26,7 +26,7 @@ const AvatarDropDownMenu = () => {
       <DropdownMenuTrigger>
         <div className="flex gap-2 max-md:hover:bg-content/10 p-1 rounded-md">
           <Avatar className="max-md:size-16 ">
-            <AvatarImage src={'http://github.com/shadcn'} />
+            <AvatarImage src={user.image as string} />
             <AvatarFallback>{user.name.slice(0, 2)}</AvatarFallback>
           </Avatar>
           <div className="md:hidden flex flex-col items-start justify-center">

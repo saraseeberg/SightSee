@@ -15,6 +15,7 @@ mutation login($username: String!, $password: String!) {
       id
       name
       username
+      image
     }
     token
   }
@@ -45,5 +46,21 @@ query getReviewsByUserID($id: ID!) {
     rating
     username
     destinationid
+  }
+}
+
+query getMe($id: ID!) {
+  getUserByID(id: $id) {
+    id
+    name
+    username
+    image
+    reviews {
+      id
+      title
+      text
+      rating
+      destinationid
+    }
   }
 }

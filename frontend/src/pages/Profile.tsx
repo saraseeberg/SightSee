@@ -1,8 +1,6 @@
 import SmallReviewCard from '@/components/atoms/SmallReviewCard'
-import EditForm from '@/components/molecules/settings/EditForm'
 import StatisticsCard from '@/components/molecules/StatisticsCard'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Button } from '@/components/ui/button'
 import { useAuth } from '@/lib/context/auth-context'
 import { Review, useGetReviewByUserIdQuery } from '@Types/__generated__/resolvers-types'
 import { useEffect } from 'react'
@@ -29,7 +27,7 @@ const Profile = () => {
       <section className="flex items-center gap-10 w-full max-md:flex-col">
         <div className="flex gap-10">
           <Avatar className="size-48 max-sm:size-24">
-            <AvatarImage src={'This'} />
+            <AvatarImage src={user.image as string} />
             <AvatarFallback>{user.username.slice(0, 2).toUpperCase()}</AvatarFallback>
           </Avatar>
           <div className="flex flex-col justify-center">

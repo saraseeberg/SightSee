@@ -28,7 +28,7 @@ const startServer = async () => {
     typeDefs,
     resolvers,
     cache: 'bounded',
-    csrfPrevention: true
+    csrfPrevention: true,
   })
   await server.start()
   server.applyMiddleware({ app })

@@ -40,7 +40,7 @@ export const Settings = () => {
             </TabsTrigger>
           ))}
         </TabsList>
-        <div className="w-[70%] border-[1px] border-content/20 rounded-lg p-3">
+        <div className="md:w-[70%] border-[1px] border-content/20 rounded-lg p-3">
           {SettingsTabs.map((tab) => (
             <TabsContent key={tab.id} value={tab.id}>
               {tab?.component}
