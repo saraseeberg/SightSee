@@ -1,9 +1,9 @@
+import CardDetailsDialog from '@/components/molecules/CardDetailsDialog'
 import '@testing-library/jest-dom'
 import { fireEvent, render, screen } from '@testing-library/react'
+import { Destination } from '@Types/__generated__/resolvers-types'
 import { BrowserRouter } from 'react-router-dom'
 import { describe, expect, it, vi } from 'vitest'
-import { Destination } from '../../../../../types/__generated__/resolvers-types'
-import CardDetailsDialog from '../../../components/molecules/CardDetailsDialog'
 
 const mockDestination: Partial<Destination> = {
   id: '1',

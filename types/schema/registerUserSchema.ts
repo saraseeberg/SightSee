@@ -22,4 +22,4 @@ const RegisterSchema = z
 
 type RegisterWriteSchema = z.infer<typeof RegisterSchema>
 
-export { RegisterSchema, RegisterWriteSchema }
+export { RegisterSchema, type RegisterWriteSchema }

@@ -8,4 +8,4 @@ const ReviewSchema = z.object({
 
 type ReviewWriteSchema = z.infer<typeof ReviewSchema>
 
-export { ReviewSchema, ReviewWriteSchema }
+export { ReviewSchema, type ReviewWriteSchema }

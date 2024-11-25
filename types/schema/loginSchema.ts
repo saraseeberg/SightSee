@@ -7,4 +7,4 @@ const LoginSchema = z.object({
 
 type LoginWriteSchema = z.infer<typeof LoginSchema>
 
-export { LoginSchema, LoginWriteSchema }
+export { LoginSchema, type LoginWriteSchema }

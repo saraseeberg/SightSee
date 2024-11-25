@@ -41,4 +41,4 @@ const UpdateUserSchema = z
 
 type UpdateUserWriteSchema = z.infer<typeof UpdateUserSchema>
 
-export { UpdateUserSchema, UpdateUserWriteSchema }
+export { UpdateUserSchema, type UpdateUserWriteSchema }

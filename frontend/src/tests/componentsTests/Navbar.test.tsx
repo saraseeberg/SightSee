@@ -1,8 +1,8 @@
+import Navbar from '@/components/Navbar'
 import { MockedProvider } from '@apollo/client/testing'
 import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { describe, expect, it } from 'vitest'
-import Navbar from '../../components/Navbar'
 
 // Opprett en mock Apollo Client med MockedProvider
 describe('Navbar Component', () => {

@@ -1,6 +1,7 @@
 import { MockedProvider } from '@apollo/client/testing'
 import '@testing-library/jest-dom'
 import { fireEvent, render, screen } from '@testing-library/react'
+import { User } from '@Types/__generated__/resolvers-types'
 import { BrowserRouter as Router } from 'react-router-dom'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import ReviewDialog from '../../../components/molecules/ReviewDialog'
@@ -32,7 +33,7 @@ vi.mock('../../../src/types/__generated__/resolvers-types', () => ({
 
 const destinationId = 'destination1'
 
-const renderComponent = (userProp?: { id: string; username: string } | null) =>
+const renderComponent = (userProp: User | null = null) =>
   render(
     <Router>
       <MockedProvider>
