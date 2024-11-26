@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Icon } from '@iconify/react'
 import { useAuth } from '@/lib/context/auth-context'
-import { useAddFavoriteToUserMutation, useRemoveFavoriteFromUserMutation } from '@types'
+import { useAddFavoriteToUserMutation, useRemoveFavoriteFromUserMutation } from '@Types/__generated__/resolvers-types'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip'
 
 type SaveToggleProps = {
