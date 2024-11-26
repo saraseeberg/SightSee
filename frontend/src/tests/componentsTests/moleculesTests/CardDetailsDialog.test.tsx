@@ -23,7 +23,11 @@ describe('CardDetailsDialog', () => {
   }) =>
     render(
       <BrowserRouter>
-        <CardDetailsDialog {...props} />
+        <CardDetailsDialog 
+          {...props} 
+          favorites={[]} 
+          onToggleFavorite={vi.fn()} 
+        />
       </BrowserRouter>,
     )
 
