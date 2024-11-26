@@ -2,6 +2,7 @@ type User {
   id: ID!
   name: String!
   username: String!
+  image: String
   password: String!
   reviews: [Review!]
   favorites: [Destination!]
@@ -12,10 +13,13 @@ type UserData {
   token: String!
 }
 
+scalar Upload
+
 input UserInput {
   id: ID!
   name: String
-  username: String!
+  username: String
+  image: Upload
   password: String
   reviews: [ReviewInput!]
   favorites: [DestinationInput!]

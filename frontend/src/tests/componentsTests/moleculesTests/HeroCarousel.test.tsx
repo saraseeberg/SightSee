@@ -1,11 +1,11 @@
-import React from 'react'
-import { render, screen } from '@testing-library/react'
-import { describe, it, expect, vi, beforeEach } from 'vitest'
-import HeroCarousel from '../../../src/components/molecules/HeroCarousel'
-import { carouselData } from '../../../src/lib/data/heroCarouselData'
+import HeroCarousel from '@/components/molecules/HeroCarousel'
+import { carouselData } from '@/lib/data/heroCarouselData'
 import '@testing-library/jest-dom'
+import { render, screen } from '@testing-library/react'
+import React from 'react'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-vi.mock('../../../src/components/ui/carousel', () => ({
+vi.mock('@/components/ui/carousel', () => ({
   Carousel: ({ children }: { children: React.ReactNode }) => <div data-testid="carousel">{children}</div>,
   CarouselContent: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="carousel-content">{children}</div>

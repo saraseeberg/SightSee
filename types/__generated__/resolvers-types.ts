@@ -1,4 +1,4 @@
-import { GraphQLResolveInfo } from 'graphql'
+import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql'
 import { gql } from '@apollo/client'
 import * as Apollo from '@apollo/client'
 export type Maybe<T> = T | null
@@ -17,6 +17,7 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean }
   Int: { input: number; output: number }
   Float: { input: number; output: number }
+  Upload: { input: any; output: any }
 }
 
 export type Destination = {
@@ -232,6 +233,7 @@ export type User = {
   __typename?: 'User'
   favorites?: Maybe<Array<Destination>>
   id: Scalars['ID']['output']
+  image?: Maybe<Scalars['String']['output']>
   name: Scalars['String']['output']
   password: Scalars['String']['output']
   reviews?: Maybe<Array<Review>>
@@ -247,10 +249,11 @@ export type UserData = {
 export type UserInput = {
   favorites?: InputMaybe<Array<DestinationInput>>
   id: Scalars['ID']['input']
+  image?: InputMaybe<Scalars['Upload']['input']>
   name?: InputMaybe<Scalars['String']['input']>
   password?: InputMaybe<Scalars['String']['input']>
   reviews?: InputMaybe<Array<ReviewInput>>
-  username: Scalars['String']['input']
+  username?: InputMaybe<Scalars['String']['input']>
 }
 
 export type WithIndex<TObject> = TObject & Record<string, any>
@@ -343,6 +346,7 @@ export type ResolversTypes = ResolversObject<{
   String: ResolverTypeWrapper<Scalars['String']['output']>
   Table: ResolverTypeWrapper<Table>
   TableInput: TableInput
+  Upload: ResolverTypeWrapper<Scalars['Upload']['output']>
   User: ResolverTypeWrapper<User>
   UserData: ResolverTypeWrapper<UserData>
   UserInput: UserInput
@@ -365,6 +369,7 @@ export type ResolversParentTypes = ResolversObject<{
   String: Scalars['String']['output']
   Table: Table
   TableInput: TableInput
+  Upload: Scalars['Upload']['output']
   User: User
   UserData: UserData
   UserInput: UserInput
@@ -559,12 +564,17 @@ export type TableResolvers<
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>
 }>
 
+export interface UploadScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['Upload'], any> {
+  name: 'Upload'
+}
+
 export type UserResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User'],
 > = ResolversObject<{
   favorites?: Resolver<Maybe<Array<ResolversTypes['Destination']>>, ParentType, ContextType>
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>
+  image?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>
   password?: Resolver<ResolversTypes['String'], ParentType, ContextType>
   reviews?: Resolver<Maybe<Array<ResolversTypes['Review']>>, ParentType, ContextType>
@@ -588,6 +598,7 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   Query?: QueryResolvers<ContextType>
   Review?: ReviewResolvers<ContextType>
   Table?: TableResolvers<ContextType>
+  Upload?: GraphQLScalarType
   User?: UserResolvers<ContextType>
   UserData?: UserDataResolvers<ContextType>
 }>
@@ -756,7 +767,7 @@ export type LoginMutation = {
   login: {
     __typename?: 'UserData'
     token: string
-    user: { __typename?: 'User'; id: string; name: string; username: string }
+    user: { __typename?: 'User'; id: string; name: string; username: string; image?: string | null }
   }
 }
 
@@ -770,24 +781,13 @@ export type AddReviewToUserMutation = {
   addReviewToUser: { __typename?: 'User'; id: string; name: string; username: string }
 }
 
-export type AddFavoriteToUserMutationVariables = Exact<{
-  userID: Scalars['ID']['input']
-  destinationID: Scalars['ID']['input']
+export type UpdateUserMutationVariables = Exact<{
+  user: UserInput
 }>
 
-export type AddFavoriteToUserMutation = {
+export type UpdateUserMutation = {
   __typename?: 'Mutation'
-  addFavoriteToUser: { __typename?: 'User'; id: string; name: string; username: string }
-}
-
-export type RemoveFavoriteFromUserMutationVariables = Exact<{
-  userID: Scalars['ID']['input']
-  destinationID: Scalars['ID']['input']
-}>
-
-export type RemoveFavoriteFromUserMutation = {
-  __typename?: 'Mutation'
-  removeFavoriteFromUser: { __typename?: 'User'; id: string; name: string; username: string }
+  updateUser: { __typename?: 'User'; id: string; name: string; username: string; image?: string | null }
 }
 
 export type GetReviewsByUserIdQueryVariables = Exact<{
@@ -807,23 +807,27 @@ export type GetReviewsByUserIdQuery = {
   }> | null
 }
 
-export type GetFavoritesByUserIdQueryVariables = Exact<{
+export type GetMeQueryVariables = Exact<{
   id: Scalars['ID']['input']
 }>
 
-export type GetFavoritesByUserIdQuery = {
+export type GetMeQuery = {
   __typename?: 'Query'
-  getFavoritesByUserID?: Array<{
-    __typename?: 'Destination'
+  getUserByID?: {
+    __typename?: 'User'
     id: string
-    title: string
-    region?: string | null
-    rating: number
-    description: string
-    image: string
-    alt: string
-    country: string
-  }> | null
+    name: string
+    username: string
+    image?: string | null
+    reviews?: Array<{
+      __typename?: 'Review'
+      id: string
+      title: string
+      text: string
+      rating: number
+      destinationid: string
+    }> | null
+  } | null
 }
 
 export const GetAllDestinationsDocument = gql`
@@ -1378,6 +1382,7 @@ export const LoginDocument = gql`
         id
         name
         username
+        image
       }
       token
     }
@@ -1454,100 +1459,44 @@ export type AddReviewToUserMutationOptions = Apollo.BaseMutationOptions<
   AddReviewToUserMutation,
   AddReviewToUserMutationVariables
 >
-export const AddFavoriteToUserDocument = gql`
-  mutation addFavoriteToUser($userID: ID!, $destinationID: ID!) {
-    addFavoriteToUser(userID: $userID, destinationID: $destinationID) {
+export const UpdateUserDocument = gql`
+  mutation updateUser($user: UserInput!) {
+    updateUser(user: $user) {
       id
       name
       username
+      image
     }
   }
 `
-export type AddFavoriteToUserMutationFn = Apollo.MutationFunction<
-  AddFavoriteToUserMutation,
-  AddFavoriteToUserMutationVariables
->
+export type UpdateUserMutationFn = Apollo.MutationFunction<UpdateUserMutation, UpdateUserMutationVariables>
 
 /**
- * __useAddFavoriteToUserMutation__
+ * __useUpdateUserMutation__
  *
- * To run a mutation, you first call `useAddFavoriteToUserMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useAddFavoriteToUserMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useUpdateUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateUserMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [addFavoriteToUserMutation, { data, loading, error }] = useAddFavoriteToUserMutation({
+ * const [updateUserMutation, { data, loading, error }] = useUpdateUserMutation({
  *   variables: {
- *      userID: // value for 'userID'
- *      destinationID: // value for 'destinationID'
+ *      user: // value for 'user'
  *   },
  * });
  */
-export function useAddFavoriteToUserMutation(
-  baseOptions?: Apollo.MutationHookOptions<AddFavoriteToUserMutation, AddFavoriteToUserMutationVariables>,
+export function useUpdateUserMutation(
+  baseOptions?: Apollo.MutationHookOptions<UpdateUserMutation, UpdateUserMutationVariables>,
 ) {
   const options = { ...defaultOptions, ...baseOptions }
-  return Apollo.useMutation<AddFavoriteToUserMutation, AddFavoriteToUserMutationVariables>(
-    AddFavoriteToUserDocument,
-    options,
-  )
+  return Apollo.useMutation<UpdateUserMutation, UpdateUserMutationVariables>(UpdateUserDocument, options)
 }
-export type AddFavoriteToUserMutationHookResult = ReturnType<typeof useAddFavoriteToUserMutation>
-export type AddFavoriteToUserMutationResult = Apollo.MutationResult<AddFavoriteToUserMutation>
-export type AddFavoriteToUserMutationOptions = Apollo.BaseMutationOptions<
-  AddFavoriteToUserMutation,
-  AddFavoriteToUserMutationVariables
->
-export const RemoveFavoriteFromUserDocument = gql`
-  mutation removeFavoriteFromUser($userID: ID!, $destinationID: ID!) {
-    removeFavoriteFromUser(userID: $userID, destinationID: $destinationID) {
-      id
-      name
-      username
-    }
-  }
-`
-export type RemoveFavoriteFromUserMutationFn = Apollo.MutationFunction<
-  RemoveFavoriteFromUserMutation,
-  RemoveFavoriteFromUserMutationVariables
->
-
-/**
- * __useRemoveFavoriteFromUserMutation__
- *
- * To run a mutation, you first call `useRemoveFavoriteFromUserMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useRemoveFavoriteFromUserMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [removeFavoriteFromUserMutation, { data, loading, error }] = useRemoveFavoriteFromUserMutation({
- *   variables: {
- *      userID: // value for 'userID'
- *      destinationID: // value for 'destinationID'
- *   },
- * });
- */
-export function useRemoveFavoriteFromUserMutation(
-  baseOptions?: Apollo.MutationHookOptions<RemoveFavoriteFromUserMutation, RemoveFavoriteFromUserMutationVariables>,
-) {
-  const options = { ...defaultOptions, ...baseOptions }
-  return Apollo.useMutation<RemoveFavoriteFromUserMutation, RemoveFavoriteFromUserMutationVariables>(
-    RemoveFavoriteFromUserDocument,
-    options,
-  )
-}
-export type RemoveFavoriteFromUserMutationHookResult = ReturnType<typeof useRemoveFavoriteFromUserMutation>
-export type RemoveFavoriteFromUserMutationResult = Apollo.MutationResult<RemoveFavoriteFromUserMutation>
-export type RemoveFavoriteFromUserMutationOptions = Apollo.BaseMutationOptions<
-  RemoveFavoriteFromUserMutation,
-  RemoveFavoriteFromUserMutationVariables
->
+export type UpdateUserMutationHookResult = ReturnType<typeof useUpdateUserMutation>
+export type UpdateUserMutationResult = Apollo.MutationResult<UpdateUserMutation>
+export type UpdateUserMutationOptions = Apollo.BaseMutationOptions<UpdateUserMutation, UpdateUserMutationVariables>
 export const GetReviewsByUserIdDocument = gql`
   query getReviewsByUserID($id: ID!) {
     getReviewsByUserID(id: $id) {
@@ -1611,71 +1560,58 @@ export type GetReviewsByUserIdQueryResult = Apollo.QueryResult<
   GetReviewsByUserIdQuery,
   GetReviewsByUserIdQueryVariables
 >
-export const GetFavoritesByUserIdDocument = gql`
-  query getFavoritesByUserID($id: ID!) {
-    getFavoritesByUserID(id: $id) {
+export const GetMeDocument = gql`
+  query getMe($id: ID!) {
+    getUserByID(id: $id) {
       id
-      title
-      region
-      rating
-      description
+      name
+      username
       image
-      alt
-      country
+      reviews {
+        id
+        title
+        text
+        rating
+        destinationid
+      }
     }
   }
 `
 
 /**
- * __useGetFavoritesByUserIdQuery__
+ * __useGetMeQuery__
  *
- * To run a query within a React component, call `useGetFavoritesByUserIdQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetFavoritesByUserIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useGetMeQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetMeQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useGetFavoritesByUserIdQuery({
+ * const { data, loading, error } = useGetMeQuery({
  *   variables: {
  *      id: // value for 'id'
  *   },
  * });
  */
-export function useGetFavoritesByUserIdQuery(
-  baseOptions: Apollo.QueryHookOptions<GetFavoritesByUserIdQuery, GetFavoritesByUserIdQueryVariables> &
-    ({ variables: GetFavoritesByUserIdQueryVariables; skip?: boolean } | { skip: boolean }),
+export function useGetMeQuery(
+  baseOptions: Apollo.QueryHookOptions<GetMeQuery, GetMeQueryVariables> &
+    ({ variables: GetMeQueryVariables; skip?: boolean } | { skip: boolean }),
 ) {
   const options = { ...defaultOptions, ...baseOptions }
-  return Apollo.useQuery<GetFavoritesByUserIdQuery, GetFavoritesByUserIdQueryVariables>(
-    GetFavoritesByUserIdDocument,
-    options,
-  )
+  return Apollo.useQuery<GetMeQuery, GetMeQueryVariables>(GetMeDocument, options)
 }
-export function useGetFavoritesByUserIdLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<GetFavoritesByUserIdQuery, GetFavoritesByUserIdQueryVariables>,
-) {
+export function useGetMeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetMeQuery, GetMeQueryVariables>) {
   const options = { ...defaultOptions, ...baseOptions }
-  return Apollo.useLazyQuery<GetFavoritesByUserIdQuery, GetFavoritesByUserIdQueryVariables>(
-    GetFavoritesByUserIdDocument,
-    options,
-  )
+  return Apollo.useLazyQuery<GetMeQuery, GetMeQueryVariables>(GetMeDocument, options)
 }
-export function useGetFavoritesByUserIdSuspenseQuery(
-  baseOptions?:
-    | Apollo.SkipToken
-    | Apollo.SuspenseQueryHookOptions<GetFavoritesByUserIdQuery, GetFavoritesByUserIdQueryVariables>,
+export function useGetMeSuspenseQuery(
+  baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetMeQuery, GetMeQueryVariables>,
 ) {
   const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions }
-  return Apollo.useSuspenseQuery<GetFavoritesByUserIdQuery, GetFavoritesByUserIdQueryVariables>(
-    GetFavoritesByUserIdDocument,
-    options,
-  )
+  return Apollo.useSuspenseQuery<GetMeQuery, GetMeQueryVariables>(GetMeDocument, options)
 }
-export type GetFavoritesByUserIdQueryHookResult = ReturnType<typeof useGetFavoritesByUserIdQuery>
-export type GetFavoritesByUserIdLazyQueryHookResult = ReturnType<typeof useGetFavoritesByUserIdLazyQuery>
-export type GetFavoritesByUserIdSuspenseQueryHookResult = ReturnType<typeof useGetFavoritesByUserIdSuspenseQuery>
-export type GetFavoritesByUserIdQueryResult = Apollo.QueryResult<
-  GetFavoritesByUserIdQuery,
-  GetFavoritesByUserIdQueryVariables
->
+export type GetMeQueryHookResult = ReturnType<typeof useGetMeQuery>
+export type GetMeLazyQueryHookResult = ReturnType<typeof useGetMeLazyQuery>
+export type GetMeSuspenseQueryHookResult = ReturnType<typeof useGetMeSuspenseQuery>
+export type GetMeQueryResult = Apollo.QueryResult<GetMeQuery, GetMeQueryVariables>

@@ -1,9 +1,8 @@
-import { render, screen } from '@testing-library/react'
-import '@testing-library/jest-dom'
-import { BrowserRouter } from 'react-router-dom'
+import SearchBar from '@/components/SearchBar'
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client'
-import SearchBar from '../../src/components/SearchBar'
-import React from 'react'
+import '@testing-library/jest-dom'
+import { render, screen } from '@testing-library/react'
+import { BrowserRouter } from 'react-router-dom'
 
 const mockApolloClient = new ApolloClient({
   uri: 'https://mockapi',

@@ -30,6 +30,11 @@ jobs:
           DB_IP: ${{ secrets.DB_IP }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          AWS_BUCKET_NAME: ${{ secrets.AWS_BUCKET_NAME }}
+          AWS_BUCKET_REGION: ${{ secrets.AWS_BUCKET_REGION }}
+          AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
+          AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
+
         run: |
           npm install
           npm run build
@@ -54,12 +59,17 @@ jobs:
           module.exports = {
             apps: [{
               name: 'backend-server',
-              script: './backend/dist/backend/src/server.js',
+              script: 'node',
+              args: '-r tsconfig-paths/register ./backend/dist/backend/src/server.js',
               env: {
                 DB_USER: '${{ secrets.DB_USER }}',
                 DB_IP: '${{ secrets.DB_IP }}',
                 DB_PASSWORD: '${{ secrets.DB_PASSWORD }}',
                 JWT_SECRET: '${{ secrets.JWT_SECRET }}',
+                AWS_BUCKET_NAME: '${{ secrets.AWS_BUCKET_NAME }}',
+                AWS_BUCKET_REGION: '${{ secrets.AWS_BUCKET_REGION }}',
+                AWS_ACCESS_KEY: '${{ secrets.AWS_ACCESS_KEY }}',
+                AWS_SECRET_KEY: '${{ secrets.AWS_SECRET_KEY }}',
                 NODE_ENV: 'production'
               }
             }]

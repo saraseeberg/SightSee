@@ -3,7 +3,7 @@ import StatisticsCard from '@/components/molecules/StatisticsCard'
 import SmallSavedDestinationCard from '@/components/atoms/SmallSavedDestinationCard'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { useAuth } from '@/lib/context/auth-context'
-import { Review, useGetReviewByUserIdQuery, useGetFavoritesByUserIdQuery } from '@types'
+import { Review, useGetReviewByUserIdQuery, useGetFavoritesByUserIdQuery } from '@Types/__generated__/resolvers-types'
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
@@ -28,15 +28,18 @@ const Profile = () => {
 
   return (
     <main className="flex flex-col items-center my-2 px-2 md:mx-[10%] gap-10 ">
-      <section className="flex justify-center gap-10">
-        <Avatar className="size-48 max-sm:size-24 ">
-          <AvatarImage src={'This'} />
-          <AvatarFallback>{user.username.slice(0, 2).toUpperCase()}</AvatarFallback>
-        </Avatar>
-        <div className="flex-1 flex flex-col justify-center ">
-          <h1 className="text-3xl">{user.name}</h1>
-          <p className="text-grey">{user.username}</p>
+      <section className="flex items-center gap-10 w-full max-md:flex-col">
+        <div className="flex gap-10">
+          <Avatar className="size-48 max-sm:size-24">
+            <AvatarImage src={user.image as string} />
+            <AvatarFallback>{user.username.slice(0, 2).toUpperCase()}</AvatarFallback>
+          </Avatar>
+          <div className="flex flex-col justify-center">
+            <h1 className="text-3xl">{user.name}</h1>
+            <p className="text-grey">{user.username}</p>
+          </div>
         </div>
+        <div className="flex-1 flex justify-center gap-2"></div>
       </section>
       <section className="md:w-full grid grid-rows-2 grid-cols-2 max-md:grid-rows-4 gap-2 ">
         <StatisticsCard
@@ -53,7 +56,10 @@ const Profile = () => {
             {data?.getReviewsByUserID
               ?.slice()
               .reverse()
-              .map((review) => <SmallReviewCard review={review as Review} />)}
+              .map((review) => (
+                // Change with a ReviewCard component
+                <SmallReviewCard key={review.id} review={review as Review} />
+              ))}
           </ul>
         </StatisticsCard>
         <StatisticsCard

@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Icon } from '@iconify/react/dist/iconify.js'
-import { useGetAllCountriesQuery } from '@types'
+import { useGetAllCountriesQuery } from '@Types/__generated__/resolvers-types'
 import React from 'react'
 
 type CountryDropdownProps = {

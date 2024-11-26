@@ -1,8 +1,7 @@
-import React from 'react'
-import { render, screen, fireEvent } from '@testing-library/react'
-import { describe, it, expect, vi } from 'vitest'
-import CategoryDropdown from '../../../src/components/molecules/CategoryDropdown'
+import CategoryDropdown from '@/components/molecules/CategoryDropdown'
 import '@testing-library/jest-dom'
+import { fireEvent, render, screen } from '@testing-library/react'
+import { describe, expect, it, vi } from 'vitest'
 
 describe('CategoryDropdown', () => {
   const mockOnSelectCategory = vi.fn()

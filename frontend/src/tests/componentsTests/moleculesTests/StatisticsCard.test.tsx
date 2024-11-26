@@ -1,10 +1,9 @@
-import React from 'react'
-import { render, screen } from '@testing-library/react'
-import { describe, it, expect, vi } from 'vitest'
-import StatisticsCard from '../../../src/components/molecules/StatisticsCard'
+import StatisticsCard from '@/components/molecules/StatisticsCard'
 import '@testing-library/jest-dom'
+import { render, screen } from '@testing-library/react'
+import { describe, expect, it, vi } from 'vitest'
 
-vi.mock('../../../src/components/ui/number-ticker', () => ({
+vi.mock('@/components/ui/number-ticker', () => ({
   default: ({ value }: { value: number }) => <span>{value}</span>,
 }))
 

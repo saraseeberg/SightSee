@@ -5,16 +5,9 @@ import { Label } from '@/components/ui/label'
 import { useAuth } from '@/lib/context/auth-context'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Icon } from '@iconify/react/dist/iconify.js'
+import { LoginSchema, LoginWriteSchema } from '@Types/schema/loginSchema'
 import { useForm } from 'react-hook-form'
 import { Link, useNavigate } from 'react-router-dom'
-import { z } from 'zod'
-
-const LoginSchema = z.object({
-  username: z.string().nonempty('Username cannot be empty'),
-  password: z.string().nonempty('Password cannot be empty'),
-})
-
-export type LoginWriteSchema = z.infer<typeof LoginSchema>
 
 function Login() {
   const { loginUser } = useAuth()

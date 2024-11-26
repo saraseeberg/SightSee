@@ -1,5 +1,5 @@
 import { Icon } from '@iconify/react/dist/iconify.js'
-import { useGetDestinationsByTextSimilarityLazyQuery } from '@types'
+import { useGetDestinationsByTextSimilarityLazyQuery } from '@Types/__generated__/resolvers-types'
 import React, { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Alert, AlertDescription, AlertTitle } from './ui/alert'

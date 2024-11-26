@@ -3,7 +3,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import StarRating from './StarRating'
 import { Button } from '@/components/ui/button'
-import { Destination } from '@types'
+import { Destination } from '@Types/__generated__/resolvers-types'
 import SaveToggle from '@/components/atoms/SaveToggle'
 import { useAuth } from '@/lib/context/auth-context'
 

@@ -1,14 +1,18 @@
-import React from 'react'
-import { render, screen } from '@testing-library/react'
-import { describe, it, expect, vi, Mock } from 'vitest'
-import AvatarDropDownMenu from '../../../src/components/molecules/AvatarDropDownMenu'
-import { useAuth } from '../../../src/lib/context/auth-context'
-import { BrowserRouter } from 'react-router-dom'
+import AvatarDropDownMenu from '@/components/molecules/AvatarDropDownMenu'
+import { useAuth } from '@/lib/context/auth-context'
 import '@testing-library/jest-dom'
+import { render, screen } from '@testing-library/react'
+import { BrowserRouter } from 'react-router-dom'
+import { describe, expect, it, Mock, vi } from 'vitest'
 
-vi.mock('../../../src/lib/context/auth-context', () => ({
+vi.mock('@/lib/context/auth-context', () => ({
   useAuth: vi.fn(),
 }))
+
+const fakeUser = {
+  username: 'LotteTotten27',
+  name: 'Lotte',
+}
 
 const renderComponent = (authState: { isLoggedIn: boolean; user?: { username: string } }) => {
   const mockLogout = vi.fn()
@@ -38,7 +42,7 @@ describe('AvatarDropDownMenu', () => {
   })
 
   it('renders avatar when user is logged in', () => {
-    renderComponent({ isLoggedIn: true, user: { username: 'LotteTotten27' } })
+    renderComponent({ isLoggedIn: true, user: fakeUser })
 
     const avatarFallback = screen.getByText('Lo')
     expect(avatarFallback).toBeInTheDocument()
