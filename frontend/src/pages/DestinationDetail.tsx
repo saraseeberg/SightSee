@@ -1,4 +1,8 @@
-import { useGetDestinationByIdQuery, useGetReviewsByDestinationIdQuery, useGetFavoritesByUserIdQuery } from '@Types/__generated__/resolvers-types'
+import {
+  useGetDestinationByIdQuery,
+  useGetReviewsByDestinationIdQuery,
+  useGetFavoritesByUserIdQuery,
+} from '@Types/__generated__/resolvers-types'
 import { useParams } from 'react-router-dom'
 import StarRating from '@/components/molecules/StarRating'
 import ReviewDialog from '@/components/molecules/ReviewDialog'
