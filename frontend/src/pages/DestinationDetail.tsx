@@ -1,4 +1,8 @@
-import { useGetDestinationByIdQuery, useGetReviewsByDestinationIdQuery } from '@Types/__generated__/resolvers-types'
+import {
+  useGetDestinationByIdQuery,
+  useGetReviewsByDestinationIdQuery,
+  useGetFavoritesByUserIdQuery,
+} from '@Types/__generated__/resolvers-types'
 import { useParams } from 'react-router-dom'
 import StarRating from '@/components/molecules/StarRating'
 import ReviewDialog from '@/components/molecules/ReviewDialog'
@@ -7,6 +11,8 @@ import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious
 import { useToast } from '@/hooks/use-toast'
 import { Toaster } from '@/components/ui/toaster'
 import { useAuth } from '@/lib/context/auth-context'
+import SaveToggle from '@/components/atoms/SaveToggle'
+import { useState } from 'react'
 
 const DestinationDetailsPage = () => {
   const { id } = useParams<{ id: string }>()
@@ -20,6 +26,17 @@ const DestinationDetailsPage = () => {
 
   const { user } = useAuth()
   const toast = useToast()
+
+  const [favorites, setFavorites] = useState<string[]>([])
+
+  const { refetch: refetchFavorites } = useGetFavoritesByUserIdQuery({
+    variables: { id: user?.id || '' },
+    skip: !user,
+    onCompleted: (favoritesData) => {
+      const favoriteIds = favoritesData?.getFavoritesByUserID?.map((fav) => fav.id) || []
+      setFavorites(favoriteIds)
+    },
+  })
 
   const handleReviewToast = () => {
     toast.toast({
@@ -35,10 +52,34 @@ const DestinationDetailsPage = () => {
 
   if (!destination) return <p>No destination found for the provided ID.</p>
 
+  const handleToggleFavorite = async (destinationId: string, isSaved: boolean) => {
+    try {
+      setFavorites((prevFavorites) =>
+        isSaved ? [...prevFavorites, destinationId] : prevFavorites.filter((id) => id !== destinationId),
+      )
+      await refetchFavorites()
+    } catch (error) {
+      console.error('Error updating favorites:', error)
+    }
+  }
+  const isFavorite = favorites.includes(destination.id)
+
   return (
     <main>
       <div className="flex-col text-center mb-6 md:mb-10">
-        <h1 className="font-extrabold mb-2 mt-4 text-4xl md:text-6xl lg:text-7xl">{destination.title}</h1>
+        <div className="flex flex-row gap-2 justify-center mb-2 mt-4 text-4xl md:text-6xl lg:text-7xl">
+          <h1 className="font-extrabold">{destination.title}</h1>
+          <div>
+            {user && destination.id && (
+              <SaveToggle
+                destinationId={destination.id}
+                isInitiallySaved={isFavorite}
+                onToggle={(isSaved) => handleToggleFavorite(destination.id, isSaved)}
+                className="text-content mt-1 hover:scale-105"
+              />
+            )}
+          </div>
+        </div>
         <div className="flex justify-center items-center">
           <StarRating rating={destination.rating} />
         </div>

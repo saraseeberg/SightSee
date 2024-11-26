@@ -35,6 +35,7 @@ type Query {
   getUsersByID(ids: [ID!]!): [User!]
   getUserByID(id: ID!): User
   getReviewsByUserID(id: ID!): [Review!]
+  getFavoritesByUserID(id: ID!): [Destination!]
 }
 
 type Mutation {
@@ -43,4 +44,6 @@ type Mutation {
   deleteUser(id: ID!): User!
   login(data: LoginInput!): UserData!
   addReviewToUser(userID: ID!, reviewID: ID!): User!
+  addFavoriteToUser(userID: ID!, destinationID: ID!): User!
+  removeFavoriteFromUser(userID: ID!, destinationID: ID!): User!
 }
