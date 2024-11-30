@@ -167,13 +167,11 @@ const Browse = () => {
     setCurrentPage(1)
   }
 
-  const handleCategorySelect = (category: string) => {
-    if (category === 'All') {
-      setSelectedCategories([])
-    } else {
-      setSelectedCategories([category])
-    }
+  const handleCategorySelect = (categories: string[]) => {
+    setSelectedCategories(categories)
+    setCurrentPage(1)
   }
+
   const handleResetFilters = () => {
     setSelectedCategories([])
     setSelectedCountries([]) // Clear all selected countries
@@ -222,7 +220,7 @@ const Browse = () => {
               ))}
             </div>
             <div className="block md:hidden">
-              <CategoryDropdown onSelectCategory={handleCategorySelect} />
+              <CategoryDropdown onSelectCategories={handleCategorySelect} selectedCategories={selectedCategories} />
             </div>
             <CountryDropdown onSelectCountries={handleCountrySelect} selectedCountries={selectedCountries} />
             <SortingDropdown onSelectedSorting={handleSortingSelect} />
