@@ -1,62 +1,69 @@
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import { Skeleton } from '@/components/ui/skeleton'
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { cn } from '@/lib/utils'
 import { Icon } from '@iconify/react/dist/iconify.js'
 import { useGetAllCountriesQuery } from '@Types/__generated__/resolvers-types'
-import React from 'react'
+import { Check } from 'lucide-react'
+import React, { useState } from 'react'
 
 type CountryDropdownProps = {
-  onSelectCountry: (country: string) => void
-  selectedCountry: string
+  onSelectCountries: (countries: string[]) => void
+  selectedCountries: string[]
 }
 
-const CountryDropdown: React.FC<CountryDropdownProps> = ({ onSelectCountry, selectedCountry }) => {
+const CountryDropdown: React.FC<CountryDropdownProps> = ({ onSelectCountries, selectedCountries }) => {
   const { data, loading, error } = useGetAllCountriesQuery()
-  const [currentCountry, setCurrentCountry] = React.useState(selectedCountry || 'World')
+  const [open, setOpen] = useState(false)
+  const countries = data ? data.getAllCountries : []
 
-  const handleSelect = (country: string) => {
-    setCurrentCountry(country)
-    onSelectCountry(country)
+  const handleToggleCountry = (country: string) => {
+    const updatedCountries = selectedCountries.includes(country)
+      ? selectedCountries.filter((c) => c !== country)
+      : [...selectedCountries, country]
+
+    onSelectCountries(updatedCountries)
   }
 
-  React.useEffect(() => {
-    setCurrentCountry(selectedCountry)
-  }, [selectedCountry])
-
-  const countries: string[] = data ? ['World', ...data.getAllCountries.filter((c: string) => c !== 'World').sort()] : []
+  const handleResetCountries = () => {
+    onSelectCountries([]) // Reset the selected countries
+  }
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button className="border border-content text-content font-bold rounded-full px-4 py-2 shadow-md bg-background hover:bg-accent-1 hover:text-white hover:border-accent-1">
-          {currentCountry} <Icon icon="iconamoon:arrow-down-2-light" width="24" height="24" />
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <Button
+          className={`border border-content text-content font-bold rounded-full px-4 py-2 shadow-md bg-background hover:bg-accent-1 hover:text-white hover:border-accent-1`}
+        >
+          {selectedCountries.length > 0 ? `Selected (${selectedCountries.length})` : 'Select countries'}
+          <Icon icon="iconamoon:arrow-down-2-light" width="24" height="24" />
         </Button>
-      </DropdownMenuTrigger>
-
-      <DropdownMenuContent className="rounded-lg border p-2 space-y-1 shadow-lg max-h-60 overflow-y-auto">
-        {loading ? (
-          <Skeleton className="h-10 w-full rounded-lg" />
-        ) : error ? (
-          <Alert className=" w-full border-none" role="alert">
-            <AlertTitle>Error</AlertTitle>
-            <AlertDescription>Not able to fetch data 🤕</AlertDescription>
-          </Alert>
-        ) : (
-          countries.map((country) => (
-            <DropdownMenuItem
-              key={country}
-              onSelect={() => handleSelect(country)}
-              className={`cursor-pointer p-2 hover:bg-accent-1 hover:text-white ${
-                currentCountry === country ? 'bg-accent-1 text-white' : ''
-              }`}
-            >
-              {country}
-            </DropdownMenuItem>
-          ))
-        )}
-      </DropdownMenuContent>
-    </DropdownMenu>
+      </PopoverTrigger>
+      <PopoverContent className="w-[200px] p-0">
+        <Command>
+          <CommandInput placeholder="Search countries..." />
+          <CommandList>
+            {loading && <CommandEmpty>Loading...</CommandEmpty>}
+            {error && <CommandEmpty>Error loading countries.</CommandEmpty>}
+            <CommandGroup>
+              {countries.map((country) => (
+                <CommandItem
+                  key={country}
+                  onSelect={() => handleToggleCountry(country)}
+                  className={cn(selectedCountries.includes(country) ? 'bg-accent' : 'hover:bg-accent-1 hover:text-white')}
+                >
+                  {country}
+                  {selectedCountries.includes(country) && <Check className="ml-auto opacity-100" />}
+                </CommandItem>
+              ))}
+              <CommandItem onSelect={handleResetCountries} className="text-red-500">
+                Reset Filter
+              </CommandItem>
+            </CommandGroup>
+          </CommandList>
+        </Command>
+      </PopoverContent>
+    </Popover>
   )
 }
 

@@ -15,6 +15,7 @@ import {
   PaginationPrevious,
 } from '@/components/ui/pagination'
 import { Skeleton } from '@/components/ui/skeleton'
+import { useAuth } from '@/lib/context/auth-context'
 import { Icon } from '@iconify/react/dist/iconify.js'
 import {
   Destination,
@@ -23,7 +24,6 @@ import {
 } from '@Types/__generated__/resolvers-types'
 import { useEffect, useState } from 'react'
 import { useLocation, useSearchParams } from 'react-router-dom'
-import { useAuth } from '@/lib/context/auth-context'
 
 const categoryButtonData: Omit<CategoryButtonProps, 'onClick' | 'isSelected'>[] = [
   { category: 'Activities' },
@@ -44,7 +44,7 @@ const Browse = () => {
   const [searchParams, setSearchParams] = useSearchParams()
 
   const [selectedCategories, setSelectedCategories] = useState<string[]>([])
-  const [selectedCountry, setSelectedCountry] = useState<string>('World')
+  const [selectedCountries, setSelectedCountries] = useState<string[]>([])
   const [selectedSorting, setSelectedSorting] = useState<string>('Best Rated')
   const [currentPage, setCurrentPage] = useState<number>(1)
   const [filtersApplied, setFiltersApplied] = useState<boolean>(false)
@@ -57,9 +57,9 @@ const Browse = () => {
       setSelectedCategories(categoriesParam.split(','))
     }
 
-    const countryParam = searchParams.get('country')
-    if (countryParam) {
-      setSelectedCountry(countryParam)
+    const countriesParam = searchParams.get('countries')
+    if (countriesParam) {
+      setSelectedCountries(countriesParam.split(','))
     }
 
     const sortingParam = searchParams.get('sorting')
@@ -76,18 +76,15 @@ const Browse = () => {
     }
   }, [])
 
-  const { loading, error, data } = useGetAllDestinationsQuery({
+  const { data, loading } = useGetAllDestinationsQuery({
     variables: {
       page: currentPage,
       limit: CARDS_LIMIT,
       categories: selectedCategories.length > 0 ? selectedCategories : null,
-      country: selectedCountry === 'World' ? null : selectedCountry,
+      countries: selectedCountries.length > 0 ? selectedCountries : null,
       sorting: selectedSorting,
     },
   })
-
-  console.log(error)
-  console.log(data)
 
   useGetFavoritesByUserIdQuery({
     variables: { id: user?.id || '' },
@@ -106,7 +103,7 @@ const Browse = () => {
       setSelectedCategories([location.state.category])
     }
     if (location.state?.country) {
-      setSelectedCountry(location.state.country)
+      setSelectedCountries([location.state.country])
     }
   }, [location.state])
 
@@ -127,8 +124,8 @@ const Browse = () => {
       params.set('categories', selectedCategories.join(','))
     }
 
-    if (selectedCountry && selectedCountry !== 'World') {
-      params.set('country', selectedCountry)
+    if (selectedCountries && selectedCountries.length > 0 && !selectedCountries.includes('World')) {
+      params.set('countries', selectedCountries.join(','))
     }
 
     if (selectedSorting && selectedSorting !== 'Best Rated') {
@@ -140,13 +137,13 @@ const Browse = () => {
     }
 
     setSearchParams(params)
-  }, [selectedCategories, selectedCountry, selectedSorting, currentPage])
+  }, [selectedCategories, selectedCountries, selectedSorting, currentPage])
 
   useEffect(() => {
-    const hasFilters = selectedCategories.length > 0 || selectedCountry !== 'World' || selectedSorting !== 'Best Rated'
+    const hasFilters = selectedCategories.length > 0 || selectedCountries.length > 0 || selectedSorting !== 'Best Rated'
 
     setFiltersApplied(hasFilters)
-  }, [selectedCategories, selectedCountry, selectedSorting])
+  }, [selectedCategories, selectedCountries, selectedSorting])
 
   const handleCategoryClick = (category: string) => {
     let updatedCategories: string[]
@@ -165,10 +162,9 @@ const Browse = () => {
     setSelectedSorting(sorting)
   }
 
-  const handleCountrySelect = (country: string) => {
-    setSelectedCountry(country)
+  const handleCountrySelect = (countries: string[]) => {
+    setSelectedCountries(countries)
     setCurrentPage(1)
-    setSearchParams(new URLSearchParams())
   }
 
   const handleCategorySelect = (category: string) => {
@@ -180,8 +176,9 @@ const Browse = () => {
   }
   const handleResetFilters = () => {
     setSelectedCategories([])
-    setSelectedCountry('World')
+    setSelectedCountries([]) // Clear all selected countries
     setSelectedSorting('Best Rated')
+    setCurrentPage(1)
   }
 
   const handleCardClick = (card: Partial<Destination>) => {
@@ -227,7 +224,7 @@ const Browse = () => {
             <div className="block md:hidden">
               <CategoryDropdown onSelectCategory={handleCategorySelect} />
             </div>
-            <CountryDropdown onSelectCountry={handleCountrySelect} selectedCountry={selectedCountry} />
+            <CountryDropdown onSelectCountries={handleCountrySelect} selectedCountries={selectedCountries} />
             <SortingDropdown onSelectedSorting={handleSortingSelect} />
             <Button
               variant="ghost"

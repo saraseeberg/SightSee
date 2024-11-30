@@ -36,7 +36,7 @@ type Query {
     page: Int!
     limit: Int!
     categories: [String!]
-    country: String
+    countries: [String!]
     sorting: String
   ): PaginatedDestinations
   getFeaturedDestinations: [Destination]
