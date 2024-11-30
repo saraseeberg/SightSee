@@ -50,7 +50,9 @@ const CountryDropdown: React.FC<CountryDropdownProps> = ({ onSelectCountries, se
                 <CommandItem
                   key={country}
                   onSelect={() => handleToggleCountry(country)}
-                  className={cn(selectedCountries.includes(country) ? 'bg-accent' : 'hover:bg-accent-1 hover:text-white')}
+                  className={cn(
+                    selectedCountries.includes(country) ? 'bg-accent' : 'hover:bg-accent-1 hover:text-white',
+                  )}
                 >
                   {country}
                   {selectedCountries.includes(country) && <Check className="ml-auto opacity-100" />}
