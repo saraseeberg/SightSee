@@ -1,6 +1,6 @@
 import { Destination, DestinationInput, PaginatedDestinations, Resolvers } from '@Types/__generated__/resolvers-types'
-import db from '../db'
 import { ApolloError } from 'apollo-server-express'
+import db from '../db'
 
 const DestinationResolver: Resolvers = {
   Query: {
@@ -19,27 +19,29 @@ const DestinationResolver: Resolvers = {
       {
         page,
         limit,
-        country,
+        countries,
         sorting,
         categories,
       }: {
         page: number
         limit: number
-        country?: string | null
+        countries?: string[] | null
         sorting?: string | null
         categories?: string[] | null
       },
     ) => {
       try {
         const whereClauses: string[] = []
-        const values: (string | number)[] = []
+        const values: (string | number | string[])[] = []
         let idx = 1
 
-        // Remove categories filtering from SQL
-
-        if (country && country !== 'World') {
-          whereClauses.push(`country = $${idx}`)
-          values.push(country)
+        if (!countries) {
+          countries = []
+        }
+        // Handle multiple countries filter
+        else if (countries && countries.length > 0) {
+          whereClauses.push(`country = ANY($${idx}::text[])`)
+          values.push(countries) // Pass the entire array as a single parameter
           idx++
         }
 
@@ -100,7 +102,7 @@ const DestinationResolver: Resolvers = {
 
     getAllCountries: async () => {
       try {
-        const result = await db.query('SELECT DISTINCT country FROM destinations')
+        const result = await db.query('SELECT DISTINCT country FROM destinations ORDER BY country ASC')
         const countries = result.rows.map((row) => row.country)
         return countries
       } catch (error) {
