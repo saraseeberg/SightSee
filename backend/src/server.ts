@@ -1,16 +1,14 @@
-import { ApolloServer } from 'apollo-server-express'
-import express from 'express'
 import { loadFilesSync } from '@graphql-tools/load-files'
 import { mergeResolvers, mergeTypeDefs } from '@graphql-tools/merge'
+import { ApolloServer } from 'apollo-server-express'
 import cors from 'cors'
-import AdminResolver from './resolvers/adminResolver'
-import DestinationResolver from './resolvers/destinationResolver'
-import reviewResolver from './resolvers/reviewResolver'
-import UserResolver from './resolvers/userResolver'
+import express from 'express'
 import { graphqlUploadExpress } from 'graphql-upload-minimal'
 
+const extension = process.env.NODE_ENV === 'dev' ? 'ts' : 'js'
+
 const typesArray = loadFilesSync(__dirname + '/models/*.graphql')
-const resolversArray = [AdminResolver, DestinationResolver, reviewResolver, UserResolver]
+const resolversArray = loadFilesSync(__dirname + `/resolvers/*.${extension}`)
 
 export const typeDefs = mergeTypeDefs(typesArray)
 export const resolvers = mergeResolvers(resolversArray)
@@ -21,7 +19,12 @@ const startServer = async () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const app = express() as any
 
-  app.use(cors())
+  const corsOptions = {
+    origin: 'http://localhost:3000',
+    credentials: true,
+  }
+
+  app.use(cors(corsOptions))
   app.use(graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 }))
 
   const server = new ApolloServer({
@@ -29,9 +32,13 @@ const startServer = async () => {
     resolvers,
     cache: 'bounded',
     csrfPrevention: true,
+    context: ({ req, res }) => ({
+      req,
+      res,
+    }),
   })
   await server.start()
-  server.applyMiddleware({ app })
+  server.applyMiddleware({ app, path: '/graphql', cors: false })
   app.listen({ port: 3001 }, () => {
     console.log('\x1b[35m--------------------------------- \n')
     console.log('🚀 Server is running on http://localhost:3001/graphql\n')

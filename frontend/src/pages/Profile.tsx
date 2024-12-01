@@ -1,9 +1,9 @@
 import SmallReviewCard from '@/components/atoms/SmallReviewCard'
-import StatisticsCard from '@/components/molecules/StatisticsCard'
 import SmallSavedDestinationCard from '@/components/atoms/SmallSavedDestinationCard'
+import StatisticsCard from '@/components/molecules/StatisticsCard'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { useAuth } from '@/lib/context/auth-context'
-import { Review, useGetReviewByUserIdQuery, useGetFavoritesByUserIdQuery } from '@Types/__generated__/resolvers-types'
+import { Review, useGetFavoritesByUserIdQuery, useGetReviewByUserIdQuery } from '@Types/__generated__/resolvers-types'
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 

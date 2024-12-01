@@ -1,11 +1,12 @@
 import { s3 } from '@/s3/s3Provider'
 import createUpdateQuery from '@/utils/createUpdateQuery'
-import { LoginInput, Resolvers, User, UserInput } from '@Types/__generated__/resolvers-types'
+import { Resolvers, User, UserInput } from '@Types/__generated__/resolvers-types'
+import { RegisterSchema } from '@Types/schema/registerUserSchema'
 import { UpdateUserSchema } from '@Types/schema/updateUserSchema'
-import { ApolloError, AuthenticationError } from 'apollo-server-express'
+import { ApolloError } from 'apollo-server-express'
 import bcrypt from 'bcrypt'
 import { FileUpload, GraphQLUpload } from 'graphql-upload-minimal'
-import jwt from 'jsonwebtoken'
+import { ZodError } from 'zod'
 import db from '../db'
 
 const VALID_IMAGE_TYPES = ['image/jpg', 'image/jpeg', 'image/gif', 'image/png']
@@ -63,7 +64,7 @@ const UserResolver: Resolvers = {
     getFavoritesByUserID: async (_: unknown, { id }: { id: string }) => {
       try {
         const query = `
-          SELECT * FROM destinations 
+          SELECT * FROM destinations
           WHERE id = ANY(
             SELECT UNNEST(favorites) FROM users WHERE id = $1
           )
@@ -82,13 +83,19 @@ const UserResolver: Resolvers = {
       { name, username, password }: { name: string; username: string; password: string },
     ) => {
       try {
-        // Check if user already exists
-        const checkQuery = 'SELECT * FROM users WHERE username = $1'
-        const checkResult = await db.query(checkQuery, [username])
-        if (checkResult.rows.length > 0) {
-          throw new ApolloError('User already exists', 'USER_ALREADY_EXISTS')
+        RegisterSchema.parse({ name, username, password })
+      } catch (error: unknown) {
+        if (error instanceof ZodError) {
+          throw new ApolloError(error.errors[0].message, 'VALIDATION_ERROR')
         }
-
+      }
+      // Check if user already exists
+      const checkQuery = 'SELECT * FROM users WHERE username = $1'
+      const checkResult = await db.query(checkQuery, [username])
+      if (checkResult.rows.length > 0) {
+        throw new ApolloError('User already exists', 'USER_ALREADY_EXISTS')
+      }
+      try {
         const query = 'INSERT INTO users (name, username, password) VALUES ($1, $2, $3) RETURNING *'
 
         const hashedpassword = await bcrypt.hash(password, 10)
@@ -97,21 +104,8 @@ const UserResolver: Resolvers = {
         console.log('Created user: ', username, ' with id: ', rows[0].id)
 
         const user = rows[0] as User
-        const token = jwt.sign(
-          {
-            user_id: user.id,
-            username: user.username,
-          },
-          process.env.JWT_SECRET as string,
-          {
-            expiresIn: '2h',
-          },
-        )
 
-        return {
-          user,
-          token,
-        }
+        return user
       } catch (error) {
         throw new ApolloError(('Internal Server Error ' + error) as string, 'INTERNAL_SERVER_ERROR')
       }
@@ -175,9 +169,9 @@ const UserResolver: Resolvers = {
     addFavoriteToUser: async (_: unknown, { userID, destinationID }: { userID: string; destinationID: string }) => {
       try {
         const addFavoriteQuery = `
-          UPDATE users 
-          SET favorites = array_append(favorites, $2) 
-          WHERE id = $1 
+          UPDATE users
+          SET favorites = array_append(favorites, $2)
+          WHERE id = $1
           RETURNING *
         `
         console.log('Adding favorite to user with id:', userID)
@@ -186,8 +180,8 @@ const UserResolver: Resolvers = {
 
         // Fetch the full Destination objects for the updated favorites
         const getFavoritesQuery = `
-          SELECT * 
-          FROM destinations 
+          SELECT *
+          FROM destinations
           WHERE id = ANY($1)
         `
         const { rows: favorites } = await db.query(getFavoritesQuery, [user.favorites])
@@ -209,9 +203,9 @@ const UserResolver: Resolvers = {
     ) => {
       try {
         const removeFavoriteQuery = `
-          UPDATE users 
-          SET favorites = array_remove(favorites, $2) 
-          WHERE id = $1 
+          UPDATE users
+          SET favorites = array_remove(favorites, $2)
+          WHERE id = $1
           RETURNING *;
         `
         console.log('Removing favorite from user with id:', userID)
@@ -219,8 +213,8 @@ const UserResolver: Resolvers = {
         const user = userRows[0]
 
         const getFavoritesQuery = `
-          SELECT * 
-          FROM destinations 
+          SELECT *
+          FROM destinations
           WHERE id = ANY($1);
         `
         const { rows: favorites } = await db.query(getFavoritesQuery, [user.favorites])
@@ -246,44 +240,6 @@ const UserResolver: Resolvers = {
         throw new ApolloError(('Could not delete user: ' + error) as string, 'INTERNAL_SERVER_ERROR')
       }
     },
-    login: async (_: unknown, { data }: { data: LoginInput }) => {
-      try {
-        const query = 'SELECT * FROM users WHERE username = $1'
-        const { rows } = await db.query(query, [data.username])
-        console.log('Logging in user with username: ', data.username)
-        const user = rows[0] as User
-
-        if (!user) {
-          throw new AuthenticationError('Username or password is incorrect')
-        }
-
-        const isValidPassword = await bcrypt.compare(data.password, user.password)
-
-        if (!isValidPassword) {
-          throw new AuthenticationError('Username or password is incorrect')
-        }
-
-        const token = jwt.sign(
-          {
-            user_id: user.id,
-            username: user.username,
-          },
-          process.env.JWT_SECRET as string,
-          {
-            expiresIn: '2h',
-          },
-        )
-
-        if (user.image) user.image = await s3.get(user.image)
-        console.log('Logged in user: ', user)
-        return {
-          user,
-          token,
-        }
-      } catch (error) {
-        throw new Error(error as string)
-      }
-    },
   },
 
   User: {
@@ -294,6 +250,15 @@ const UserResolver: Resolvers = {
         return rows
       } catch (error) {
         throw new ApolloError(`Failed to fetch reviews: ${error}`, 'INTERNAL_SERVER_ERROR')
+      }
+    },
+    favorites: async (user: User) => {
+      try {
+        const query = 'SELECT * FROM destinations WHERE id = ANY($1)'
+        const { rows } = await db.query(query, [user.favorites])
+        return rows
+      } catch (error) {
+        throw new ApolloError(`Failed to fetch favorites: ${error}`, 'INTERNAL_SERVER_ERROR')
       }
     },
   },

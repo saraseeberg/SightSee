@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "ts-node-dev -r tsconfig-paths/register src/server.ts",
+    "dev": "NODE_ENV=dev && ts-node-dev -r tsconfig-paths/register src/server.ts",
     "lint": "eslint . && npx prettier --write .",
     "build": "tsc -b && tsc-alias && cpy src/models/**/* dist/backend/src/models --parents"
   },
@@ -15,6 +15,7 @@
     "@graphql-tools/schema": "^10.0.7",
     "apollo-server-express": "^3.13.0",
     "bcrypt": "^5.1.1",
+    "cookie": "^1.0.2",
     "cors": "^2.8.5",
     "express": "^4.21.1",
     "graphql": "^16.9.0",

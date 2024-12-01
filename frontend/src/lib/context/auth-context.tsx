@@ -1,13 +1,19 @@
-import { useCreateUserMutation, useLoginMutation, User } from '@Types/__generated__/resolvers-types'
+import { FetchResult } from '@apollo/client'
+import {
+  useCreateUserMutation,
+  useGetMeQuery,
+  useLoginMutation,
+  useLogoutMutation,
+  User,
+} from '@Types/__generated__/resolvers-types'
 import { createContext, useContext, useEffect, useState } from 'react'
 
 type AuthContextType = {
   user: User | null
-  token: string | null
+  refetchUser: () => void
   registerUser: (name: string, username: string, password: string) => Promise<{ error?: string }>
-  loginUser: (username: string, password: string) => Promise<{ error?: string }>
+  loginUser: (username: string, password: string) => Promise<FetchResult>
   logout: () => void
-  isLoggedIn: () => boolean
 }
 
 type Props = { children: React.ReactNode }
@@ -17,20 +23,21 @@ const AuthContext = createContext<AuthContextType>({} as AuthContextType)
 const AuthProvider = ({ children }: Props) => {
   const [createUser] = useCreateUserMutation()
   const [login] = useLoginMutation()
+  const [logOut] = useLogoutMutation()
+  const { data, loading, refetch } = useGetMeQuery()
   const [user, setUser] = useState<User | null>(null)
-  const [token, setToken] = useState<string | null>(null)
   const [isReady, setIsReady] = useState(false)
-
   useEffect(() => {
-    const user = localStorage.getItem('user')
-    const token = localStorage.getItem('token')
-
-    if (user && token) {
-      setUser(JSON.parse(user))
-      setToken(token)
+    if (!loading) {
+      if (data?.me) {
+        setUser({
+          ...data.me,
+          password: 'Non ya buisness',
+        })
+      }
+      setIsReady(true)
     }
-    setIsReady(true)
-  }, [])
+  }, [data?.me, loading])
 
   const registerUser = async (name: string, username: string, password: string): Promise<{ error?: string }> => {
     try {
@@ -44,57 +51,41 @@ const AuthProvider = ({ children }: Props) => {
       if (res.errors) {
         return { error: res.errors[0].message }
       }
-      const user = res.data?.createUser.user as User
-      const token = res.data?.createUser.token as string
+      setUser(res.data?.createUser as User)
 
-      setUser(user)
-      setToken(token)
-      localStorage.setItem('user', JSON.stringify(user))
-      localStorage.setItem('token', token)
       return {}
     } catch (error) {
       return { error: error as string }
     }
   }
 
-  const loginUser = async (username: string, password: string): Promise<{ error?: string }> => {
+  const loginUser = async (username: string, password: string) => {
+    const res = await login({
+      variables: {
+        username,
+        password,
+      },
+    })
+    setUser(res.data?.login as User)
+    return res
+  }
+
+  const logout = async () => {
     try {
-      const res = await login({
-        variables: {
-          username,
-          password,
-        },
-      })
-      if (res.errors) {
-        return { error: res.errors[0].message }
-      }
-
-      const user = res.data?.login.user as User
-      const token = res.data?.login.token as string
-
-      setUser(user)
-      setToken(token)
-      localStorage.setItem('user', JSON.stringify(user))
-      localStorage.setItem('token', token)
-      return {}
-    } catch (error: unknown) {
-      return { error: error as string }
+      logOut()
+      setUser(null)
+    } catch (error) {
+      console.error(error)
     }
   }
 
-  const isLoggedIn = () => {
-    return !!user
-  }
-
-  const logout = () => {
-    setUser(null)
-    setToken(null)
-    localStorage.removeItem('user')
-    localStorage.removeItem('token')
+  const refetchUser = () => {
+    console.log('Refetching user')
+    refetch()
   }
 
   return (
-    <AuthContext.Provider value={{ user, token, registerUser, loginUser, logout, isLoggedIn }}>
+    <AuthContext.Provider value={{ user, refetchUser, registerUser, loginUser, logout }}>
       {isReady && children}
     </AuthContext.Provider>
   )

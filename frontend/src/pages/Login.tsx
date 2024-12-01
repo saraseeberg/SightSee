@@ -1,8 +1,9 @@
 import { Button } from '@/components/ui/button'
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useAuth } from '@/lib/context/auth-context'
+import { ApolloError } from '@apollo/client'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Icon } from '@iconify/react/dist/iconify.js'
 import { LoginSchema, LoginWriteSchema } from '@Types/schema/loginSchema'
@@ -20,17 +21,27 @@ function Login() {
   } = useForm<LoginWriteSchema>({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
-      username: 'TestUser',
-      password: 'TestPassword',
+      username: 'PrettyPony',
+      password: 'byn8rwx*qre5NTH-fck',
     },
   })
 
   const onSubmit = async (data: LoginWriteSchema) => {
-    const { error } = await loginUser(data.username, data.password)
-    console.log(error)
-    if (error) {
-      setError('root', { message: 'Username or password is incorrect' })
-    } else navigate('/')
+    try {
+      const res = await loginUser(data.username, data.password)
+      console.log(res)
+      navigate('/')
+    } catch (error) {
+      if (error instanceof ApolloError) {
+        console.error(error)
+        const code = error.graphQLErrors[0].extensions?.code
+        if (code === 'USERNAME_TAKEN') {
+          setError('root', { message: error.message })
+        } else {
+          setError('root', { message: 'Something went wrong, please try again' })
+        }
+      }
+    }
   }
 
   return (
