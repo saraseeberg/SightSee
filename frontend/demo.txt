@@ -1,1 +1,0 @@
-gpt-feeder --include "frontend/src/components/molecules/CountryDropdown.tsx" "frontend/src/pages/Browse.tsx" "backend/src/models/destination.graphql" "backend/src/queries/destination.graphql" "backend/src/resolvers/destinationResolver.ts"
