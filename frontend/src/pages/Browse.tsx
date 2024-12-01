@@ -20,6 +20,8 @@ import { Icon } from '@iconify/react/dist/iconify.js'
 import {
   Destination,
   useGetAllDestinationsQuery,
+  useGetAvailableCategoriesQuery,
+  useGetAvailableCountriesQuery,
   useGetFavoritesByUserIdQuery,
 } from '@Types/__generated__/resolvers-types'
 import { useEffect, useState } from 'react'
@@ -85,6 +87,17 @@ const Browse = () => {
       sorting: selectedSorting,
     },
   })
+
+  const { data: availableCategoriesData } = useGetAvailableCategoriesQuery({
+    variables: { countries: selectedCountries.length > 0 ? selectedCountries : null },
+  })
+
+  const { data: availableCountriesData } = useGetAvailableCountriesQuery({
+    variables: { categories: selectedCategories.length > 0 ? selectedCategories : null },
+  })
+
+  const availableCategories = new Set(availableCategoriesData?.getAvailableCategories || [])
+  const availableCountries = new Set(availableCountriesData?.getAvailableCountries || [])
 
   useGetFavoritesByUserIdQuery({
     variables: { id: user?.id || '' },
@@ -216,13 +229,22 @@ const Browse = () => {
                   category={item.category}
                   isSelected={selectedCategories.includes(item.category)}
                   onClick={() => handleCategoryClick(item.category)}
+                  disabled={!availableCategories.has(item.category)}
                 />
               ))}
             </div>
             <div className="block md:hidden">
-              <CategoryDropdown onSelectCategories={handleCategorySelect} selectedCategories={selectedCategories} />
+              <CategoryDropdown
+                onSelectCategories={handleCategorySelect}
+                selectedCategories={selectedCategories}
+                availableCategories={availableCategories}
+              />
             </div>
-            <CountryDropdown onSelectCountries={handleCountrySelect} selectedCountries={selectedCountries} />
+            <CountryDropdown
+              onSelectCountries={handleCountrySelect}
+              selectedCountries={selectedCountries}
+              availableCountries={availableCountries}
+            />
             <SortingDropdown onSelectedSorting={handleSortingSelect} />
             <Button
               variant="ghost"

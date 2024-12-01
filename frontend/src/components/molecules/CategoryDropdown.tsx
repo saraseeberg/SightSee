@@ -9,11 +9,16 @@ import React, { useState } from 'react'
 type CategoryDropdownProps = {
   onSelectCategories: (categories: string[]) => void
   selectedCategories: string[]
+  availableCategories: Set<string>
 }
 
 const categories = ['Activities', 'Entertainment', 'Nightlife', 'Restaurants', 'Shopping', 'Sights']
 
-const CategoryDropdown: React.FC<CategoryDropdownProps> = ({ onSelectCategories, selectedCategories }) => {
+const CategoryDropdown: React.FC<CategoryDropdownProps> = ({
+  onSelectCategories,
+  selectedCategories,
+  availableCategories,
+}) => {
   const [open, setOpen] = useState(false)
 
   const handleToggleCategory = (category: string) => {
@@ -44,18 +49,23 @@ const CategoryDropdown: React.FC<CategoryDropdownProps> = ({ onSelectCategories,
           <CommandList>
             {categories.length === 0 && <CommandEmpty>No categories found.</CommandEmpty>}
             <CommandGroup>
-              {categories.map((category) => (
-                <CommandItem
-                  key={category}
-                  onSelect={() => handleToggleCategory(category)}
-                  className={cn(
-                    selectedCategories.includes(category) ? 'bg-accent' : 'hover:bg-accent-1 hover:text-white',
-                  )}
-                >
-                  {category}
-                  {selectedCategories.includes(category) && <Check className="ml-auto opacity-100" />}
-                </CommandItem>
-              ))}
+              {categories.map((category) => {
+                const isAvailable = availableCategories.has(category)
+                return (
+                  <CommandItem
+                    key={category}
+                    onSelect={() => isAvailable && handleToggleCategory(category)}
+                    disabled={!isAvailable}
+                    className={cn(
+                      selectedCategories.includes(category) ? 'bg-accent' : 'hover:bg-accent-1 hover:text-white',
+                      !isAvailable && 'opacity-50 cursor-not-allowed',
+                    )}
+                  >
+                    {category}
+                    {selectedCategories.includes(category) && <Check className="ml-auto opacity-100" />}
+                  </CommandItem>
+                )
+              })}
               <CommandItem onSelect={handleResetCategories} className="text-red-500">
                 Reset Filter
               </CommandItem>
