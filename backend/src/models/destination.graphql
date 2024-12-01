@@ -10,6 +10,7 @@ type Destination {
   image: String!
   alt: String!
   rating: Float!
+  reviews: [Review!]
 }
 
 type PaginatedDestinations {

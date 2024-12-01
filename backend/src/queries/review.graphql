@@ -25,9 +25,5 @@ query getReviewByUserID($id: ID!) {
     text
     rating
     destinationid
-    destination {
-      id
-      title
-    }
   }
 }

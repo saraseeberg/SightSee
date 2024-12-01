@@ -1,6 +1,6 @@
 import { Destination, DestinationInput, PaginatedDestinations, Resolvers } from '@Types/__generated__/resolvers-types'
-import db from '../db'
 import { ApolloError } from 'apollo-server-express'
+import db from '../db'
 
 const DestinationResolver: Resolvers = {
   Query: {
@@ -183,6 +183,16 @@ const DestinationResolver: Resolvers = {
         return result.rows[0] as Destination
       } catch (error) {
         throw new ApolloError(('Could not delete Destination: ' + error) as string)
+      }
+    },
+  },
+  Destination: {
+    reviews: async (destination: Destination) => {
+      try {
+        const result = await db.query('SELECT * FROM reviews WHERE destination_id = $1', [destination.id])
+        return result.rows
+      } catch (error) {
+        throw new ApolloError(('Could not get reviews for destination: ' + error) as string)
       }
     },
   },
