@@ -3,17 +3,15 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Icon } from '@iconify/react/dist/iconify.js'
 import React from 'react'
 
-const sorting = ['Best Rated', 'Worst Rated', 'A - Z', 'Z - A']
+const sortingOptions = ['Best Rated', 'Worst Rated', 'A - Z', 'Z - A']
 
-type CategoryDropdownProps = {
+type SortingDropdownProps = {
+  selectedSorting: string
   onSelectedSorting: (sorting: string) => void
 }
 
-const SortingDropdown: React.FC<CategoryDropdownProps> = ({ onSelectedSorting }) => {
-  const [selectedSorting, setSelectedSorting] = React.useState('Best Rated')
-
+const SortingDropdown: React.FC<SortingDropdownProps> = ({ selectedSorting, onSelectedSorting }) => {
   const handleSelect = (sorting: string) => {
-    setSelectedSorting(sorting)
     onSelectedSorting(sorting)
   }
 
@@ -26,7 +24,7 @@ const SortingDropdown: React.FC<CategoryDropdownProps> = ({ onSelectedSorting })
       </DropdownMenuTrigger>
 
       <DropdownMenuContent className="rounded-lg border p-2 space-y-1 shadow-lg">
-        {sorting.map((sorting) => (
+        {sortingOptions.map((sorting) => (
           <DropdownMenuItem
             key={sorting}
             onSelect={() => handleSelect(sorting)}

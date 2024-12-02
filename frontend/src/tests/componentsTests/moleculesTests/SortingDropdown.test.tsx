@@ -7,8 +7,7 @@ describe('SortingDropdown', () => {
   const mockOnSelectedSorting = vi.fn()
 
   it('renders the default sorting option', () => {
-    render(<SortingDropdown onSelectedSorting={mockOnSelectedSorting} />)
-
-    expect(screen.getByRole('button', { name: /best rated/i })).toBeInTheDocument()
+    render(<SortingDropdown onSelectedSorting={mockOnSelectedSorting} selectedSorting={'Best Rated'} />)
+    expect(screen.getByText('Best Rated')).toBeInTheDocument()
   })
 })
