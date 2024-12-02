@@ -7,11 +7,12 @@ import { ApolloError } from '@apollo/client'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Icon } from '@iconify/react/dist/iconify.js'
 import { LoginSchema, LoginWriteSchema } from '@Types/schema/loginSchema'
+import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { Link, useNavigate } from 'react-router-dom'
 
 function Login() {
-  const { loginUser } = useAuth()
+  const { loginUser, user } = useAuth()
   const navigate = useNavigate()
   const {
     register,
@@ -43,6 +44,12 @@ function Login() {
       }
     }
   }
+
+  useEffect(() => {
+    if (user) {
+      navigate('/')
+    }
+  }, [])
 
   return (
     <Card className="mx-auto max-w-sm">

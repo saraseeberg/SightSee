@@ -1,3 +1,4 @@
+import { ApolloContext } from '@/server'
 import { User } from '@Types/__generated__/resolvers-types'
 import { ApolloError } from 'apollo-server-express'
 import * as cookie from 'cookie'
@@ -44,4 +45,18 @@ export const verifyToken = (req: Request) => {
   } catch {
     return null
   }
+}
+
+export const authenticateUser = (context: ApolloContext, targetUserId?: string) => {
+  console.log('Authenticating user', context.userId, 'Target user id', targetUserId)
+  if (!context.userId) {
+    throw new ApolloError('Not authenticated', 'UNAUTHENTICATED')
+  }
+  console.log('User authenticated')
+
+  if (targetUserId && context.userId !== targetUserId) {
+    throw new ApolloError('Not authenticated', 'UNAUTHORISED')
+  }
+
+  console.log('User authorised')
 }

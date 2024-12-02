@@ -2,6 +2,7 @@ import { generateToken, verifyToken } from '@/auth/utils'
 import db from '@/db'
 import { s3 } from '@/s3/s3Provider'
 import { LoginInput, Resolvers, User } from '@Types/__generated__/resolvers-types'
+import { LoginSchema } from '@Types/schema/loginSchema'
 import { ApolloError, AuthenticationError } from 'apollo-server-express'
 import bcrypt from 'bcrypt'
 import { Request, Response } from 'express'
@@ -31,6 +32,7 @@ const authResolver: Resolvers = {
   },
   Mutation: {
     login: async (_: unknown, { data }: { data: LoginInput }, { res }: { res: Response }) => {
+      LoginSchema.parse(data)
       let user: User | null
       try {
         const query = 'SELECT * FROM users WHERE username = $1'

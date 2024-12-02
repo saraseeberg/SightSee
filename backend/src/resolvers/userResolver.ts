@@ -1,4 +1,6 @@
+import { authenticateUser } from '@/auth/utils'
 import { s3 } from '@/s3/s3Provider'
+import { ApolloContext } from '@/server'
 import createUpdateQuery from '@/utils/createUpdateQuery'
 import { Resolvers, User, UserInput } from '@Types/__generated__/resolvers-types'
 import { RegisterSchema } from '@Types/schema/registerUserSchema'
@@ -82,14 +84,16 @@ const UserResolver: Resolvers = {
       _: unknown,
       { name, username, password }: { name: string; username: string; password: string },
     ) => {
+      console.log('Creating user with name: ', name, ' username: ', username)
       try {
-        RegisterSchema.parse({ name, username, password })
+        RegisterSchema.parse({ name, username, password, confirmPassword: password })
       } catch (error: unknown) {
         if (error instanceof ZodError) {
-          throw new ApolloError(error.errors[0].message, 'VALIDATION_ERROR')
+          throw new ApolloError(error.message, 'VALIDATION_ERROR')
         }
       }
       // Check if user already exists
+      console.log('Checking if user already exists')
       const checkQuery = 'SELECT * FROM users WHERE username = $1'
       const checkResult = await db.query(checkQuery, [username])
       if (checkResult.rows.length > 0) {
@@ -111,7 +115,8 @@ const UserResolver: Resolvers = {
       }
     },
 
-    updateUser: async (_: unknown, { user }: { user: UserInput }) => {
+    updateUser: async (_: unknown, { user }: { user: UserInput }, contextValue: ApolloContext) => {
+      authenticateUser(contextValue, user.id)
       // Have to safe parse as the image is a FileUpload type and not a File type
       const result = UpdateUserSchema.safeParse(user)
       let imgFile = null
@@ -154,7 +159,12 @@ const UserResolver: Resolvers = {
       }
     },
 
-    addReviewToUser: async (_: unknown, { userID, reviewID }: { userID: string; reviewID: string }) => {
+    addReviewToUser: async (
+      _: unknown,
+      { userID, reviewID }: { userID: string; reviewID: string },
+      contextValue: ApolloContext,
+    ) => {
+      authenticateUser(contextValue, userID)
       try {
         const query = 'UPDATE users SET reviews = array_append(reviews, $2) WHERE id = $1 RETURNING *'
         console.log('Adding review to user with id: ', userID)
@@ -166,7 +176,12 @@ const UserResolver: Resolvers = {
       }
     },
 
-    addFavoriteToUser: async (_: unknown, { userID, destinationID }: { userID: string; destinationID: string }) => {
+    addFavoriteToUser: async (
+      _: unknown,
+      { userID, destinationID }: { userID: string; destinationID: string },
+      contextValue: ApolloContext,
+    ) => {
+      authenticateUser(contextValue, userID)
       try {
         const addFavoriteQuery = `
           UPDATE users
@@ -200,7 +215,9 @@ const UserResolver: Resolvers = {
     removeFavoriteFromUser: async (
       _: unknown,
       { userID, destinationID }: { userID: string; destinationID: string },
+      contextValue: ApolloContext,
     ) => {
+      authenticateUser(contextValue, userID)
       try {
         const removeFavoriteQuery = `
           UPDATE users
@@ -229,7 +246,8 @@ const UserResolver: Resolvers = {
       }
     },
 
-    deleteUser: async (_: unknown, { id }: { id: string }) => {
+    deleteUser: async (_: unknown, { id }: { id: string }, contextValue: ApolloContext) => {
+      authenticateUser(contextValue, id)
       try {
         const query = 'DELETE FROM users WHERE id = $1 RETURNING *'
         console.log('Deleting user with id: ', id)

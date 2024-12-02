@@ -11,7 +11,7 @@ import { createContext, useContext, useEffect, useState } from 'react'
 type AuthContextType = {
   user: User | null
   refetchUser: () => void
-  registerUser: (name: string, username: string, password: string) => Promise<{ error?: string }>
+  registerUser: (name: string, username: string, password: string) => Promise<string>
   loginUser: (username: string, password: string) => Promise<FetchResult>
   logout: () => void
 }
@@ -39,24 +39,16 @@ const AuthProvider = ({ children }: Props) => {
     }
   }, [data?.me, loading])
 
-  const registerUser = async (name: string, username: string, password: string): Promise<{ error?: string }> => {
-    try {
-      const res = await createUser({
-        variables: {
-          name,
-          username,
-          password,
-        },
-      })
-      if (res.errors) {
-        return { error: res.errors[0].message }
-      }
-      setUser(res.data?.createUser as User)
-
-      return {}
-    } catch (error) {
-      return { error: error as string }
-    }
+  const registerUser = async (name: string, username: string, password: string): Promise<string> => {
+    const res = await createUser({
+      variables: {
+        name,
+        username,
+        password,
+      },
+    })
+    setUser(res.data?.createUser as User)
+    return 'User created'
   }
 
   const loginUser = async (username: string, password: string) => {

@@ -2,8 +2,9 @@ import { loadFilesSync } from '@graphql-tools/load-files'
 import { mergeResolvers, mergeTypeDefs } from '@graphql-tools/merge'
 import { ApolloServer } from 'apollo-server-express'
 import cors from 'cors'
-import express from 'express'
+import express, { Request, Response } from 'express'
 import { graphqlUploadExpress } from 'graphql-upload-minimal'
+import { verifyToken } from './auth/utils'
 
 const extension = process.env.NODE_ENV === 'dev' ? 'ts' : 'js'
 
@@ -12,6 +13,12 @@ const resolversArray = loadFilesSync(__dirname + `/resolvers/*.${extension}`)
 
 export const typeDefs = mergeTypeDefs(typesArray)
 export const resolvers = mergeResolvers(resolversArray)
+
+export interface ApolloContext {
+  userId: string
+  req: Request
+  res: Response
+}
 
 const startServer = async () => {
   // Because of a type error between express and apollo-server-express, we need to cast express to any
@@ -27,12 +34,13 @@ const startServer = async () => {
   app.use(cors(corsOptions))
   app.use(graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 }))
 
-  const server = new ApolloServer({
+  const server = new ApolloServer<ApolloContext>({
     typeDefs,
     resolvers,
     cache: 'bounded',
     csrfPrevention: true,
     context: ({ req, res }) => ({
+      userId: verifyToken(req),
       req,
       res,
     }),
