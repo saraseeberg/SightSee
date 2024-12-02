@@ -1,19 +1,19 @@
-import { Button } from '@/components/ui/button';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { Icon } from '@iconify/react/dist/iconify.js';
-import React from 'react';
+import { Button } from '@/components/ui/button'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import { Icon } from '@iconify/react/dist/iconify.js'
+import React from 'react'
 
-const sortingOptions = ['Best Rated', 'Worst Rated', 'A - Z', 'Z - A'];
+const sortingOptions = ['Best Rated', 'Worst Rated', 'A - Z', 'Z - A']
 
 type SortingDropdownProps = {
-  selectedSorting: string; 
-  onSelectedSorting: (sorting: string) => void; 
-};
+  selectedSorting: string
+  onSelectedSorting: (sorting: string) => void
+}
 
 const SortingDropdown: React.FC<SortingDropdownProps> = ({ selectedSorting, onSelectedSorting }) => {
   const handleSelect = (sorting: string) => {
-    onSelectedSorting(sorting); 
-  };
+    onSelectedSorting(sorting)
+  }
 
   return (
     <DropdownMenu>
@@ -37,7 +37,7 @@ const SortingDropdown: React.FC<SortingDropdownProps> = ({ selectedSorting, onSe
         ))}
       </DropdownMenuContent>
     </DropdownMenu>
-  );
-};
+  )
+}
 
-export default SortingDropdown;
+export default SortingDropdown
