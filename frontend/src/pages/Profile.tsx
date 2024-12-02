@@ -3,7 +3,7 @@ import SmallSavedDestinationCard from '@/components/atoms/SmallSavedDestinationC
 import StatisticsCard from '@/components/molecules/StatisticsCard'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { useAuth } from '@/lib/context/auth-context'
-import { Review, useGetFavoritesByUserIdQuery, useGetReviewByUserIdQuery } from '@Types/__generated__/resolvers-types'
+import { Review, useGetReviewByUserIdQuery } from '@Types/__generated__/resolvers-types'
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
@@ -12,9 +12,6 @@ const Profile = () => {
   const burgersEaten = localStorage.getItem('eatenBurger') || 0
   const { user } = useAuth()
   const { data } = useGetReviewByUserIdQuery({
-    variables: { id: user?.id as string },
-  })
-  const { data: favoritesData } = useGetFavoritesByUserIdQuery({
     variables: { id: user?.id as string },
   })
 
@@ -75,9 +72,7 @@ const Profile = () => {
           className="row-span-2 max-md:row-start-2 max-md:col-span-2"
         >
           <ul className="grid grid-cols-1 lg:grid-cols-2 gap-4 rounded-md overflow-y-scroll max-h-72 p-2">
-            {favoritesData?.getFavoritesByUserID?.map((destination) => (
-              <SmallSavedDestinationCard destination={destination} />
-            ))}
+            {user.favorites?.map((destination) => <SmallSavedDestinationCard destination={destination} />)}
           </ul>
         </StatisticsCard>
       </section>
