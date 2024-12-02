@@ -164,7 +164,7 @@ export type Query = {
 
 export type QueryGetAllDestinationsArgs = {
   categories?: InputMaybe<Array<Scalars['String']['input']>>
-  country?: InputMaybe<Scalars['String']['input']>
+  countries?: InputMaybe<Array<Scalars['String']['input']>>
   limit: Scalars['Int']['input']
   page: Scalars['Int']['input']
   sorting?: InputMaybe<Scalars['String']['input']>
@@ -686,7 +686,7 @@ export type GetAllDestinationsQueryVariables = Exact<{
   page: Scalars['Int']['input']
   limit: Scalars['Int']['input']
   categories?: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>
-  country?: InputMaybe<Scalars['String']['input']>
+  countries?: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>
   sorting?: InputMaybe<Scalars['String']['input']>
 }>
 
@@ -1081,8 +1081,8 @@ export type LogoutMutationHookResult = ReturnType<typeof useLogoutMutation>
 export type LogoutMutationResult = Apollo.MutationResult<LogoutMutation>
 export type LogoutMutationOptions = Apollo.BaseMutationOptions<LogoutMutation, LogoutMutationVariables>
 export const GetAllDestinationsDocument = gql`
-  query GetAllDestinations($page: Int!, $limit: Int!, $categories: [String!], $country: String, $sorting: String) {
-    getAllDestinations(page: $page, limit: $limit, categories: $categories, country: $country, sorting: $sorting) {
+  query GetAllDestinations($page: Int!, $limit: Int!, $categories: [String!], $countries: [String!], $sorting: String) {
+    getAllDestinations(page: $page, limit: $limit, categories: $categories, countries: $countries, sorting: $sorting) {
       destinations {
         id
         title
@@ -1113,7 +1113,7 @@ export const GetAllDestinationsDocument = gql`
  *      page: // value for 'page'
  *      limit: // value for 'limit'
  *      categories: // value for 'categories'
- *      country: // value for 'country'
+ *      countries: // value for 'countries'
  *      sorting: // value for 'sorting'
  *   },
  * });

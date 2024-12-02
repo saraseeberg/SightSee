@@ -1,5 +1,5 @@
-query GetAllDestinations($page: Int!, $limit: Int!, $categories: [String!], $country: String, $sorting: String) {
-  getAllDestinations(page: $page, limit: $limit, categories: $categories, country: $country, sorting: $sorting) {
+query GetAllDestinations($page: Int!, $limit: Int!, $categories: [String!], $countries: [String!], $sorting: String) {
+  getAllDestinations(page: $page, limit: $limit, categories: $categories, countries: $countries, sorting: $sorting) {
     destinations {
       id
       title
