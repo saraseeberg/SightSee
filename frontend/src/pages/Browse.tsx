@@ -15,6 +15,7 @@ import {
   PaginationPrevious,
 } from '@/components/ui/pagination'
 import { Skeleton } from '@/components/ui/skeleton'
+import { useSorting } from '@/hooks/useSorting'
 import { useAuth } from '@/lib/context/auth-context'
 import { Icon } from '@iconify/react/dist/iconify.js'
 import {
@@ -45,9 +46,9 @@ const Browse = () => {
   const [favorites, setFavorites] = useState<string[]>([])
   const [searchParams, setSearchParams] = useSearchParams()
 
+  const { selectedSorting, handleSortingSelect } = useSorting()
   const [selectedCategories, setSelectedCategories] = useState<string[]>([])
   const [selectedCountries, setSelectedCountries] = useState<string[]>([])
-  const [selectedSorting, setSelectedSorting] = useState<string>('Best Rated')
   const [currentPage, setCurrentPage] = useState<number>(1)
   const [filtersApplied, setFiltersApplied] = useState<boolean>(false)
 
@@ -62,11 +63,6 @@ const Browse = () => {
     const countriesParam = searchParams.get('countries')
     if (countriesParam) {
       setSelectedCountries(countriesParam.split(','))
-    }
-
-    const sortingParam = searchParams.get('sorting')
-    if (sortingParam) {
-      setSelectedSorting(sortingParam)
     }
 
     const pageParam = searchParams.get('page')
@@ -121,38 +117,6 @@ const Browse = () => {
   }, [location.state])
 
   useEffect(() => {
-    const pageParam = searchParams.get('page')
-    if (pageParam) {
-      const pageNumber = parseInt(pageParam, 10)
-      if (!isNaN(pageNumber)) {
-        setCurrentPage(pageNumber)
-      }
-    }
-  }, [])
-
-  useEffect(() => {
-    const params = new URLSearchParams()
-
-    if (selectedCategories.length > 0) {
-      params.set('categories', selectedCategories.join(','))
-    }
-
-    if (selectedCountries && selectedCountries.length > 0 && !selectedCountries.includes('World')) {
-      params.set('countries', selectedCountries.join(','))
-    }
-
-    if (selectedSorting && selectedSorting !== 'Best Rated') {
-      params.set('sorting', selectedSorting)
-    }
-
-    if (currentPage && currentPage !== 1) {
-      params.set('page', currentPage.toString())
-    }
-
-    setSearchParams(params)
-  }, [selectedCategories, selectedCountries, selectedSorting, currentPage])
-
-  useEffect(() => {
     const hasFilters = selectedCategories.length > 0 || selectedCountries.length > 0 || selectedSorting !== 'Best Rated'
 
     setFiltersApplied(hasFilters)
@@ -171,10 +135,6 @@ const Browse = () => {
     setSearchParams(new URLSearchParams())
   }
 
-  const handleSortingSelect = (sorting: string) => {
-    setSelectedSorting(sorting)
-  }
-
   const handleCountrySelect = (countries: string[]) => {
     setSelectedCountries(countries)
     setCurrentPage(1)
@@ -187,8 +147,8 @@ const Browse = () => {
 
   const handleResetFilters = () => {
     setSelectedCategories([])
-    setSelectedCountries([]) // Clear all selected countries
-    setSelectedSorting('Best Rated')
+    setSelectedCountries([])
+    handleSortingSelect('Best Rated')
     setCurrentPage(1)
   }
 
@@ -245,12 +205,16 @@ const Browse = () => {
               selectedCountries={selectedCountries}
               availableCountries={availableCountries}
             />
-            <SortingDropdown onSelectedSorting={handleSortingSelect} />
+            <SortingDropdown
+              selectedSorting={selectedSorting} // From the hook
+              onSelectedSorting={handleSortingSelect} // From the hook
+            />
             <Button
               variant="ghost"
               onClick={handleResetFilters}
-              className={`border border-content text-content font-bold rounded-full px-4 py-2 shadow-md bg-background
-                ${filtersApplied ? 'cursor-pointer hover:scale-105' : 'opacity-50 cursor-not-allowed'}`}
+              className={`border border-content text-content font-bold rounded-full px-4 py-2 shadow-md bg-background ${
+                filtersApplied ? 'cursor-pointer hover:scale-105' : 'opacity-50 cursor-not-allowed'
+              }`}
               disabled={!filtersApplied}
             >
               Deselect all
@@ -274,7 +238,7 @@ const Browse = () => {
               />
             ))
           ) : (
-            <Alert className="bg-red-100  border-red-400  w-2/4 text-black" role="alert">
+            <Alert className="bg-red-100 border-red-400 w-2/4 text-black" role="alert">
               <Icon
                 icon="ic:baseline-sentiment-very-dissatisfied"
                 className="w-4 h-4 pt-0"
@@ -308,7 +272,7 @@ const Browse = () => {
             <PaginationItem key={index} className="cursorPointer">
               <PaginationLink
                 onClick={() => handleJumpToPage(index + 1)}
-                className={currentPage === index + 1 ? 'font-bold text-xl cursor cursor-pointer' : ''}
+                className={currentPage === index + 1 ? 'font-bold text-xl cursor-pointer' : ''}
               >
                 {index + 1}
               </PaginationLink>
