@@ -269,8 +269,6 @@ const Browse = () => {
         selectedCard={selectedCard}
         openDialog={openDialog}
         setOpenDialog={setOpenDialog}
-        favorites={favorites}
-        onToggleFavorite={handleToggleFavorite}
       />
 
       <Pagination className="my-4">

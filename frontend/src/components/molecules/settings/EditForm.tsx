@@ -23,6 +23,12 @@ const EditForm = () => {
     formState: { errors },
   } = useForm<UpdateUserWriteSchema>({
     resolver: zodResolver(UpdateUserSchema),
+    defaultValues: {
+      name: user?.name,
+      username: user?.username,
+      password: '',
+      confirmPassword: '',
+    },
   })
 
   if (!user) {
