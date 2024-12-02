@@ -15,7 +15,6 @@ import {
   PaginationPrevious,
 } from '@/components/ui/pagination'
 import { Skeleton } from '@/components/ui/skeleton'
-import { useAuth } from '@/lib/context/auth-context'
 import { Icon } from '@iconify/react/dist/iconify.js'
 import {
   Destination,
