@@ -159,8 +159,11 @@ const Browse = () => {
   }
 
   const handleSortingSelect = (sorting: string) => {
-    setSelectedSorting(sorting)
-  }
+    setSelectedSorting(sorting);
+    const params = new URLSearchParams(searchParams);
+    params.set('sorting', sorting);
+    setSearchParams(params);
+  };
 
   const handleCountrySelect = (countries: string[]) => {
     setSelectedCountries(countries)
@@ -223,7 +226,7 @@ const Browse = () => {
               <CategoryDropdown onSelectCategories={handleCategorySelect} selectedCategories={selectedCategories} />
             </div>
             <CountryDropdown onSelectCountries={handleCountrySelect} selectedCountries={selectedCountries} />
-            <SortingDropdown onSelectedSorting={handleSortingSelect} />
+            <SortingDropdown selectedSorting={selectedSorting} onSelectedSorting={handleSortingSelect} />
             <Button
               variant="ghost"
               onClick={handleResetFilters}
