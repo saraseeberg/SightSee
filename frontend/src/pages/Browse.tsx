@@ -20,7 +20,6 @@ import { Icon } from '@iconify/react/dist/iconify.js'
 import {
   Destination,
   useGetAllDestinationsQuery,
-  useGetFavoritesByUserIdQuery,
 } from '@Types/__generated__/resolvers-types'
 import { useEffect, useState } from 'react'
 import { useLocation, useSearchParams } from 'react-router-dom'
@@ -40,7 +39,6 @@ const Browse = () => {
   const location = useLocation()
   const [openDialog, setOpenDialog] = useState(false)
   const [selectedCard, setSelectedCard] = useState<Partial<Destination> | null>(null)
-  const [favorites, setFavorites] = useState<string[]>([])
   const [searchParams, setSearchParams] = useSearchParams()
 
   const [selectedCategories, setSelectedCategories] = useState<string[]>([])
@@ -86,14 +84,7 @@ const Browse = () => {
     },
   })
 
-  useGetFavoritesByUserIdQuery({
-    variables: { id: user?.id || '' },
-    skip: !user,
-    onCompleted: (data) => {
-      const favoriteIds = data?.getFavoritesByUserID?.map((fav) => fav.id) || []
-      setFavorites(favoriteIds)
-    },
-  })
+  
 
   const paginatedCards = data?.getAllDestinations ? data.getAllDestinations?.destinations : []
   const totalPages = data?.getAllDestinations ? Math.ceil(data.getAllDestinations.totalCount / CARDS_LIMIT) : 0
@@ -174,7 +165,7 @@ const Browse = () => {
 
   const handleResetFilters = () => {
     setSelectedCategories([])
-    setSelectedCountries([]) // Clear all selected countries
+    setSelectedCountries([]) 
     setSelectedSorting('Best Rated')
     setCurrentPage(1)
   }
@@ -194,12 +185,6 @@ const Browse = () => {
 
   const handleJumpToPage = (page: number) => {
     setCurrentPage(page)
-  }
-
-  const handleToggleFavorite = (destinationId: string, isSaved: boolean) => {
-    setFavorites((prevFavorites) =>
-      isSaved ? [...prevFavorites, destinationId] : prevFavorites.filter((id) => id !== destinationId),
-    )
   }
 
   const SkeletonCard = () => <Skeleton className="w-[46%] sm:w-1/3 md:w-1/3 lg:w-1/4 h-64" />
