@@ -1,13 +1,13 @@
 import { Button } from '@/components/ui/button'
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Icon } from '@iconify/react/dist/iconify.js'
-import { Link, useNavigate } from 'react-router-dom'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
 import { useAuth } from '@/lib/context/auth-context'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { Icon } from '@iconify/react/dist/iconify.js'
 import { RegisterSchema, RegisterWriteSchema } from '@Types/schema/registerUserSchema'
+import { useForm } from 'react-hook-form'
+import { Link, useNavigate } from 'react-router-dom'
 
 function Register() {
   const { registerUser } = useAuth()
@@ -22,10 +22,13 @@ function Register() {
   })
 
   const onSubmit = async (data: RegisterWriteSchema) => {
-    const { error } = await registerUser(data.name, data.username, data.password)
-    if (error) {
-      setError('root', { message: error })
-    } else navigate('/')
+    try {
+      await registerUser(data.name, data.username, data.password)
+      navigate('/')
+    } catch (error) {
+      console.error(error)
+      setError('root', { message: 'Noe gikk galt' })
+    }
   }
 
   return (
@@ -66,7 +69,7 @@ function Register() {
               error={errors.confirmPassword?.message}
               {...register('confirmPassword', { required: true })}
             />
-
+            {errors.root && <p className="text-red-500 w-full text-center">{errors.root.message}</p>}
             <Button type="submit" className="w-full">
               Register
             </Button>

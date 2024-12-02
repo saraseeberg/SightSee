@@ -8,7 +8,7 @@
   "scripts": {
     "dev:frontend": "npm run dev --workspace frontend",
     "dev:backend": "npm run dev --workspace backend",
-    "build": "npm run build --workspace frontend",
+    "build": "npm run build --workspace frontend && npm run build --workspace backend",
     "lint": "eslint . && npx prettier --write .",
     "generate-types": "graphql-codegen --config codegen.yml",
     "cypress:open": "npx cypress open"

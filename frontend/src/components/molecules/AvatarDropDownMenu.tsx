@@ -1,23 +1,23 @@
+import { useAuth } from '@/lib/context/auth-context'
+import { profileMenuLinks } from '@/lib/data/profileMenuLinks'
 import { Icon } from '@iconify/react/dist/iconify.js'
+import { Link, useNavigate } from 'react-router-dom'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
+import { Button } from '../ui/button'
 import {
   DropdownMenu,
-  DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
+  DropdownMenuTrigger,
 } from '../ui/dropdown-menu'
-import { Link, useNavigate } from 'react-router-dom'
-import { profileMenuLinks } from '@/lib/data/profileMenuLinks'
-import { Button } from '../ui/button'
-import { useAuth } from '@/lib/context/auth-context'
 
 const AvatarDropDownMenu = () => {
-  const { isLoggedIn, logout, user } = useAuth()
+  const { logout, user } = useAuth()
   const navigate = useNavigate()
 
-  if (!isLoggedIn || !user) {
+  if (!user) {
     return <Button href="/login">Logg inn</Button>
   }
 

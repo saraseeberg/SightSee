@@ -31,6 +31,7 @@ export type Destination = {
   longdescription: Scalars['String']['output']
   rating: Scalars['Float']['output']
   region?: Maybe<Scalars['String']['output']>
+  reviews?: Maybe<Array<Review>>
   title: Scalars['String']['output']
   titlequestion?: Maybe<Scalars['String']['output']>
 }
@@ -61,12 +62,13 @@ export type Mutation = {
   createDestinations: Array<Destination>
   createReview?: Maybe<Review>
   createTable: Scalars['Boolean']['output']
-  createUser: UserData
+  createUser: User
   deleteDestination?: Maybe<Destination>
   deleteReview?: Maybe<Review>
   deleteTable: Scalars['String']['output']
   deleteUser: User
-  login: UserData
+  login?: Maybe<User>
+  logout?: Maybe<Scalars['String']['output']>
   removeFavoriteFromUser: User
   updateUser: User
 }
@@ -157,6 +159,7 @@ export type Query = {
   getUserByID?: Maybe<User>
   getUsers?: Maybe<Array<User>>
   getUsersByID?: Maybe<Array<User>>
+  me?: Maybe<User>
 }
 
 export type QueryGetAllDestinationsArgs = {
@@ -201,7 +204,6 @@ export type QueryGetUsersByIdArgs = {
 
 export type Review = {
   __typename?: 'Review'
-  destination: Destination
   destinationid: Scalars['ID']['output']
   id: Scalars['ID']['output']
   rating: Scalars['Int']['output']
@@ -388,6 +390,7 @@ export type DestinationResolvers<
   longdescription?: Resolver<ResolversTypes['String'], ParentType, ContextType>
   rating?: Resolver<ResolversTypes['Float'], ParentType, ContextType>
   region?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
+  reviews?: Resolver<Maybe<Array<ResolversTypes['Review']>>, ParentType, ContextType>
   title?: Resolver<ResolversTypes['String'], ParentType, ContextType>
   titlequestion?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>
@@ -434,7 +437,7 @@ export type MutationResolvers<
     RequireFields<MutationCreateTableArgs, 'table'>
   >
   createUser?: Resolver<
-    ResolversTypes['UserData'],
+    ResolversTypes['User'],
     ParentType,
     ContextType,
     RequireFields<MutationCreateUserArgs, 'name' | 'password' | 'username'>
@@ -458,7 +461,8 @@ export type MutationResolvers<
     RequireFields<MutationDeleteTableArgs, 'name'>
   >
   deleteUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationDeleteUserArgs, 'id'>>
-  login?: Resolver<ResolversTypes['UserData'], ParentType, ContextType, RequireFields<MutationLoginArgs, 'data'>>
+  login?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<MutationLoginArgs, 'data'>>
+  logout?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
   removeFavoriteFromUser?: Resolver<
     ResolversTypes['User'],
     ParentType,
@@ -539,13 +543,13 @@ export type QueryResolvers<
     ContextType,
     RequireFields<QueryGetUsersByIdArgs, 'ids'>
   >
+  me?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>
 }>
 
 export type ReviewResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['Review'] = ResolversParentTypes['Review'],
 > = ResolversObject<{
-  destination?: Resolver<ResolversTypes['Destination'], ParentType, ContextType>
   destinationid?: Resolver<ResolversTypes['ID'], ParentType, ContextType>
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>
   rating?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
@@ -602,6 +606,81 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   User?: UserResolvers<ContextType>
   UserData?: UserDataResolvers<ContextType>
 }>
+
+export type GetMeQueryVariables = Exact<{ [key: string]: never }>
+
+export type GetMeQuery = {
+  __typename?: 'Query'
+  me?: {
+    __typename?: 'User'
+    id: string
+    name: string
+    username: string
+    image?: string | null
+    reviews?: Array<{
+      __typename?: 'Review'
+      id: string
+      title: string
+      text: string
+      rating: number
+      username: string
+      destinationid: string
+    }> | null
+    favorites?: Array<{
+      __typename?: 'Destination'
+      id: string
+      title: string
+      titlequestion?: string | null
+      description: string
+      longdescription: string
+      categories: Array<string>
+      country: string
+      region?: string | null
+      image: string
+      alt: string
+      rating: number
+    }> | null
+  } | null
+}
+
+export type LoginMutationVariables = Exact<{
+  username: Scalars['String']['input']
+  password: Scalars['String']['input']
+}>
+
+export type LoginMutation = {
+  __typename?: 'Mutation'
+  login?: {
+    __typename?: 'User'
+    id: string
+    name: string
+    username: string
+    image?: string | null
+    reviews?: Array<{
+      __typename?: 'Review'
+      id: string
+      title: string
+      text: string
+      rating: number
+      destinationid: string
+    }> | null
+    favorites?: Array<{
+      __typename?: 'Destination'
+      id: string
+      title: string
+      region?: string | null
+      rating: number
+      description: string
+      image: string
+      alt: string
+      country: string
+    }> | null
+  } | null
+}
+
+export type LogoutMutationVariables = Exact<{ [key: string]: never }>
+
+export type LogoutMutation = { __typename?: 'Mutation'; logout?: string | null }
 
 export type GetAllDestinationsQueryVariables = Exact<{
   page: Scalars['Int']['input']
@@ -738,7 +817,6 @@ export type GetReviewByUserIdQuery = {
     text: string
     rating: number
     destinationid: string
-    destination: { __typename?: 'Destination'; id: string; title: string }
   }> | null
 }
 
@@ -751,23 +829,30 @@ export type CreateUserMutationVariables = Exact<{
 export type CreateUserMutation = {
   __typename?: 'Mutation'
   createUser: {
-    __typename?: 'UserData'
-    token: string
-    user: { __typename?: 'User'; id: string; name: string; username: string }
-  }
-}
-
-export type LoginMutationVariables = Exact<{
-  username: Scalars['String']['input']
-  password: Scalars['String']['input']
-}>
-
-export type LoginMutation = {
-  __typename?: 'Mutation'
-  login: {
-    __typename?: 'UserData'
-    token: string
-    user: { __typename?: 'User'; id: string; name: string; username: string; image?: string | null }
+    __typename?: 'User'
+    id: string
+    name: string
+    username: string
+    image?: string | null
+    reviews?: Array<{
+      __typename?: 'Review'
+      id: string
+      title: string
+      text: string
+      rating: number
+      destinationid: string
+    }> | null
+    favorites?: Array<{
+      __typename?: 'Destination'
+      id: string
+      title: string
+      region?: string | null
+      rating: number
+      description: string
+      image: string
+      alt: string
+      country: string
+    }> | null
   }
 }
 
@@ -827,29 +912,6 @@ export type GetReviewsByUserIdQuery = {
   }> | null
 }
 
-export type GetMeQueryVariables = Exact<{
-  id: Scalars['ID']['input']
-}>
-
-export type GetMeQuery = {
-  __typename?: 'Query'
-  getUserByID?: {
-    __typename?: 'User'
-    id: string
-    name: string
-    username: string
-    image?: string | null
-    reviews?: Array<{
-      __typename?: 'Review'
-      id: string
-      title: string
-      text: string
-      rating: number
-      destinationid: string
-    }> | null
-  } | null
-}
-
 export type GetFavoritesByUserIdQueryVariables = Exact<{
   id: Scalars['ID']['input']
 }>
@@ -869,6 +931,155 @@ export type GetFavoritesByUserIdQuery = {
   }> | null
 }
 
+export const GetMeDocument = gql`
+  query getMe {
+    me {
+      id
+      name
+      username
+      image
+      reviews {
+        id
+        title
+        text
+        rating
+        username
+        destinationid
+      }
+      favorites {
+        id
+        title
+        titlequestion
+        description
+        longdescription
+        categories
+        country
+        region
+        image
+        alt
+        rating
+      }
+    }
+  }
+`
+
+/**
+ * __useGetMeQuery__
+ *
+ * To run a query within a React component, call `useGetMeQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetMeQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetMeQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetMeQuery(baseOptions?: Apollo.QueryHookOptions<GetMeQuery, GetMeQueryVariables>) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useQuery<GetMeQuery, GetMeQueryVariables>(GetMeDocument, options)
+}
+export function useGetMeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetMeQuery, GetMeQueryVariables>) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useLazyQuery<GetMeQuery, GetMeQueryVariables>(GetMeDocument, options)
+}
+export function useGetMeSuspenseQuery(
+  baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetMeQuery, GetMeQueryVariables>,
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions }
+  return Apollo.useSuspenseQuery<GetMeQuery, GetMeQueryVariables>(GetMeDocument, options)
+}
+export type GetMeQueryHookResult = ReturnType<typeof useGetMeQuery>
+export type GetMeLazyQueryHookResult = ReturnType<typeof useGetMeLazyQuery>
+export type GetMeSuspenseQueryHookResult = ReturnType<typeof useGetMeSuspenseQuery>
+export type GetMeQueryResult = Apollo.QueryResult<GetMeQuery, GetMeQueryVariables>
+export const LoginDocument = gql`
+  mutation login($username: String!, $password: String!) {
+    login(data: { username: $username, password: $password }) {
+      id
+      name
+      username
+      image
+      reviews {
+        id
+        title
+        text
+        rating
+        destinationid
+      }
+      favorites {
+        id
+        title
+        region
+        rating
+        description
+        image
+        alt
+        country
+      }
+    }
+  }
+`
+export type LoginMutationFn = Apollo.MutationFunction<LoginMutation, LoginMutationVariables>
+
+/**
+ * __useLoginMutation__
+ *
+ * To run a mutation, you first call `useLoginMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useLoginMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [loginMutation, { data, loading, error }] = useLoginMutation({
+ *   variables: {
+ *      username: // value for 'username'
+ *      password: // value for 'password'
+ *   },
+ * });
+ */
+export function useLoginMutation(baseOptions?: Apollo.MutationHookOptions<LoginMutation, LoginMutationVariables>) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument, options)
+}
+export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>
+export type LoginMutationResult = Apollo.MutationResult<LoginMutation>
+export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>
+export const LogoutDocument = gql`
+  mutation logout {
+    logout
+  }
+`
+export type LogoutMutationFn = Apollo.MutationFunction<LogoutMutation, LogoutMutationVariables>
+
+/**
+ * __useLogoutMutation__
+ *
+ * To run a mutation, you first call `useLogoutMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useLogoutMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [logoutMutation, { data, loading, error }] = useLogoutMutation({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useLogoutMutation(baseOptions?: Apollo.MutationHookOptions<LogoutMutation, LogoutMutationVariables>) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useMutation<LogoutMutation, LogoutMutationVariables>(LogoutDocument, options)
+}
+export type LogoutMutationHookResult = ReturnType<typeof useLogoutMutation>
+export type LogoutMutationResult = Apollo.MutationResult<LogoutMutation>
+export type LogoutMutationOptions = Apollo.BaseMutationOptions<LogoutMutation, LogoutMutationVariables>
 export const GetAllDestinationsDocument = gql`
   query GetAllDestinations($page: Int!, $limit: Int!, $categories: [String!], $countries: [String!], $sorting: String) {
     getAllDestinations(page: $page, limit: $limit, categories: $categories, countries: $countries, sorting: $sorting) {
@@ -1317,10 +1528,6 @@ export const GetReviewByUserIdDocument = gql`
       text
       rating
       destinationid
-      destination {
-        id
-        title
-      }
     }
   }
 `
@@ -1375,12 +1582,27 @@ export type GetReviewByUserIdQueryResult = Apollo.QueryResult<GetReviewByUserIdQ
 export const CreateUserDocument = gql`
   mutation createUser($username: String!, $password: String!, $name: String!) {
     createUser(username: $username, password: $password, name: $name) {
-      user {
+      id
+      name
+      username
+      image
+      reviews {
         id
-        name
-        username
+        title
+        text
+        rating
+        destinationid
       }
-      token
+      favorites {
+        id
+        title
+        region
+        rating
+        description
+        image
+        alt
+        country
+      }
     }
   }
 `
@@ -1414,46 +1636,6 @@ export function useCreateUserMutation(
 export type CreateUserMutationHookResult = ReturnType<typeof useCreateUserMutation>
 export type CreateUserMutationResult = Apollo.MutationResult<CreateUserMutation>
 export type CreateUserMutationOptions = Apollo.BaseMutationOptions<CreateUserMutation, CreateUserMutationVariables>
-export const LoginDocument = gql`
-  mutation login($username: String!, $password: String!) {
-    login(data: { username: $username, password: $password }) {
-      user {
-        id
-        name
-        username
-        image
-      }
-      token
-    }
-  }
-`
-export type LoginMutationFn = Apollo.MutationFunction<LoginMutation, LoginMutationVariables>
-
-/**
- * __useLoginMutation__
- *
- * To run a mutation, you first call `useLoginMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useLoginMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [loginMutation, { data, loading, error }] = useLoginMutation({
- *   variables: {
- *      username: // value for 'username'
- *      password: // value for 'password'
- *   },
- * });
- */
-export function useLoginMutation(baseOptions?: Apollo.MutationHookOptions<LoginMutation, LoginMutationVariables>) {
-  const options = { ...defaultOptions, ...baseOptions }
-  return Apollo.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument, options)
-}
-export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>
-export type LoginMutationResult = Apollo.MutationResult<LoginMutation>
-export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>
 export const AddReviewToUserDocument = gql`
   mutation addReviewToUser($userID: ID!, $reviewID: ID!) {
     addReviewToUser(userID: $userID, reviewID: $reviewID) {
@@ -1693,61 +1875,6 @@ export type GetReviewsByUserIdQueryResult = Apollo.QueryResult<
   GetReviewsByUserIdQuery,
   GetReviewsByUserIdQueryVariables
 >
-export const GetMeDocument = gql`
-  query getMe($id: ID!) {
-    getUserByID(id: $id) {
-      id
-      name
-      username
-      image
-      reviews {
-        id
-        title
-        text
-        rating
-        destinationid
-      }
-    }
-  }
-`
-
-/**
- * __useGetMeQuery__
- *
- * To run a query within a React component, call `useGetMeQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetMeQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetMeQuery({
- *   variables: {
- *      id: // value for 'id'
- *   },
- * });
- */
-export function useGetMeQuery(
-  baseOptions: Apollo.QueryHookOptions<GetMeQuery, GetMeQueryVariables> &
-    ({ variables: GetMeQueryVariables; skip?: boolean } | { skip: boolean }),
-) {
-  const options = { ...defaultOptions, ...baseOptions }
-  return Apollo.useQuery<GetMeQuery, GetMeQueryVariables>(GetMeDocument, options)
-}
-export function useGetMeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetMeQuery, GetMeQueryVariables>) {
-  const options = { ...defaultOptions, ...baseOptions }
-  return Apollo.useLazyQuery<GetMeQuery, GetMeQueryVariables>(GetMeDocument, options)
-}
-export function useGetMeSuspenseQuery(
-  baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetMeQuery, GetMeQueryVariables>,
-) {
-  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions }
-  return Apollo.useSuspenseQuery<GetMeQuery, GetMeQueryVariables>(GetMeDocument, options)
-}
-export type GetMeQueryHookResult = ReturnType<typeof useGetMeQuery>
-export type GetMeLazyQueryHookResult = ReturnType<typeof useGetMeLazyQuery>
-export type GetMeSuspenseQueryHookResult = ReturnType<typeof useGetMeSuspenseQuery>
-export type GetMeQueryResult = Apollo.QueryResult<GetMeQuery, GetMeQueryVariables>
 export const GetFavoritesByUserIdDocument = gql`
   query getFavoritesByUserID($id: ID!) {
     getFavoritesByUserID(id: $id) {

@@ -1,4 +1,9 @@
+import { authenticateUser } from '@/auth/utils'
+import { ApolloContext } from '@/server'
 import { Review, ReviewResolvers } from '@Types/__generated__/resolvers-types'
+import { ReviewSchema } from '@Types/schema/reviewSchema'
+import { ApolloError } from 'apollo-server-express'
+import { ZodError } from 'zod'
 import db from '../db'
 
 const reviewResolver: ReviewResolvers = {
@@ -24,20 +29,36 @@ const reviewResolver: ReviewResolvers = {
       return rows
     },
   },
-  Review: {
-    destination: async (review: Review) => {
-      const query = 'SELECT * FROM destinations WHERE id = $1'
-      const { rows } = await db.query(query, [review.destinationid])
-      return rows[0]
-    },
-  },
 
   Mutation: {
-    createReview: async (_: unknown, { title, text, rating, username, destinationid }: Review) => {
-      const query =
-        'INSERT INTO reviews (title, text, rating, username, destinationid) VALUES ($1, $2, $3, $4, $5) RETURNING *'
-      const { rows } = await db.query(query, [title, text, rating, username, destinationid])
-      return rows[0]
+    createReview: async (
+      _: unknown,
+      { title, text, rating, username, destinationid }: Review,
+      contextValue: ApolloContext,
+    ) => {
+      try {
+        ReviewSchema.parse({ title, description: text, rating })
+      } catch (error) {
+        if (error instanceof ZodError) {
+          throw new ApolloError(error.message, 'BAD_USER_INPUT')
+        }
+      }
+      const q = 'SELECT id FROM users WHERE username = $1'
+      const res = await db.query(q, [username])
+      if (res.rows.length < 1) {
+        throw new ApolloError('User not found', 'BAD_USER_INPUT')
+      }
+      const userid = res.rows[0].id
+
+      authenticateUser(contextValue, userid)
+      try {
+        const query =
+          'INSERT INTO reviews (title, text, rating, username, destinationid) VALUES ($1, $2, $3, $4, $5) RETURNING *'
+        const { rows } = await db.query(query, [title, text, rating, username, destinationid])
+        return rows[0]
+      } catch (error) {
+        throw new ApolloError('Could not create review: ' + error, 'INTERNAL_SERVER_ERROR')
+      }
     },
 
     deleteReview: async (_: unknown, { id }: Review) => {
