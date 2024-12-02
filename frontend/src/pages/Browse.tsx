@@ -1,11 +1,11 @@
-import CategoryButton, { CategoryButtonProps } from '@/components/atoms/CategoryButton'
-import BrowseCard from '@/components/molecules/BrowseCard'
-import CardDetailsDialog from '@/components/molecules/CardDetailsDialog'
-import CategoryDropdown from '@/components/molecules/CategoryDropdown'
-import CountryDropdown from '@/components/molecules/CountryDropdown'
-import SortingDropdown from '@/components/molecules/SortingDropdown'
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
-import { Button } from '@/components/ui/button'
+import CategoryButton, { CategoryButtonProps } from '@/components/atoms/CategoryButton';
+import BrowseCard from '@/components/molecules/BrowseCard';
+import CardDetailsDialog from '@/components/molecules/CardDetailsDialog';
+import CategoryDropdown from '@/components/molecules/CategoryDropdown';
+import CountryDropdown from '@/components/molecules/CountryDropdown';
+import SortingDropdown from '@/components/molecules/SortingDropdown';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
 import {
   Pagination,
   PaginationContent,
@@ -13,17 +13,18 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from '@/components/ui/pagination'
-import { Skeleton } from '@/components/ui/skeleton'
-import { useAuth } from '@/lib/context/auth-context'
-import { Icon } from '@iconify/react/dist/iconify.js'
+} from '@/components/ui/pagination';
+import { Skeleton } from '@/components/ui/skeleton';
+import { useAuth } from '@/lib/context/auth-context';
+import { Icon } from '@iconify/react/dist/iconify.js';
 import {
   Destination,
   useGetAllDestinationsQuery,
   useGetFavoritesByUserIdQuery,
-} from '@Types/__generated__/resolvers-types'
-import { useEffect, useState } from 'react'
-import { useLocation, useSearchParams } from 'react-router-dom'
+} from '@Types/__generated__/resolvers-types';
+import { useEffect, useState } from 'react';
+import { useLocation, useSearchParams } from 'react-router-dom';
+import { useSorting } from '@/hooks/useSorting'; 
 
 const categoryButtonData: Omit<CategoryButtonProps, 'onClick' | 'isSelected'>[] = [
   { category: 'Activities' },
@@ -32,49 +33,44 @@ const categoryButtonData: Omit<CategoryButtonProps, 'onClick' | 'isSelected'>[] 
   { category: 'Restaurants' },
   { category: 'Shopping' },
   { category: 'Sights' },
-]
+];
 
-const CARDS_LIMIT = 12
+const CARDS_LIMIT = 12;
 
 const Browse = () => {
-  const location = useLocation()
-  const [openDialog, setOpenDialog] = useState(false)
-  const [selectedCard, setSelectedCard] = useState<Partial<Destination> | null>(null)
-  const [favorites, setFavorites] = useState<string[]>([])
-  const [searchParams, setSearchParams] = useSearchParams()
+  const location = useLocation();
+  const [openDialog, setOpenDialog] = useState(false);
+  const [selectedCard, setSelectedCard] = useState<Partial<Destination> | null>(null);
+  const [favorites, setFavorites] = useState<string[]>([]);
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([])
-  const [selectedCountries, setSelectedCountries] = useState<string[]>([])
-  const [selectedSorting, setSelectedSorting] = useState<string>('Best Rated')
-  const [currentPage, setCurrentPage] = useState<number>(1)
-  const [filtersApplied, setFiltersApplied] = useState<boolean>(false)
+  const { selectedSorting, handleSortingSelect } = useSorting(); 
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [selectedCountries, setSelectedCountries] = useState<string[]>([]);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [filtersApplied, setFiltersApplied] = useState<boolean>(false);
 
-  const { user } = useAuth()
+  const { user } = useAuth();
 
   useEffect(() => {
-    const categoriesParam = searchParams.get('categories')
+    const categoriesParam = searchParams.get('categories');
     if (categoriesParam) {
-      setSelectedCategories(categoriesParam.split(','))
+      setSelectedCategories(categoriesParam.split(','));
     }
 
-    const countriesParam = searchParams.get('countries')
+    const countriesParam = searchParams.get('countries');
     if (countriesParam) {
-      setSelectedCountries(countriesParam.split(','))
+      setSelectedCountries(countriesParam.split(','));
     }
 
-    const sortingParam = searchParams.get('sorting')
-    if (sortingParam) {
-      setSelectedSorting(sortingParam)
-    }
-
-    const pageParam = searchParams.get('page')
+    const pageParam = searchParams.get('page');
     if (pageParam) {
-      const pageNumber = parseInt(pageParam, 10)
+      const pageNumber = parseInt(pageParam, 10);
       if (!isNaN(pageNumber)) {
-        setCurrentPage(pageNumber)
+        setCurrentPage(pageNumber);
       }
     }
-  }, [])
+  }, []);
 
   const { data, loading } = useGetAllDestinationsQuery({
     variables: {
@@ -82,130 +78,92 @@ const Browse = () => {
       limit: CARDS_LIMIT,
       categories: selectedCategories.length > 0 ? selectedCategories : null,
       countries: selectedCountries.length > 0 ? selectedCountries : null,
-      sorting: selectedSorting,
+      sorting: selectedSorting, 
     },
-  })
+  });
 
   useGetFavoritesByUserIdQuery({
     variables: { id: user?.id || '' },
     skip: !user,
     onCompleted: (data) => {
-      const favoriteIds = data?.getFavoritesByUserID?.map((fav) => fav.id) || []
-      setFavorites(favoriteIds)
+      const favoriteIds = data?.getFavoritesByUserID?.map((fav) => fav.id) || [];
+      setFavorites(favoriteIds);
     },
-  })
+  });
 
-  const paginatedCards = data?.getAllDestinations ? data.getAllDestinations?.destinations : []
-  const totalPages = data?.getAllDestinations ? Math.ceil(data.getAllDestinations.totalCount / CARDS_LIMIT) : 0
+  const paginatedCards = data?.getAllDestinations ? data.getAllDestinations?.destinations : [];
+  const totalPages = data?.getAllDestinations ? Math.ceil(data.getAllDestinations.totalCount / CARDS_LIMIT) : 0;
 
   useEffect(() => {
     if (location.state?.category) {
-      setSelectedCategories([location.state.category])
+      setSelectedCategories([location.state.category]);
     }
     if (location.state?.country) {
-      setSelectedCountries([location.state.country])
+      setSelectedCountries([location.state.country]);
     }
-  }, [location.state])
+  }, [location.state]);
 
   useEffect(() => {
-    const pageParam = searchParams.get('page')
-    if (pageParam) {
-      const pageNumber = parseInt(pageParam, 10)
-      if (!isNaN(pageNumber)) {
-        setCurrentPage(pageNumber)
-      }
-    }
-  }, [])
+    const hasFilters =
+      selectedCategories.length > 0 || selectedCountries.length > 0 || selectedSorting !== 'Best Rated';
 
-  useEffect(() => {
-    const params = new URLSearchParams()
-
-    if (selectedCategories.length > 0) {
-      params.set('categories', selectedCategories.join(','))
-    }
-
-    if (selectedCountries && selectedCountries.length > 0 && !selectedCountries.includes('World')) {
-      params.set('countries', selectedCountries.join(','))
-    }
-
-    if (selectedSorting && selectedSorting !== 'Best Rated') {
-      params.set('sorting', selectedSorting)
-    }
-
-    if (currentPage && currentPage !== 1) {
-      params.set('page', currentPage.toString())
-    }
-
-    setSearchParams(params)
-  }, [selectedCategories, selectedCountries, selectedSorting, currentPage])
-
-  useEffect(() => {
-    const hasFilters = selectedCategories.length > 0 || selectedCountries.length > 0 || selectedSorting !== 'Best Rated'
-
-    setFiltersApplied(hasFilters)
-  }, [selectedCategories, selectedCountries, selectedSorting])
+    setFiltersApplied(hasFilters);
+  }, [selectedCategories, selectedCountries, selectedSorting]);
 
   const handleCategoryClick = (category: string) => {
-    let updatedCategories: string[]
+    let updatedCategories: string[];
     if (selectedCategories.includes(category)) {
-      updatedCategories = selectedCategories.filter((c) => c !== category)
+      updatedCategories = selectedCategories.filter((c) => c !== category);
     } else {
-      updatedCategories = [...selectedCategories, category]
+      updatedCategories = [...selectedCategories, category];
     }
 
-    setSelectedCategories(updatedCategories)
-    setCurrentPage(1)
-    setSearchParams(new URLSearchParams())
-  }
-
-  const handleSortingSelect = (sorting: string) => {
-    setSelectedSorting(sorting);
-    const params = new URLSearchParams(searchParams);
-    params.set('sorting', sorting);
-    setSearchParams(params);
+    setSelectedCategories(updatedCategories);
+    setCurrentPage(1);
+    setSearchParams(new URLSearchParams());
   };
 
   const handleCountrySelect = (countries: string[]) => {
-    setSelectedCountries(countries)
-    setCurrentPage(1)
-  }
+    setSelectedCountries(countries);
+    setCurrentPage(1);
+  };
 
   const handleCategorySelect = (categories: string[]) => {
-    setSelectedCategories(categories)
-    setCurrentPage(1)
-  }
+    setSelectedCategories(categories);
+    setCurrentPage(1);
+  };
 
   const handleResetFilters = () => {
-    setSelectedCategories([])
-    setSelectedCountries([]) // Clear all selected countries
-    setSelectedSorting('Best Rated')
-    setCurrentPage(1)
-  }
+    setSelectedCategories([]);
+    setSelectedCountries([]); 
+    handleSortingSelect('Best Rated');
+    setCurrentPage(1);
+  };
 
   const handleCardClick = (card: Partial<Destination>) => {
-    setSelectedCard(card)
-    setOpenDialog(true)
-  }
+    setSelectedCard(card);
+    setOpenDialog(true);
+  };
 
   const handleNextPage = () => {
-    setCurrentPage((prev) => (prev < totalPages ? prev + 1 : prev))
-  }
+    setCurrentPage((prev) => (prev < totalPages ? prev + 1 : prev));
+  };
 
   const handlePreviousPage = () => {
-    setCurrentPage((prev) => (prev > 1 ? prev - 1 : prev))
-  }
+    setCurrentPage((prev) => (prev > 1 ? prev - 1 : prev));
+  };
 
   const handleJumpToPage = (page: number) => {
-    setCurrentPage(page)
-  }
+    setCurrentPage(page);
+  };
 
   const handleToggleFavorite = (destinationId: string, isSaved: boolean) => {
     setFavorites((prevFavorites) =>
       isSaved ? [...prevFavorites, destinationId] : prevFavorites.filter((id) => id !== destinationId),
-    )
-  }
+    );
+  };
 
-  const SkeletonCard = () => <Skeleton className="w-[46%] sm:w-1/3 md:w-1/3 lg:w-1/4 h-64" />
+  const SkeletonCard = () => <Skeleton className="w-[46%] sm:w-1/3 md:w-1/3 lg:w-1/4 h-64" />;
 
   return (
     <>
@@ -226,12 +184,16 @@ const Browse = () => {
               <CategoryDropdown onSelectCategories={handleCategorySelect} selectedCategories={selectedCategories} />
             </div>
             <CountryDropdown onSelectCountries={handleCountrySelect} selectedCountries={selectedCountries} />
-            <SortingDropdown selectedSorting={selectedSorting} onSelectedSorting={handleSortingSelect} />
+            <SortingDropdown
+              selectedSorting={selectedSorting} // From the hook
+              onSelectedSorting={handleSortingSelect} // From the hook
+            />
             <Button
               variant="ghost"
               onClick={handleResetFilters}
-              className={`border border-content text-content font-bold rounded-full px-4 py-2 shadow-md bg-background
-                ${filtersApplied ? 'cursor-pointer hover:scale-105' : 'opacity-50 cursor-not-allowed'}`}
+              className={`border border-content text-content font-bold rounded-full px-4 py-2 shadow-md bg-background ${
+                filtersApplied ? 'cursor-pointer hover:scale-105' : 'opacity-50 cursor-not-allowed'
+              }`}
               disabled={!filtersApplied}
             >
               Deselect all
@@ -255,12 +217,8 @@ const Browse = () => {
               />
             ))
           ) : (
-            <Alert className="bg-red-100  border-red-400  w-2/4 text-black" role="alert">
-              <Icon
-                icon="ic:baseline-sentiment-very-dissatisfied"
-                className="w-4 h-4 pt-0"
-                style={{ color: 'black' }}
-              />
+            <Alert className="bg-red-100 border-red-400 w-2/4 text-black" role="alert">
+              <Icon icon="ic:baseline-sentiment-very-dissatisfied" className="w-4 h-4 pt-0" style={{ color: 'black' }} />
               <AlertTitle className="pt-1"> Hmmm... </AlertTitle>
               <AlertDescription> No results found for your selected filters. 🤕 </AlertDescription>
             </Alert>
@@ -289,7 +247,7 @@ const Browse = () => {
             <PaginationItem key={index} className="cursorPointer">
               <PaginationLink
                 onClick={() => handleJumpToPage(index + 1)}
-                className={currentPage === index + 1 ? 'font-bold text-xl cursor cursor-pointer' : ''}
+                className={currentPage === index + 1 ? 'font-bold text-xl cursor-pointer' : ''}
               >
                 {index + 1}
               </PaginationLink>
@@ -305,7 +263,7 @@ const Browse = () => {
         </PaginationContent>
       </Pagination>
     </>
-  )
-}
+  );
+};
 
-export default Browse
+export default Browse;
