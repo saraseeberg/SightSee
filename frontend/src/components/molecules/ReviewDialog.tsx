@@ -44,7 +44,7 @@ const ReviewDialog: FC<ReviewDialogProps> = ({ user, destinationId, refetch, onR
 
   const onSubmit = async (data: ReviewWriteSchema) => {
     if (data.rating === 0) {
-      return; 
+      return
     }
     try {
       const reviewResponse = await createReview({
@@ -129,8 +129,10 @@ const ReviewDialog: FC<ReviewDialogProps> = ({ user, destinationId, refetch, onR
                   render={({ field }) => (
                     <Icon
                       icon={star <= field.value ? 'ic:round-star' : 'ic:round-star-outline'}
-                      onClick={() => {setValue('rating', star) 
-                      clearErrors('rating')}} 
+                      onClick={() => {
+                        setValue('rating', star)
+                        clearErrors('rating')
+                      }}
                       className="text-yellow-400 cursor-pointer w-8 h-8 mr-1"
                       aria-label={`Rate ${star} star`}
                     />
