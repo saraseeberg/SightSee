@@ -47,8 +47,6 @@ const Browse = () => {
   const [currentPage, setCurrentPage] = useState<number>(1)
   const [filtersApplied, setFiltersApplied] = useState<boolean>(false)
 
-  const { user } = useAuth()
-
   useEffect(() => {
     const categoriesParam = searchParams.get('categories')
     if (categoriesParam) {
