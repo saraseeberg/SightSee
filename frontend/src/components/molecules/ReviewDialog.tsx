@@ -34,6 +34,7 @@ const ReviewDialog: FC<ReviewDialogProps> = ({ user, destinationId, refetch, onR
     control,
     formState: { errors },
     reset,
+    clearErrors,
   } = useForm<ReviewWriteSchema>({
     resolver: zodResolver(ReviewSchema),
     defaultValues: {
@@ -128,7 +129,8 @@ const ReviewDialog: FC<ReviewDialogProps> = ({ user, destinationId, refetch, onR
                   render={({ field }) => (
                     <Icon
                       icon={star <= field.value ? 'ic:round-star' : 'ic:round-star-outline'}
-                      onClick={() => setValue('rating', star)} // Dynamically updates rating
+                      onClick={() => {setValue('rating', star) 
+                      clearErrors('rating')}} 
                       className="text-yellow-400 cursor-pointer w-8 h-8 mr-1"
                       aria-label={`Rate ${star} star`}
                     />
