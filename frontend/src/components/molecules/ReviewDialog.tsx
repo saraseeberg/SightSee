@@ -3,15 +3,15 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Icon } from '@iconify/react/dist/iconify.js'
 import { DialogDescription, DialogTitle, DialogTrigger } from '@radix-ui/react-dialog'
 import { useAddReviewToUserMutation, useCreateReviewMutation, User } from '@Types/__generated__/resolvers-types'
+import { ReviewSchema, ReviewWriteSchema } from '@Types/schema/reviewSchema'
 import { FC, useState } from 'react'
-import { useForm } from 'react-hook-form'
+import { Controller, useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 import { ConfettiStars } from '../atoms/ConfettiStars'
 import { Button } from '../ui/button'
 import { Input } from '../ui/input'
 import { Label } from '../ui/label'
 import { Textarea } from '../ui/textarea'
-import { ReviewSchema, ReviewWriteSchema } from '@Types/schema/reviewSchema'
 
 type ReviewDialogProps = {
   destinationId: string
@@ -31,15 +31,20 @@ const ReviewDialog: FC<ReviewDialogProps> = ({ user, destinationId, refetch, onR
     register,
     handleSubmit,
     setValue,
-    reset,
+    control,
     formState: { errors },
+    reset,
   } = useForm<ReviewWriteSchema>({
     resolver: zodResolver(ReviewSchema),
+    defaultValues: {
+      rating: 0,
+    },
   })
 
-  const [userRating, setUserRating] = useState(0)
-
   const onSubmit = async (data: ReviewWriteSchema) => {
+    if (data.rating === 0) {
+      return; 
+    }
     try {
       const reviewResponse = await createReview({
         variables: {
@@ -81,18 +86,12 @@ const ReviewDialog: FC<ReviewDialogProps> = ({ user, destinationId, refetch, onR
       }
 
       reset()
-      setUserRating(0)
       refetch()
       onReviewSubmit()
       setIsOpen(false)
     } catch (error) {
       console.error('Error during review creation and linking to user:', error)
     }
-  }
-
-  const handleStarClick = (star: number) => {
-    setUserRating(star)
-    setValue('rating', star)
   }
 
   return (
@@ -122,15 +121,26 @@ const ReviewDialog: FC<ReviewDialogProps> = ({ user, destinationId, refetch, onR
             </Label>
             <div className="flex items-center mt-1">
               {[1, 2, 3, 4, 5].map((star) => (
-                <Icon
+                <Controller
                   key={star}
-                  icon={star <= userRating ? 'ic:round-star' : 'ic:round-star-outline'}
-                  onClick={() => handleStarClick(star)}
-                  className="text-yellow-400 cursor-pointer w-8 h-8 mr-1"
-                  aria-label={`Rate ${star} star`}
+                  control={control}
+                  name="rating"
+                  render={({ field }) => (
+                    <Icon
+                      icon={star <= field.value ? 'ic:round-star' : 'ic:round-star-outline'}
+                      onClick={() => setValue('rating', star)} // Dynamically updates rating
+                      className="text-yellow-400 cursor-pointer w-8 h-8 mr-1"
+                      aria-label={`Rate ${star} star`}
+                    />
+                  )}
                 />
               ))}
             </div>
+            {errors.rating && (
+              <p className="text-red-500 text-xs mt-2" role="alert">
+                {errors.rating.message || 'Please select a rating between 1 and 5 stars.'}
+              </p>
+            )}
           </section>
 
           <div>
