@@ -16,10 +16,7 @@ import {
 } from '@/components/ui/pagination'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Icon } from '@iconify/react/dist/iconify.js'
-import {
-  Destination,
-  useGetAllDestinationsQuery,
-} from '@Types/__generated__/resolvers-types'
+import { Destination, useGetAllDestinationsQuery } from '@Types/__generated__/resolvers-types'
 import { useEffect, useState } from 'react'
 import { useLocation, useSearchParams } from 'react-router-dom'
 
@@ -80,8 +77,6 @@ const Browse = () => {
       sorting: selectedSorting,
     },
   })
-
-  
 
   const paginatedCards = data?.getAllDestinations ? data.getAllDestinations?.destinations : []
   const totalPages = data?.getAllDestinations ? Math.ceil(data.getAllDestinations.totalCount / CARDS_LIMIT) : 0
@@ -162,7 +157,7 @@ const Browse = () => {
 
   const handleResetFilters = () => {
     setSelectedCategories([])
-    setSelectedCountries([]) 
+    setSelectedCountries([])
     setSelectedSorting('Best Rated')
     setCurrentPage(1)
   }
@@ -247,11 +242,7 @@ const Browse = () => {
         </section>
       </main>
 
-      <CardDetailsDialog
-        selectedCard={selectedCard}
-        openDialog={openDialog}
-        setOpenDialog={setOpenDialog}
-      />
+      <CardDetailsDialog selectedCard={selectedCard} openDialog={openDialog} setOpenDialog={setOpenDialog} />
 
       <Pagination className="my-4">
         <PaginationContent className="cursor-pointer">

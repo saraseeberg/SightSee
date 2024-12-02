@@ -21,18 +21,8 @@ type ReviewDialogProps = {
 const ReviewDialog: React.FC<ReviewDialogProps> = ({ user, destinationId, refetch, onReviewSubmit }) => {
   const navigate = useNavigate()
 
-  const {
-    register,
-    handleSubmit,
-    control,
-    setValue,
-    clearErrors,
-    errors,
-    isOpen,
-    setIsOpen,
-    showConfetti,
-    onSubmit,
-  } = useReviewDialog({ user, destinationId, refetch, onReviewSubmit })
+  const { register, handleSubmit, control, setValue, clearErrors, errors, isOpen, setIsOpen, showConfetti, onSubmit } =
+    useReviewDialog({ user, destinationId, refetch, onReviewSubmit })
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
