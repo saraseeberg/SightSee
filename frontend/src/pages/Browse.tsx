@@ -15,13 +15,8 @@ import {
   PaginationPrevious,
 } from '@/components/ui/pagination'
 import { Skeleton } from '@/components/ui/skeleton'
-import { useAuth } from '@/lib/context/auth-context'
 import { Icon } from '@iconify/react/dist/iconify.js'
-import {
-  Destination,
-  useGetAllDestinationsQuery,
-  useGetFavoritesByUserIdQuery,
-} from '@Types/__generated__/resolvers-types'
+import { Destination, useGetAllDestinationsQuery } from '@Types/__generated__/resolvers-types'
 import { useEffect, useState } from 'react'
 import { useLocation, useSearchParams } from 'react-router-dom'
 import { useSorting } from '@/hooks/useSorting'
@@ -41,7 +36,6 @@ const Browse = () => {
   const location = useLocation()
   const [openDialog, setOpenDialog] = useState(false)
   const [selectedCard, setSelectedCard] = useState<Partial<Destination> | null>(null)
-  const [favorites, setFavorites] = useState<string[]>([])
   const [searchParams, setSearchParams] = useSearchParams()
 
   const { selectedSorting, handleSortingSelect } = useSorting()
@@ -49,8 +43,6 @@ const Browse = () => {
   const [selectedCountries, setSelectedCountries] = useState<string[]>([])
   const [currentPage, setCurrentPage] = useState<number>(1)
   const [filtersApplied, setFiltersApplied] = useState<boolean>(false)
-
-  const { user } = useAuth()
 
   useEffect(() => {
     const categoriesParam = searchParams.get('categories')
@@ -79,15 +71,6 @@ const Browse = () => {
       categories: selectedCategories.length > 0 ? selectedCategories : null,
       countries: selectedCountries.length > 0 ? selectedCountries : null,
       sorting: selectedSorting,
-    },
-  })
-
-  useGetFavoritesByUserIdQuery({
-    variables: { id: user?.id || '' },
-    skip: !user,
-    onCompleted: (data) => {
-      const favoriteIds = data?.getFavoritesByUserID?.map((fav) => fav.id) || []
-      setFavorites(favoriteIds)
     },
   })
 
@@ -154,12 +137,6 @@ const Browse = () => {
 
   const handleJumpToPage = (page: number) => {
     setCurrentPage(page)
-  }
-
-  const handleToggleFavorite = (destinationId: string, isSaved: boolean) => {
-    setFavorites((prevFavorites) =>
-      isSaved ? [...prevFavorites, destinationId] : prevFavorites.filter((id) => id !== destinationId),
-    )
   }
 
   const SkeletonCard = () => <Skeleton className="w-[46%] sm:w-1/3 md:w-1/3 lg:w-1/4 h-64" />
@@ -229,13 +206,7 @@ const Browse = () => {
         </section>
       </main>
 
-      <CardDetailsDialog
-        selectedCard={selectedCard}
-        openDialog={openDialog}
-        setOpenDialog={setOpenDialog}
-        favorites={favorites}
-        onToggleFavorite={handleToggleFavorite}
-      />
+      <CardDetailsDialog selectedCard={selectedCard} openDialog={openDialog} setOpenDialog={setOpenDialog} />
 
       <Pagination className="my-4">
         <PaginationContent className="cursor-pointer">

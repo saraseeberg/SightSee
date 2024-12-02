@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react'
-import { Icon } from '@iconify/react'
+import { useToast } from '@/hooks/use-toast'
 import { useAuth } from '@/lib/context/auth-context'
+import { Icon } from '@iconify/react'
 import { useAddFavoriteToUserMutation, useRemoveFavoriteFromUserMutation } from '@Types/__generated__/resolvers-types'
+import React, { useEffect, useState } from 'react'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip'
 
 type SaveToggleProps = {
@@ -13,6 +14,7 @@ type SaveToggleProps = {
 
 const SaveToggle: React.FC<SaveToggleProps> = ({ destinationId, isInitiallySaved, onToggle, className }) => {
   const { user } = useAuth()
+  const { toast } = useToast()
   const [isSaved, setIsSaved] = useState(isInitiallySaved)
 
   const [addFavorite] = useAddFavoriteToUserMutation()
@@ -30,8 +32,16 @@ const SaveToggle: React.FC<SaveToggleProps> = ({ destinationId, isInitiallySaved
     try {
       if (newSaveState) {
         await addFavorite({ variables: { userID: user.id, destinationID: destinationId } })
+        toast({
+          title: 'Destination saved!',
+          description: 'You can view your saved destinations on your profile.',
+        })
       } else {
         await removeFavorite({ variables: { userID: user.id, destinationID: destinationId } })
+        toast({
+          title: 'Destination removed!',
+          description: 'You can view your saved destinations on your profile.',
+        })
       }
 
       setIsSaved(newSaveState)
@@ -51,7 +61,7 @@ const SaveToggle: React.FC<SaveToggleProps> = ({ destinationId, isInitiallySaved
             onClick={handleSaveToggle}
           />
         </TooltipTrigger>
-        <TooltipContent className="text-background bg-content text-sm pl-2 pr-2 rounded-md">
+        <TooltipContent className="text-primary bg-background shadow-md text-sm pl-2 pr-2 rounded-md">
           {isSaved ? 'Remove from saved destinations' : 'Save this destination'}
         </TooltipContent>
       </Tooltip>

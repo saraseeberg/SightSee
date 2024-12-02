@@ -1,7 +1,7 @@
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Review } from '@Types/__generated__/resolvers-types'
 import { FC } from 'react'
-import { Card, CardContent, CardTitle, CardDescription } from '../ui/card'
-import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
+import { Card, CardContent, CardDescription, CardTitle } from '../ui/card'
 import StarRating from './StarRating'
 
 const ReviewCard: FC<Partial<Review>> = ({ username, title, text, rating }) => {
@@ -23,7 +23,7 @@ const ReviewCard: FC<Partial<Review>> = ({ username, title, text, rating }) => {
 
           {/* Review Title and Text */}
           <CardTitle className="text-lg font-semibold">{title}</CardTitle>
-          <CardDescription className="text-gray-600">{text}</CardDescription>
+          <CardDescription>{text}</CardDescription>
         </CardContent>
       </Card>
     </div>
