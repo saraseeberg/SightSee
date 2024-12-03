@@ -5,6 +5,7 @@ type Review {
   rating: Int!
   username: String!
   destinationid: ID!
+  image: String
 }
 
 input ReviewInput {
@@ -23,5 +24,5 @@ type Query {
 
 type Mutation {
   createReview(destinationid: ID!, title: String!, text: String!, rating: Int!, username: String!): Review
-  deleteReview(id: Int!): Review
+  deleteReview(id: ID!): Review
 }

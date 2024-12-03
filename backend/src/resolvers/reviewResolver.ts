@@ -5,6 +5,7 @@ import { ReviewSchema } from '@Types/schema/reviewSchema'
 import { ApolloError } from 'apollo-server-express'
 import { ZodError } from 'zod'
 import db from '../db'
+import { s3 } from '@/s3/s3Provider'
 
 const reviewResolver: ReviewResolvers = {
   Query: {
@@ -20,7 +21,24 @@ const reviewResolver: ReviewResolvers = {
     },
     getReviewsByDestinationID: async (_: unknown, { destinationid }: Review) => {
       const query = 'SELECT * FROM reviews WHERE destinationid = $1'
-      const { rows } = await db.query(query, [destinationid])
+      const {
+        rows,
+      }: {
+        rows: Review[]
+      } = await db.query(query, [destinationid])
+      for (const row of rows) {
+        const userQuery = 'SELECT image FROM users WHERE username = $1'
+        const res = await db.query(userQuery, [row.username])
+        console.log('this is review res', res)
+        if (res.rows.length < 1) {
+          row.image = null
+        } else {
+          const image = res.rows[0].image
+          console.log('this is review image', image)
+          row.image = await s3.get(image)
+        }
+      }
+
       return rows
     },
     getReviewsByUserID: async (_: unknown, { id }: { id: string }) => {

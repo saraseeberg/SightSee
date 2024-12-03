@@ -61,11 +61,9 @@ export type Mutation = {
   createDestination?: Maybe<Destination>
   createDestinations: Array<Destination>
   createReview?: Maybe<Review>
-  createTable: Scalars['Boolean']['output']
   createUser: User
   deleteDestination?: Maybe<Destination>
   deleteReview?: Maybe<Review>
-  deleteTable: Scalars['String']['output']
   deleteUser: User
   login?: Maybe<User>
   logout?: Maybe<Scalars['String']['output']>
@@ -99,10 +97,6 @@ export type MutationCreateReviewArgs = {
   username: Scalars['String']['input']
 }
 
-export type MutationCreateTableArgs = {
-  table: TableInput
-}
-
 export type MutationCreateUserArgs = {
   name: Scalars['String']['input']
   password: Scalars['String']['input']
@@ -114,11 +108,7 @@ export type MutationDeleteDestinationArgs = {
 }
 
 export type MutationDeleteReviewArgs = {
-  id: Scalars['Int']['input']
-}
-
-export type MutationDeleteTableArgs = {
-  name: Scalars['String']['input']
+  id: Scalars['ID']['input']
 }
 
 export type MutationDeleteUserArgs = {
@@ -216,6 +206,7 @@ export type Review = {
   __typename?: 'Review'
   destinationid: Scalars['ID']['output']
   id: Scalars['ID']['output']
+  image?: Maybe<Scalars['String']['output']>
   rating: Scalars['Int']['output']
   text: Scalars['String']['output']
   title: Scalars['String']['output']
@@ -228,17 +219,6 @@ export type ReviewInput = {
   text: Scalars['String']['input']
   title: Scalars['String']['input']
   username: Scalars['String']['input']
-}
-
-export type Table = {
-  __typename?: 'Table'
-  columns: Array<Scalars['String']['output']>
-  name: Scalars['String']['output']
-}
-
-export type TableInput = {
-  columns: Array<Scalars['String']['input']>
-  name: Scalars['String']['input']
 }
 
 export type User = {
@@ -356,8 +336,6 @@ export type ResolversTypes = ResolversObject<{
   Review: ResolverTypeWrapper<Review>
   ReviewInput: ReviewInput
   String: ResolverTypeWrapper<Scalars['String']['output']>
-  Table: ResolverTypeWrapper<Table>
-  TableInput: TableInput
   Upload: ResolverTypeWrapper<Scalars['Upload']['output']>
   User: ResolverTypeWrapper<User>
   UserData: ResolverTypeWrapper<UserData>
@@ -379,8 +357,6 @@ export type ResolversParentTypes = ResolversObject<{
   Review: Review
   ReviewInput: ReviewInput
   String: Scalars['String']['output']
-  Table: Table
-  TableInput: TableInput
   Upload: Scalars['Upload']['output']
   User: User
   UserData: UserData
@@ -440,12 +416,6 @@ export type MutationResolvers<
     ContextType,
     RequireFields<MutationCreateReviewArgs, 'destinationid' | 'rating' | 'text' | 'title' | 'username'>
   >
-  createTable?: Resolver<
-    ResolversTypes['Boolean'],
-    ParentType,
-    ContextType,
-    RequireFields<MutationCreateTableArgs, 'table'>
-  >
   createUser?: Resolver<
     ResolversTypes['User'],
     ParentType,
@@ -463,12 +433,6 @@ export type MutationResolvers<
     ParentType,
     ContextType,
     RequireFields<MutationDeleteReviewArgs, 'id'>
-  >
-  deleteTable?: Resolver<
-    ResolversTypes['String'],
-    ParentType,
-    ContextType,
-    RequireFields<MutationDeleteTableArgs, 'name'>
   >
   deleteUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationDeleteUserArgs, 'id'>>
   login?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<MutationLoginArgs, 'data'>>
@@ -574,19 +538,11 @@ export type ReviewResolvers<
 > = ResolversObject<{
   destinationid?: Resolver<ResolversTypes['ID'], ParentType, ContextType>
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>
+  image?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
   rating?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
   text?: Resolver<ResolversTypes['String'], ParentType, ContextType>
   title?: Resolver<ResolversTypes['String'], ParentType, ContextType>
   username?: Resolver<ResolversTypes['String'], ParentType, ContextType>
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>
-}>
-
-export type TableResolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes['Table'] = ResolversParentTypes['Table'],
-> = ResolversObject<{
-  columns?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>
-  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>
 }>
 
@@ -623,7 +579,6 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   PaginatedDestinations?: PaginatedDestinationsResolvers<ContextType>
   Query?: QueryResolvers<ContextType>
   Review?: ReviewResolvers<ContextType>
-  Table?: TableResolvers<ContextType>
   Upload?: GraphQLScalarType
   User?: UserResolvers<ContextType>
   UserData?: UserDataResolvers<ContextType>
@@ -835,6 +790,7 @@ export type GetReviewsByDestinationIdQuery = {
     title: string
     username: string
     text: string
+    image?: string | null
   }> | null
 }
 
@@ -852,6 +808,15 @@ export type GetReviewByUserIdQuery = {
     rating: number
     destinationid: string
   }> | null
+}
+
+export type DeleteReviewMutationVariables = Exact<{
+  id: Scalars['ID']['input']
+}>
+
+export type DeleteReviewMutation = {
+  __typename?: 'Mutation'
+  deleteReview?: { __typename?: 'Review'; id: string } | null
 }
 
 export type CreateUserMutationVariables = Exact<{
@@ -1611,6 +1576,7 @@ export const GetReviewsByDestinationIdDocument = gql`
       title
       username
       text
+      image
     }
   }
 `
@@ -1729,6 +1695,44 @@ export type GetReviewByUserIdQueryHookResult = ReturnType<typeof useGetReviewByU
 export type GetReviewByUserIdLazyQueryHookResult = ReturnType<typeof useGetReviewByUserIdLazyQuery>
 export type GetReviewByUserIdSuspenseQueryHookResult = ReturnType<typeof useGetReviewByUserIdSuspenseQuery>
 export type GetReviewByUserIdQueryResult = Apollo.QueryResult<GetReviewByUserIdQuery, GetReviewByUserIdQueryVariables>
+export const DeleteReviewDocument = gql`
+  mutation deleteReview($id: ID!) {
+    deleteReview(id: $id) {
+      id
+    }
+  }
+`
+export type DeleteReviewMutationFn = Apollo.MutationFunction<DeleteReviewMutation, DeleteReviewMutationVariables>
+
+/**
+ * __useDeleteReviewMutation__
+ *
+ * To run a mutation, you first call `useDeleteReviewMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteReviewMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteReviewMutation, { data, loading, error }] = useDeleteReviewMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteReviewMutation(
+  baseOptions?: Apollo.MutationHookOptions<DeleteReviewMutation, DeleteReviewMutationVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useMutation<DeleteReviewMutation, DeleteReviewMutationVariables>(DeleteReviewDocument, options)
+}
+export type DeleteReviewMutationHookResult = ReturnType<typeof useDeleteReviewMutation>
+export type DeleteReviewMutationResult = Apollo.MutationResult<DeleteReviewMutation>
+export type DeleteReviewMutationOptions = Apollo.BaseMutationOptions<
+  DeleteReviewMutation,
+  DeleteReviewMutationVariables
+>
 export const CreateUserDocument = gql`
   mutation createUser($username: String!, $password: String!, $name: String!) {
     createUser(username: $username, password: $password, name: $name) {
