@@ -118,7 +118,7 @@ const DestinationDetailsPage = () => {
           >
             {reviewRes.data?.getReviewsByDestinationID?.map((review) => (
               <CarouselItem key={review.id} className="w-full xs:basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/3">
-                <ReviewCard {...review} />
+                <ReviewCard {...review} refetch={reviewRes.refetch} />
               </CarouselItem>
             ))}
           </CarouselContent>

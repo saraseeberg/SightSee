@@ -26,6 +26,10 @@ const reviewResolver: ReviewResolvers = {
       }: {
         rows: Review[]
       } = await db.query(query, [destinationid])
+      if (rows.length < 1) {
+        return rows
+      }
+      console.log('this is review rows', rows)
       for (const row of rows) {
         const userQuery = 'SELECT image FROM users WHERE username = $1'
         const res = await db.query(userQuery, [row.username])
@@ -38,7 +42,7 @@ const reviewResolver: ReviewResolvers = {
           row.image = await s3.get(image)
         }
       }
-
+      console.log('this is review rows after', rows)
       return rows
     },
     getReviewsByUserID: async (_: unknown, { id }: { id: string }) => {

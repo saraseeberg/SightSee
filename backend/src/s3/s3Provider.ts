@@ -24,7 +24,8 @@ class S3 {
     })
   }
 
-  async get(image: string): Promise<string> {
+  async get(image: string): Promise<string | null> {
+    if (!image) return null
     const IMAGE_EXPIRATION_SECONDS = 60 * 60 * 24 * 7 // 1 week before the URL expires
     const params = {
       Bucket: bucketName,

@@ -1,14 +1,35 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Review } from '@Types/__generated__/resolvers-types'
+import { Review, useDeleteReviewMutation } from '@Types/__generated__/resolvers-types'
 import { FC } from 'react'
 import { Card, CardContent, CardDescription, CardTitle } from '../ui/card'
 import StarRating from './StarRating'
 import { Icon } from '@iconify/react'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip'
 import { useAuth } from '@/lib/context/auth-context'
+import { useToast } from '@/hooks/use-toast'
 
-const ReviewCard: FC<Partial<Review>> = ({ username, title, text, rating, image }) => {
-  const { user } = useAuth()
+interface ReviewCardProps extends Partial<Review> {
+  refetch: () => void
+}
+
+const ReviewCard: FC<ReviewCardProps> = ({ id, username, title, text, rating, image, refetch }) => {
+  const { user, refetchUser } = useAuth()
+  const [deleteReview] = useDeleteReviewMutation({ variables: { id: id as string } })
+  const toast = useToast()
+
+  const handleDeleteReview = async () => {
+    try {
+      await deleteReview()
+      refetch()
+      refetchUser()
+      toast.toast({
+        title: 'Review Deleted',
+        description: 'Your review has been successfully deleted!',
+      })
+    } catch (error) {
+      console.error('Error deleting review:', error)
+    }
+  }
 
   return (
     <div className="flex items-center justify-center">
@@ -30,11 +51,7 @@ const ReviewCard: FC<Partial<Review>> = ({ username, title, text, rating, image 
                   Delete review
                 </TooltipContent>
                 <TooltipTrigger asChild>
-                  <button
-                    onClick={() => alert('Delete action')} // Replace with actual delete logic
-                    className="rounded-full"
-                    aria-label="Delete review"
-                  >
+                  <button onClick={() => handleDeleteReview()} className="rounded-full" aria-label="Delete review">
                     <Icon icon="material-symbols:delete-outline" className="text-content size-8 hover:text-red-500" />
                   </button>
                 </TooltipTrigger>
