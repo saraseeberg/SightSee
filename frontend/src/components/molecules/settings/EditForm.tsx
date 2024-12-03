@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { useToast } from '@/hooks/use-toast'
 import { useAuth } from '@/lib/context/auth-context'
 import { cn } from '@/lib/utils'
 import { ApolloError } from '@apollo/client'
@@ -12,6 +13,7 @@ import { useForm } from 'react-hook-form'
 
 const EditForm = () => {
   const { user, refetchUser } = useAuth()
+  const toast = useToast()
   const [file, setFile] = useState<string>('')
   const [updateUser] = useUpdateUserMutation()
   const {
@@ -20,7 +22,7 @@ const EditForm = () => {
     setValue,
     reset,
     setError,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = useForm<UpdateUserWriteSchema>({
     resolver: zodResolver(UpdateUserSchema),
     defaultValues: {
@@ -30,11 +32,7 @@ const EditForm = () => {
       confirmPassword: '',
     },
   })
-
-  if (!user) {
-    window.location.href = '/login'
-    return null
-  }
+  if (!user) return null
 
   const onSubmit = async (data: UpdateUserWriteSchema) => {
     if (Object.values(data).some((value) => value !== '' && value !== undefined)) {
@@ -50,7 +48,10 @@ const EditForm = () => {
             },
           },
         })
-        alert('User updated')
+        toast.toast({
+          title: 'Account Updated',
+          description: 'Your account has been successfully updated!',
+        })
         refetchUser()
         reset()
       } catch (error) {
@@ -111,7 +112,7 @@ const EditForm = () => {
                   const Inputfile = e.target.files?.[0]
                   if (Inputfile) {
                     setFile(window.URL.createObjectURL(Inputfile))
-                    setValue('image', Inputfile)
+                    setValue('image', Inputfile, { shouldDirty: true })
                   }
                 }}
               />
@@ -121,9 +122,11 @@ const EditForm = () => {
         </FormField>
         {errors.root && <p className="text-red-500 text-sm text-center">{errors.root.message as string}</p>}
 
-        <Button type="submit" variant={'default'}>
-          Save
-        </Button>
+        {isDirty && (
+          <Button type="submit" variant={'default'}>
+            Save
+          </Button>
+        )}
       </form>
     </main>
   )

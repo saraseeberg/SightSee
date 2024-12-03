@@ -35,7 +35,12 @@ const startServer = async () => {
     credentials: true,
   }
 
-  app.use(cors(corsOptions))
+  app.use(
+    cors({
+      ...corsOptions,
+      exposedHeaders: ['Authorization'],
+    }),
+  )
   app.use(graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 }))
 
   const server = new ApolloServer<ApolloContext>({
@@ -50,7 +55,7 @@ const startServer = async () => {
     }),
   })
   await server.start()
-  server.applyMiddleware({ app, path: '/graphql', cors: false })
+  server.applyMiddleware({ app, path: '/graphql', cors: corsOptions })
   app.listen({ port: 3001 }, () => {
     console.log('\x1b[35m--------------------------------- \n')
     console.log('🚀 Server is running on http://localhost:3001/graphql\n')

@@ -1,7 +1,6 @@
 import { ApolloContext } from '@/server'
 import { User } from '@Types/__generated__/resolvers-types'
 import { ApolloError } from 'apollo-server-express'
-import * as cookie from 'cookie'
 import { Request, Response } from 'express'
 import jwt, { JwtPayload } from 'jsonwebtoken'
 
@@ -17,11 +16,7 @@ export const generateToken = (res: Response, user: User) => {
     },
   )
 
-  res.cookie('accessToken', token, {
-    httpOnly: true,
-    sameSite: true,
-    expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
-  })
+  res.setHeader('Authorization', `Bearer ${token}`)
 
   return user.id
 }
@@ -29,15 +24,24 @@ export const generateToken = (res: Response, user: User) => {
 export const verifyToken = (req: Request) => {
   try {
     if (req && req.headers) {
-      const token = req.headers.cookie && cookie.parse(req.headers.cookie).accessToken
+      console.log('Request headers:', req.headers)
+      const authHeader = req.headers.authorization
+      console.log('Auth header:', authHeader)
+
+      if (!authHeader) {
+        throw new ApolloError('No authentication header', 'UNAUTHENTICATED')
+      }
+      const token = authHeader.split(' ')[1]
+      console.log('Verifying Token:', token)
+
       if (!token) {
-        throw new ApolloError('Not logged in')
+        throw new ApolloError('No token provided', 'UNAUTHENTICATED')
       }
       const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as JwtPayload
       console.log('Decoded jwt:', decoded)
 
       if (decoded.exp && Date.now() >= decoded.exp * 1000) {
-        throw new ApolloError('Token expired')
+        throw new ApolloError('Token expired', 'UNAUTHENTICATED')
       }
       return decoded.sub
     }
