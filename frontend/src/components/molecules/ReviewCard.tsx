@@ -1,20 +1,25 @@
 import { ScrollArea } from '@radix-ui/react-scroll-area'
 import { Review } from '@Types/__generated__/resolvers-types'
 import { FC } from 'react'
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 import { Card, CardContent, CardTitle } from '../ui/card'
 import StarRating from './StarRating'
 
-type ReviewCardProps = Pick<Review, 'username' | 'rating' | 'text' | 'title'>
+type ReviewCardProps = Partial<Review>
 
-const ReviewCard: FC<ReviewCardProps> = ({ username, title, text, rating }) => {
+const ReviewCard: FC<ReviewCardProps> = ({ username, user_avatar, title, text, rating }) => {
   return (
-    <Card className="p-4">
-      <CardTitle className="flex justify-between gap-2">
+    <Card className="p-4 flex flex-col gap-4">
+      <CardTitle className="flex flex-col justify-between gap-2">
         <div className="flex items-center space-x-3">
+          <Avatar>
+            <AvatarImage src={user_avatar ?? undefined} />
+            <AvatarFallback>{username?.charAt(0).toUpperCase()}</AvatarFallback>
+          </Avatar>
           <p className="font-semibold text-sm text-muted-foreground text-center">{username || 'Anonymous'}</p>
         </div>
 
-        <StarRating rating={rating} />
+        <StarRating rating={rating ?? 0} />
       </CardTitle>
       <CardContent className="flex flex-col gap-2 p-0 aspect-square">
         <h2 className="text-xl font-semibold">{title}</h2>

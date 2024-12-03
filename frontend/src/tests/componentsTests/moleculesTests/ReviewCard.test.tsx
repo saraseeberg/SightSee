@@ -36,7 +36,7 @@ describe('ReviewCard', () => {
   it('renders the avatar', () => {
     render(<ReviewCard username="JaneDoe" />)
 
-    const avatarFallback = screen.getByText('CN')
+    const avatarFallback = screen.getByText('J')
     expect(avatarFallback).toBeInTheDocument()
   })
 

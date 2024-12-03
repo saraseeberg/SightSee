@@ -1,14 +1,13 @@
 'use client'
 
 import SaveToggle from '@/components/atoms/SaveToggle'
+import ReviewCard from '@/components/molecules/ReviewCard'
 import ReviewDialog from '@/components/molecules/ReviewDialog'
 import StarRating from '@/components/molecules/StarRating'
-import { Card, CardContent, CardTitle } from '@/components/ui/card'
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel'
 import { Toaster } from '@/components/ui/toaster'
 import { useToast } from '@/hooks/use-toast'
 import { useAuth } from '@/lib/context/auth-context'
-import { ScrollArea } from '@radix-ui/react-scroll-area'
 import {
   useGetDestinationByIdQuery,
   useGetFavoritesByUserIdQuery,
@@ -118,27 +117,7 @@ const DestinationDetailsPage = () => {
             {reviews.map((review) => {
               return (
                 <CarouselItem key={review.id} className="pl-2 md:pl-4 md:basis-1/3">
-                  <Card className="p-4 flex flex-col gap-4">
-                    <CardTitle className="flex flex-col justify-between gap-2">
-                      <div className="flex items-center space-x-3">
-                        {review.user_avatar && (
-                          <img src={review.user_avatar} alt={review.username} className="h-8 w-8 rounded-full" />
-                        )}
-                        <p className="font-semibold text-sm text-muted-foreground text-center">
-                          {review.username || 'Anonymous'}
-                        </p>
-                      </div>
-
-                      <StarRating rating={review.rating} />
-                    </CardTitle>
-                    <CardContent className="flex flex-col gap-2 p-0 aspect-square">
-                      <h2 className="text-xl font-semibold">{review.title}</h2>
-
-                      <ScrollArea className="h-[100px] w-full">
-                        <p>{review.text}</p>
-                      </ScrollArea>
-                    </CardContent>
-                  </Card>
+                  <ReviewCard {...review} />
                 </CarouselItem>
               )
             })}
