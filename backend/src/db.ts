@@ -20,21 +20,4 @@ db.connect((error?: Error) => {
   console.error('\x1b[31mDatabase connection failed\x1b[0m: ', error)
 })
 
-db.on('connect', () => {
-  console.log('\x1b[34mDatabase connection established\x1b[0m')
-})
-
-db.on('acquire', (client) => {
-  console.log('\x1b[34mClient checked out from pool\x1b[0m')
-})
-
-db.on('remove', (client) => {
-  console.log('\x1b[34mClient removed from pool\x1b[0m')
-})
-
-db.on('error', (err, client) => {
-  console.error('\x1b[31mUnexpected error on idle client\x1b[0m', err)
-  process.exit(-1)
-})
-
 export default db

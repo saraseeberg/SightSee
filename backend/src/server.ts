@@ -7,7 +7,6 @@ import { graphqlUploadExpress } from 'graphql-upload-minimal'
 import { verifyToken } from './auth/utils'
 
 const extension = process.env.VITE_FRONTEND_URL ? 'js' : 'ts'
-const DATABASE_URL = process.env.VITE_FRONTEND_URL || 'http://localhost:3000'
 
 const typesArray = loadFilesSync(__dirname + '/models/*.graphql')
 const resolversArray = loadFilesSync(__dirname + `/resolvers/*.${extension}`)
@@ -28,7 +27,11 @@ const startServer = async () => {
   const app = express() as any
 
   const corsOptions = {
-    origin: [DATABASE_URL, 'https://studio.apollographql.com/sandbox/explorer'],
+    origin: [
+      'http://it2810-33.idi.ntnu.no',
+      'http://localhost:3000',
+      'https://studio.apollographql.com/sandbox/explorer',
+    ],
     credentials: true,
   }
 
