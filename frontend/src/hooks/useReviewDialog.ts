@@ -3,6 +3,7 @@ import { useAddReviewToUserMutation, useCreateReviewMutation, User } from '@Type
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { ReviewSchema, ReviewWriteSchema } from '@Types/schema/reviewSchema'
+import { useAuth } from '@/lib/context/auth-context'
 
 type UseReviewDialogProps = {
   user: User | null
@@ -12,6 +13,7 @@ type UseReviewDialogProps = {
 }
 
 export const useReviewDialog = ({ user, destinationId, refetch, onReviewSubmit }: UseReviewDialogProps) => {
+  const { refetchUser } = useAuth()
   const [createReview] = useCreateReviewMutation()
   const [addReviewToUser] = useAddReviewToUserMutation()
   const [isOpen, setIsOpen] = useState(false)
@@ -65,6 +67,7 @@ export const useReviewDialog = ({ user, destinationId, refetch, onReviewSubmit }
       refetch()
       onReviewSubmit()
       setIsOpen(false)
+      refetchUser()
     } catch (error) {
       console.error('Error during review creation:', error)
     }
