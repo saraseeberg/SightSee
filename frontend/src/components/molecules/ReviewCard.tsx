@@ -1,32 +1,29 @@
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { ScrollArea } from '@radix-ui/react-scroll-area'
 import { Review } from '@Types/__generated__/resolvers-types'
 import { FC } from 'react'
-import { Card, CardContent, CardDescription, CardTitle } from '../ui/card'
+import { Card, CardContent, CardTitle } from '../ui/card'
 import StarRating from './StarRating'
 
-const ReviewCard: FC<Partial<Review>> = ({ username, title, text, rating }) => {
+type ReviewCardProps = Pick<Review, 'username' | 'rating' | 'text' | 'title'>
+
+const ReviewCard: FC<ReviewCardProps> = ({ username, title, text, rating }) => {
   return (
-    <div className="flex items-center justify-center">
-      <Card className="max-w-xs h-80 w-full pt-2 overflow-y-auto rounded-lg shadow-lg flex flex-col pl-6 space-y-2">
-        {/* Profile Picture and Username */}
+    <Card className="p-4">
+      <CardTitle className="flex justify-between gap-2">
         <div className="flex items-center space-x-3">
-          <Avatar className="w-10 h-10">
-            <AvatarImage src="https://github.com/shadcn.png" alt={`${username}'s profile picture`} />
-            <AvatarFallback>CN</AvatarFallback>
-          </Avatar>
-          <p className="font-semibold text-sm text-center">{username || 'Anonymous'}</p>
+          <p className="font-semibold text-sm text-muted-foreground text-center">{username || 'Anonymous'}</p>
         </div>
 
-        {/* Rating */}
-        <CardContent className="flex flex-col space-y-3">
-          <StarRating rating={rating ?? 0} />
+        <StarRating rating={rating} />
+      </CardTitle>
+      <CardContent className="flex flex-col gap-2 p-0 aspect-square">
+        <h2 className="text-xl font-semibold">{title}</h2>
 
-          {/* Review Title and Text */}
-          <CardTitle className="text-lg font-semibold">{title}</CardTitle>
-          <CardDescription>{text}</CardDescription>
-        </CardContent>
-      </Card>
-    </div>
+        <ScrollArea className="h-[100px] w-full">
+          <p>{text}</p>
+        </ScrollArea>
+      </CardContent>
+    </Card>
   )
 }
 
