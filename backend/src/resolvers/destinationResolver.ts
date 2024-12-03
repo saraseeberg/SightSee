@@ -232,6 +232,16 @@ const DestinationResolver: Resolvers = {
       }
     },
   },
+  Destination: {
+    reviews: async (destination: Destination) => {
+      try {
+        const result = await db.query('SELECT * FROM reviews WHERE destination_id = $1', [destination.id])
+        return result.rows
+      } catch (error) {
+        throw new ApolloError(('Could not get reviews for destination: ' + error) as string)
+      }
+    },
+  },
 }
 
 export default DestinationResolver

@@ -39,10 +39,9 @@ type Query {
 }
 
 type Mutation {
-  createUser(name: String!, username: String!, password: String!): UserData!
+  createUser(name: String!, username: String!, password: String!): User!
   updateUser(user: UserInput!): User!
   deleteUser(id: ID!): User!
-  login(data: LoginInput!): UserData!
   addReviewToUser(userID: ID!, reviewID: ID!): User!
   addFavoriteToUser(userID: ID!, destinationID: ID!): User!
   removeFavoriteFromUser(userID: ID!, destinationID: ID!): User!

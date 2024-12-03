@@ -34,6 +34,7 @@ jobs:
           AWS_BUCKET_REGION: ${{ secrets.AWS_BUCKET_REGION }}
           AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
           AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
+          VITE_FRONTEND_URL: ${{ secrets.VITE_FRONTEND_URL }}
 
         run: |
           npm install
@@ -70,6 +71,7 @@ jobs:
                 AWS_BUCKET_REGION: '${{ secrets.AWS_BUCKET_REGION }}',
                 AWS_ACCESS_KEY: '${{ secrets.AWS_ACCESS_KEY }}',
                 AWS_SECRET_KEY: '${{ secrets.AWS_SECRET_KEY }}',
+                VITE_FRONTEND_URL: '${{ secrets.VITE_FRONTEND_URL }}',
                 NODE_ENV: 'production'
               }
             }]

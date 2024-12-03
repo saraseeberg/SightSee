@@ -1,19 +1,25 @@
-import { ApolloServer } from 'apollo-server-express'
-import express from 'express'
 import { loadFilesSync } from '@graphql-tools/load-files'
 import { mergeResolvers, mergeTypeDefs } from '@graphql-tools/merge'
+import { ApolloServer } from 'apollo-server-express'
 import cors from 'cors'
-import AdminResolver from './resolvers/adminResolver'
-import DestinationResolver from './resolvers/destinationResolver'
-import reviewResolver from './resolvers/reviewResolver'
-import UserResolver from './resolvers/userResolver'
+import express, { Request, Response } from 'express'
 import { graphqlUploadExpress } from 'graphql-upload-minimal'
+import { verifyToken } from './auth/utils'
+
+const extension = process.env.VITE_FRONTEND_URL ? 'js' : 'ts'
+const DATABASE_URL = process.env.VITE_FRONTEND_URL || 'http://localhost:3000'
 
 const typesArray = loadFilesSync(__dirname + '/models/*.graphql')
-const resolversArray = [AdminResolver, DestinationResolver, reviewResolver, UserResolver]
+const resolversArray = loadFilesSync(__dirname + `/resolvers/*.${extension}`)
 
 export const typeDefs = mergeTypeDefs(typesArray)
 export const resolvers = mergeResolvers(resolversArray)
+
+export interface ApolloContext {
+  userId: string
+  req: Request
+  res: Response
+}
 
 const startServer = async () => {
   // Because of a type error between express and apollo-server-express, we need to cast express to any
@@ -21,17 +27,27 @@ const startServer = async () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const app = express() as any
 
-  app.use(cors())
+  const corsOptions = {
+    origin: [DATABASE_URL, 'https://studio.apollographql.com/sandbox/explorer'],
+    credentials: true,
+  }
+
+  app.use(cors(corsOptions))
   app.use(graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 }))
 
-  const server = new ApolloServer({
+  const server = new ApolloServer<ApolloContext>({
     typeDefs,
     resolvers,
     cache: 'bounded',
     csrfPrevention: true,
+    context: ({ req, res }) => ({
+      userId: verifyToken(req),
+      req,
+      res,
+    }),
   })
   await server.start()
-  server.applyMiddleware({ app })
+  server.applyMiddleware({ app, path: '/graphql', cors: false })
   app.listen({ port: 3001 }, () => {
     console.log('\x1b[35m--------------------------------- \n')
     console.log('🚀 Server is running on http://localhost:3001/graphql\n')

@@ -11,7 +11,7 @@ import { ReactNode, useState } from 'react'
 import { useForm } from 'react-hook-form'
 
 const EditForm = () => {
-  const { user } = useAuth()
+  const { user, refetchUser } = useAuth()
   const [file, setFile] = useState<string>('')
   const [updateUser] = useUpdateUserMutation()
   const {
@@ -23,6 +23,12 @@ const EditForm = () => {
     formState: { errors },
   } = useForm<UpdateUserWriteSchema>({
     resolver: zodResolver(UpdateUserSchema),
+    defaultValues: {
+      name: user?.name,
+      username: user?.username,
+      password: '',
+      confirmPassword: '',
+    },
   })
 
   if (!user) {
@@ -45,6 +51,7 @@ const EditForm = () => {
           },
         })
         alert('User updated')
+        refetchUser()
         reset()
       } catch (error) {
         if (error instanceof ApolloError) {

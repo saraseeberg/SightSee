@@ -23,7 +23,7 @@ describe('CardDetailsDialog', () => {
   }) =>
     render(
       <BrowserRouter>
-        <CardDetailsDialog {...props} favorites={[]} onToggleFavorite={vi.fn()} />
+        <CardDetailsDialog {...props} />
       </BrowserRouter>,
     )
 
@@ -38,7 +38,7 @@ describe('CardDetailsDialog', () => {
     const image = screen.getByRole('img', { name: /beautiful beach/i })
     expect(image).toHaveAttribute('src', mockDestination.image)
 
-    const discoverButton = screen.getByRole('link', { name: /discover more here!/i })
+    const discoverButton = screen.getByRole('link', { name: /read more/i })
     expect(discoverButton).toHaveAttribute('href', '/destination/1')
   })
 

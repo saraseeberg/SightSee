@@ -5,7 +5,6 @@ type Review {
   rating: Int!
   username: String!
   destinationid: ID!
-  destination: Destination!
 }
 
 input ReviewInput {

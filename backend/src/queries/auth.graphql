@@ -1,0 +1,59 @@
+query getMe {
+  me {
+    id
+    name
+    username
+    image
+    reviews {
+      id
+      title
+      text
+      rating
+      username
+      destinationid
+    }
+    favorites {
+      id
+      title
+      titlequestion
+      description
+      longdescription
+      categories
+      country
+      region
+      image
+      alt
+      rating
+    }
+  }
+}
+
+mutation login($username: String!, $password: String!) {
+  login(data: { username: $username, password: $password }) {
+    id
+    name
+    username
+    image
+    reviews {
+      id
+      title
+      text
+      rating
+      destinationid
+    }
+    favorites {
+      id
+      title
+      region
+      rating
+      description
+      image
+      alt
+      country
+    }
+  }
+}
+
+mutation logout {
+  logout
+}
