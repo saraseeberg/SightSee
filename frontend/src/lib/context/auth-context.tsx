@@ -1,11 +1,5 @@
 import { FetchResult } from '@apollo/client'
-import {
-  useCreateUserMutation,
-  useGetMeQuery,
-  useLoginMutation,
-  useLogoutMutation,
-  User,
-} from '@Types/__generated__/resolvers-types'
+import { useCreateUserMutation, useGetMeQuery, useLoginMutation, User } from '@Types/__generated__/resolvers-types'
 import { createContext, useContext, useEffect, useState } from 'react'
 
 type AuthContextType = {
@@ -23,8 +17,7 @@ const AuthContext = createContext<AuthContextType>({} as AuthContextType)
 const AuthProvider = ({ children }: Props) => {
   const [createUser] = useCreateUserMutation()
   const [login] = useLoginMutation()
-  const [logOut] = useLogoutMutation()
-  const { data, loading, refetch } = useGetMeQuery()
+  const { data, loading, refetch } = useGetMeQuery({})
   const [user, setUser] = useState<User | null>(null)
   const [isReady, setIsReady] = useState(false)
   useEffect(() => {
@@ -58,13 +51,14 @@ const AuthProvider = ({ children }: Props) => {
         password,
       },
     })
+
     setUser(res.data?.login as User)
     return res
   }
 
   const logout = async () => {
     try {
-      logOut()
+      localStorage.removeItem('token')
       setUser(null)
     } catch (error) {
       console.error(error)
