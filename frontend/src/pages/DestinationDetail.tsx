@@ -121,6 +121,9 @@ const DestinationDetailsPage = () => {
                   <Card className="p-4 flex flex-col gap-4">
                     <CardTitle className="flex flex-col justify-between gap-2">
                       <div className="flex items-center space-x-3">
+                        {review.user_avatar && (
+                          <img src={review.user_avatar} alt={review.username} className="h-8 w-8 rounded-full" />
+                        )}
                         <p className="font-semibold text-sm text-muted-foreground text-center">
                           {review.username || 'Anonymous'}
                         </p>

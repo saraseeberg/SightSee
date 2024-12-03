@@ -4,6 +4,7 @@ type Review {
   text: String!
   rating: Int!
   username: String!
+  user_avatar: String
   destinationid: ID!
 }
 

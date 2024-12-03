@@ -1,4 +1,5 @@
 import { authenticateUser } from '@/auth/utils'
+import { s3 } from '@/s3/s3Provider'
 import { ApolloContext } from '@/server'
 import { Review, ReviewResolvers } from '@Types/__generated__/resolvers-types'
 import { ReviewSchema } from '@Types/schema/reviewSchema'
@@ -19,9 +20,34 @@ const reviewResolver: ReviewResolvers = {
       return rows[0]
     },
     getReviewsByDestinationID: async (_: unknown, { destinationid }: Review) => {
-      const query = 'SELECT * FROM reviews WHERE destinationid = $1'
-      const { rows } = await db.query(query, [destinationid])
-      return rows
+      const query = `
+        SELECT 
+          r.id,
+          r.title,
+          r.text,
+          r.rating,
+          r.username,
+          r.destinationid,
+          u.image AS user_avatar
+        FROM reviews r
+        LEFT JOIN users u ON r.username = u.username
+        WHERE r.destinationid = $1
+      `
+
+      try {
+        const { rows } = await db.query(query, [destinationid])
+
+        // If users have avatars stored in S3, fetch their signed URLs
+        for (const review of rows) {
+          if (review.user_avatar) {
+            review.user_avatar = await s3.get(review.user_avatar)
+          }
+        }
+
+        return rows
+      } catch (error) {
+        throw new ApolloError(`Could not get reviews for destination: ${error}`, 'INTERNAL_SERVER_ERROR')
+      }
     },
     getReviewsByUserID: async (_: unknown, { id }: { id: string }) => {
       const query = 'SELECT * FROM reviews WHERE username = $1'
