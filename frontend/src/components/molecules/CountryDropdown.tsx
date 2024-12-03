@@ -10,9 +10,14 @@ import React, { useState } from 'react'
 type CountryDropdownProps = {
   onSelectCountries: (countries: string[]) => void
   selectedCountries: string[]
+  availableCountries: Set<string>
 }
 
-const CountryDropdown: React.FC<CountryDropdownProps> = ({ onSelectCountries, selectedCountries }) => {
+const CountryDropdown: React.FC<CountryDropdownProps> = ({
+  onSelectCountries,
+  selectedCountries,
+  availableCountries,
+}) => {
   const { data, loading, error } = useGetAllCountriesQuery()
   const [open, setOpen] = useState(false)
   const countries = data ? data.getAllCountries : []
@@ -46,18 +51,23 @@ const CountryDropdown: React.FC<CountryDropdownProps> = ({ onSelectCountries, se
             {loading && <CommandEmpty>Loading...</CommandEmpty>}
             {error && <CommandEmpty>Error loading countries.</CommandEmpty>}
             <CommandGroup>
-              {countries.map((country) => (
-                <CommandItem
-                  key={country}
-                  onSelect={() => handleToggleCountry(country)}
-                  className={cn(
-                    selectedCountries.includes(country) ? 'bg-accent' : 'hover:bg-accent-1 hover:text-white',
-                  )}
-                >
-                  {country}
-                  {selectedCountries.includes(country) && <Check className="ml-auto opacity-100" />}
-                </CommandItem>
-              ))}
+              {countries.map((country) => {
+                const isAvailable = availableCountries.has(country)
+                return (
+                  <CommandItem
+                    key={country}
+                    onSelect={() => isAvailable && handleToggleCountry(country)}
+                    disabled={!isAvailable}
+                    className={cn(
+                      selectedCountries.includes(country) ? 'bg-accent' : 'hover:bg-accent-1 hover:text-white',
+                      !isAvailable && 'opacity-50 cursor-not-allowed',
+                    )}
+                  >
+                    {country}
+                    {selectedCountries.includes(country) && <Check className="ml-auto opacity-100" />}
+                  </CommandItem>
+                )
+              })}
               <CommandItem onSelect={handleResetCountries} className="text-red-500">
                 Reset Filter
               </CommandItem>

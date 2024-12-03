@@ -56,3 +56,11 @@ query GetFeaturedDestinations {
     country
   }
 }
+
+query GetAvailableCategories($countries: [String!]) {
+  getAvailableCategories(countries: $countries)
+}
+
+query GetAvailableCountries($categories: [String!]) {
+  getAvailableCountries(categories: $categories)
+}

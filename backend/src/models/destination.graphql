@@ -43,6 +43,8 @@ type Query {
   getFeaturedDestinations: [Destination]
   getDestinationsByTextSimilarity(searchText: String!): [Destination]
   getAllCountries: [String!]!
+  getAvailableCategories(countries: [String!]): [String!]!
+  getAvailableCountries(categories: [String!]): [String!]!
 }
 
 type Mutation {

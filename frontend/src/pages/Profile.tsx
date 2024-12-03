@@ -3,7 +3,7 @@ import SmallSavedDestinationCard from '@/components/atoms/SmallSavedDestinationC
 import StatisticsCard from '@/components/molecules/StatisticsCard'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { useAuth } from '@/lib/context/auth-context'
-import { Review, useGetReviewByUserIdQuery } from '@Types/__generated__/resolvers-types'
+import { Review } from '@Types/__generated__/resolvers-types'
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
@@ -11,9 +11,6 @@ const Profile = () => {
   const navigate = useNavigate()
   const burgersEaten = localStorage.getItem('eatenBurger') || 0
   const { user } = useAuth()
-  const { data } = useGetReviewByUserIdQuery({
-    variables: { id: user?.id as string },
-  })
 
   useEffect(() => {
     if (!user) {
@@ -50,7 +47,7 @@ const Profile = () => {
           className="row-span-2 max-md:row-start-2 max-md:col-span-2"
         >
           <ul className="flex flex-col gap-2  rounded-md h-48 overflow-y-scroll scroll">
-            {data?.getReviewsByUserID
+            {user.reviews
               ?.slice()
               .reverse()
               .map((review) => (

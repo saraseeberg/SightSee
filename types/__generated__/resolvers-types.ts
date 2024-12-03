@@ -148,6 +148,8 @@ export type Query = {
   __typename?: 'Query'
   getAllCountries: Array<Scalars['String']['output']>
   getAllDestinations?: Maybe<PaginatedDestinations>
+  getAvailableCategories: Array<Scalars['String']['output']>
+  getAvailableCountries: Array<Scalars['String']['output']>
   getDestination?: Maybe<Destination>
   getDestinationsByTextSimilarity?: Maybe<Array<Maybe<Destination>>>
   getFavoritesByUserID?: Maybe<Array<Destination>>
@@ -168,6 +170,14 @@ export type QueryGetAllDestinationsArgs = {
   limit: Scalars['Int']['input']
   page: Scalars['Int']['input']
   sorting?: InputMaybe<Scalars['String']['input']>
+}
+
+export type QueryGetAvailableCategoriesArgs = {
+  countries?: InputMaybe<Array<Scalars['String']['input']>>
+}
+
+export type QueryGetAvailableCountriesArgs = {
+  categories?: InputMaybe<Array<Scalars['String']['input']>>
 }
 
 export type QueryGetDestinationArgs = {
@@ -492,6 +502,18 @@ export type QueryResolvers<
     ContextType,
     RequireFields<QueryGetAllDestinationsArgs, 'limit' | 'page'>
   >
+  getAvailableCategories?: Resolver<
+    Array<ResolversTypes['String']>,
+    ParentType,
+    ContextType,
+    Partial<QueryGetAvailableCategoriesArgs>
+  >
+  getAvailableCountries?: Resolver<
+    Array<ResolversTypes['String']>,
+    ParentType,
+    ContextType,
+    Partial<QueryGetAvailableCountriesArgs>
+  >
   getDestination?: Resolver<
     Maybe<ResolversTypes['Destination']>,
     ParentType,
@@ -767,6 +789,18 @@ export type GetFeaturedDestinationsQuery = {
     country: string
   } | null> | null
 }
+
+export type GetAvailableCategoriesQueryVariables = Exact<{
+  countries?: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>
+}>
+
+export type GetAvailableCategoriesQuery = { __typename?: 'Query'; getAvailableCategories: Array<string> }
+
+export type GetAvailableCountriesQueryVariables = Exact<{
+  categories?: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>
+}>
+
+export type GetAvailableCountriesQuery = { __typename?: 'Query'; getAvailableCountries: Array<string> }
 
 export type CreateReviewMutationVariables = Exact<{
   destinationid: Scalars['ID']['input']
@@ -1406,6 +1440,122 @@ export type GetFeaturedDestinationsSuspenseQueryHookResult = ReturnType<typeof u
 export type GetFeaturedDestinationsQueryResult = Apollo.QueryResult<
   GetFeaturedDestinationsQuery,
   GetFeaturedDestinationsQueryVariables
+>
+export const GetAvailableCategoriesDocument = gql`
+  query GetAvailableCategories($countries: [String!]) {
+    getAvailableCategories(countries: $countries)
+  }
+`
+
+/**
+ * __useGetAvailableCategoriesQuery__
+ *
+ * To run a query within a React component, call `useGetAvailableCategoriesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAvailableCategoriesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAvailableCategoriesQuery({
+ *   variables: {
+ *      countries: // value for 'countries'
+ *   },
+ * });
+ */
+export function useGetAvailableCategoriesQuery(
+  baseOptions?: Apollo.QueryHookOptions<GetAvailableCategoriesQuery, GetAvailableCategoriesQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useQuery<GetAvailableCategoriesQuery, GetAvailableCategoriesQueryVariables>(
+    GetAvailableCategoriesDocument,
+    options,
+  )
+}
+export function useGetAvailableCategoriesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<GetAvailableCategoriesQuery, GetAvailableCategoriesQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useLazyQuery<GetAvailableCategoriesQuery, GetAvailableCategoriesQueryVariables>(
+    GetAvailableCategoriesDocument,
+    options,
+  )
+}
+export function useGetAvailableCategoriesSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<GetAvailableCategoriesQuery, GetAvailableCategoriesQueryVariables>,
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions }
+  return Apollo.useSuspenseQuery<GetAvailableCategoriesQuery, GetAvailableCategoriesQueryVariables>(
+    GetAvailableCategoriesDocument,
+    options,
+  )
+}
+export type GetAvailableCategoriesQueryHookResult = ReturnType<typeof useGetAvailableCategoriesQuery>
+export type GetAvailableCategoriesLazyQueryHookResult = ReturnType<typeof useGetAvailableCategoriesLazyQuery>
+export type GetAvailableCategoriesSuspenseQueryHookResult = ReturnType<typeof useGetAvailableCategoriesSuspenseQuery>
+export type GetAvailableCategoriesQueryResult = Apollo.QueryResult<
+  GetAvailableCategoriesQuery,
+  GetAvailableCategoriesQueryVariables
+>
+export const GetAvailableCountriesDocument = gql`
+  query GetAvailableCountries($categories: [String!]) {
+    getAvailableCountries(categories: $categories)
+  }
+`
+
+/**
+ * __useGetAvailableCountriesQuery__
+ *
+ * To run a query within a React component, call `useGetAvailableCountriesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAvailableCountriesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAvailableCountriesQuery({
+ *   variables: {
+ *      categories: // value for 'categories'
+ *   },
+ * });
+ */
+export function useGetAvailableCountriesQuery(
+  baseOptions?: Apollo.QueryHookOptions<GetAvailableCountriesQuery, GetAvailableCountriesQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useQuery<GetAvailableCountriesQuery, GetAvailableCountriesQueryVariables>(
+    GetAvailableCountriesDocument,
+    options,
+  )
+}
+export function useGetAvailableCountriesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<GetAvailableCountriesQuery, GetAvailableCountriesQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useLazyQuery<GetAvailableCountriesQuery, GetAvailableCountriesQueryVariables>(
+    GetAvailableCountriesDocument,
+    options,
+  )
+}
+export function useGetAvailableCountriesSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<GetAvailableCountriesQuery, GetAvailableCountriesQueryVariables>,
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions }
+  return Apollo.useSuspenseQuery<GetAvailableCountriesQuery, GetAvailableCountriesQueryVariables>(
+    GetAvailableCountriesDocument,
+    options,
+  )
+}
+export type GetAvailableCountriesQueryHookResult = ReturnType<typeof useGetAvailableCountriesQuery>
+export type GetAvailableCountriesLazyQueryHookResult = ReturnType<typeof useGetAvailableCountriesLazyQuery>
+export type GetAvailableCountriesSuspenseQueryHookResult = ReturnType<typeof useGetAvailableCountriesSuspenseQuery>
+export type GetAvailableCountriesQueryResult = Apollo.QueryResult<
+  GetAvailableCountriesQuery,
+  GetAvailableCountriesQueryVariables
 >
 export const CreateReviewDocument = gql`
   mutation createReview($destinationid: ID!, $title: String!, $text: String!, $rating: Int!, $username: String!) {

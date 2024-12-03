@@ -7,7 +7,13 @@ describe('CategoryDropdown', () => {
   const mockOnSelectCategories = vi.fn()
 
   const renderComponent = () =>
-    render(<CategoryDropdown onSelectCategories={mockOnSelectCategories} selectedCategories={[]} />)
+    render(
+      <CategoryDropdown
+        onSelectCategories={mockOnSelectCategories}
+        selectedCategories={[]}
+        availableCategories={new Set(['Activities', 'Entertainment', 'Nightlife', 'Restaurants', 'Shopping', 'Sights'])}
+      />,
+    )
 
   it('renders with default label', () => {
     renderComponent()

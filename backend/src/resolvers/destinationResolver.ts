@@ -119,6 +119,50 @@ const DestinationResolver: Resolvers = {
         throw new Error(error as string)
       }
     },
+
+    getAvailableCategories: async (_, { countries }) => {
+      try {
+        let query = 'SELECT DISTINCT json_array_elements_text(categories) AS category FROM destinations'
+        const values = []
+
+        if (countries && countries.length > 0) {
+          query += ' WHERE country = ANY($1)'
+          values.push(countries)
+        }
+
+        const result = await db.query(query, values)
+
+        // Map the result to get an array of category strings
+        const categories = result.rows.map((row) => row.category.trim())
+
+        return categories
+      } catch (error) {
+        console.error('Error in getAvailableCategories:', error)
+        throw error
+      }
+    },
+
+    getAvailableCountries: async (_, { categories }) => {
+      try {
+        let query = 'SELECT DISTINCT country FROM destinations'
+        const values = []
+        if (categories && categories.length > 0) {
+          query += `
+            WHERE EXISTS (
+              SELECT 1 FROM json_array_elements_text(categories) AS c
+              WHERE c = ANY($1::text[])
+            )
+          `
+          values.push(categories)
+        }
+        const result = await db.query(query, values)
+        const countries = result.rows.map((row) => row.country)
+        return countries
+      } catch (error) {
+        console.error('Error in getAvailableCountries:', error)
+        throw error
+      }
+    },
   },
 
   Mutation: {

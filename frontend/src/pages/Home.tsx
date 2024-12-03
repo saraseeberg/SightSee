@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom'
 const Home = () => {
   const navigate = useNavigate()
   const suggestionClick = (category: string, country: string) => {
+    window.scrollTo(0, 0)
     navigate('/browse', { state: { category, country } })
   }
 

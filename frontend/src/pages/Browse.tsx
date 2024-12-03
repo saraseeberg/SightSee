@@ -15,11 +15,16 @@ import {
   PaginationPrevious,
 } from '@/components/ui/pagination'
 import { Skeleton } from '@/components/ui/skeleton'
+import { useSorting } from '@/hooks/useSorting'
 import { Icon } from '@iconify/react/dist/iconify.js'
-import { Destination, useGetAllDestinationsQuery } from '@Types/__generated__/resolvers-types'
+import {
+  Destination,
+  useGetAllDestinationsQuery,
+  useGetAvailableCategoriesQuery,
+  useGetAvailableCountriesQuery,
+} from '@Types/__generated__/resolvers-types'
 import { useEffect, useState } from 'react'
 import { useLocation, useSearchParams } from 'react-router-dom'
-import { useSorting } from '@/hooks/useSorting'
 
 const categoryButtonData: Omit<CategoryButtonProps, 'onClick' | 'isSelected'>[] = [
   { category: 'Activities' },
@@ -73,6 +78,17 @@ const Browse = () => {
       sorting: selectedSorting,
     },
   })
+
+  const { data: availableCategoriesData } = useGetAvailableCategoriesQuery({
+    variables: { countries: selectedCountries.length > 0 ? selectedCountries : null },
+  })
+
+  const { data: availableCountriesData } = useGetAvailableCountriesQuery({
+    variables: { categories: selectedCategories.length > 0 ? selectedCategories : null },
+  })
+
+  const availableCategories = new Set(availableCategoriesData?.getAvailableCategories || [])
+  const availableCountries = new Set(availableCountriesData?.getAvailableCountries || [])
 
   const paginatedCards = data?.getAllDestinations ? data.getAllDestinations?.destinations : []
   const totalPages = data?.getAllDestinations ? Math.ceil(data.getAllDestinations.totalCount / CARDS_LIMIT) : 0
@@ -153,13 +169,22 @@ const Browse = () => {
                   category={item.category}
                   isSelected={selectedCategories.includes(item.category)}
                   onClick={() => handleCategoryClick(item.category)}
+                  disabled={!availableCategories.has(item.category)}
                 />
               ))}
             </div>
             <div className="block md:hidden">
-              <CategoryDropdown onSelectCategories={handleCategorySelect} selectedCategories={selectedCategories} />
+              <CategoryDropdown
+                onSelectCategories={handleCategorySelect}
+                selectedCategories={selectedCategories}
+                availableCategories={availableCategories}
+              />
             </div>
-            <CountryDropdown onSelectCountries={handleCountrySelect} selectedCountries={selectedCountries} />
+            <CountryDropdown
+              onSelectCountries={handleCountrySelect}
+              selectedCountries={selectedCountries}
+              availableCountries={availableCountries}
+            />
             <SortingDropdown
               selectedSorting={selectedSorting} // From the hook
               onSelectedSorting={handleSortingSelect} // From the hook
