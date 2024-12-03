@@ -134,12 +134,13 @@ const UserResolver: Resolvers = {
         }
       }
 
-      if (user.username) {
-        const isUsernameTaken = await db
-          .query('SELECT * FROM users WHERE username = $1', [user.username])
-          .then((res) => res.rows.length > 0)
-        if (isUsernameTaken) throw new ApolloError('Username is already taken', 'USERNAME_TAKEN')
-      }
+      if (user.username)
+        if (user.username) {
+          const isUsernameTaken = await db
+            .query('SELECT id, username FROM users WHERE username = $1', [user.username])
+            .then((res) => res.rows.length > 0 && res.rows[0].id !== user.id)
+          if (isUsernameTaken) throw new ApolloError('Username is already taken', 'USERNAME_TAKEN')
+        }
 
       try {
         console.log('Updating user with id: ', user.id)
