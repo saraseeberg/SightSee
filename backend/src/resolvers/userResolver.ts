@@ -92,8 +92,7 @@ const UserResolver: Resolvers = {
           throw new ApolloError(error.message, 'VALIDATION_ERROR')
         }
       }
-      // Check if user already exists
-      console.log('Checking if user already exists')
+
       const checkQuery = 'SELECT * FROM users WHERE username = $1'
       const checkResult = await db.query(checkQuery, [username])
       if (checkResult.rows.length > 0) {
@@ -117,6 +116,10 @@ const UserResolver: Resolvers = {
 
     updateUser: async (_: unknown, { user }: { user: UserInput }, contextValue: ApolloContext) => {
       authenticateUser(contextValue, user.id)
+      if (user.id === '340c0679-5f34-45e0-8189-f5929c2ebd2c') {
+        // Cannot update password and such for the test user
+        throw new ApolloError('Cannot update the test user', 'DEFAULT_USER_UPDATE')
+      }
       // Have to safe parse as the image is a FileUpload type and not a File type
       const result = UpdateUserSchema.safeParse(user)
       let imgFile = null
@@ -201,7 +204,6 @@ const UserResolver: Resolvers = {
           WHERE id = ANY($1)
         `
         const { rows: favorites } = await db.query(getFavoritesQuery, [user.favorites])
-        console.log('Fetched favorites:', favorites)
 
         // Attach the resolved favorites to the user object
         return {

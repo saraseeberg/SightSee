@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useAuth } from '@/lib/context/auth-context'
+import { ApolloError } from '@apollo/client'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Icon } from '@iconify/react/dist/iconify.js'
 import { RegisterSchema, RegisterWriteSchema } from '@Types/schema/registerUserSchema'
@@ -27,7 +28,13 @@ function Register() {
       navigate('/')
     } catch (error) {
       console.error(error)
-      setError('root', { message: 'Noe gikk galt' })
+      if (error instanceof ApolloError) {
+        if (error.graphQLErrors[0].extensions?.code === 'USER_ALREADY_EXISTS') {
+          setError('username', { message: error.message })
+        } else {
+          setError('root', { message: 'Something went wrong, please try again' })
+        }
+      }
     }
   }
 
