@@ -5,7 +5,6 @@ input LoginInput {
 
 type Mutation {
   login(data: LoginInput!): User
-  logout: String
 }
 
 type Query {

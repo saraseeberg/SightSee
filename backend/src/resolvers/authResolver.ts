@@ -64,11 +64,6 @@ const authResolver: Resolvers = {
         throw new ApolloError('An error occurred while logging in: ' + error, 'INTERNAL_SERVER_ERROR')
       }
     },
-
-    logout: async (_: unknown, __: unknown, { res }: { res: Response }) => {
-      res.clearCookie('accessToken')
-      return 'Logged out'
-    },
   },
 }
 
