@@ -1,6 +1,6 @@
 import ReviewCard from '@/components/molecules/ReviewCard'
 import '@testing-library/jest-dom'
-import { render, screen, fireEvent } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 
 vi.mock('@Types/__generated__/resolvers-types', () => ({
@@ -51,7 +51,6 @@ describe('ReviewCard', () => {
     const deleteButton = screen.getByRole('button', { name: 'Delete review' })
     expect(deleteButton).toBeInTheDocument()
   })
-
 
   it('renders the avatar fallback when no image is provided', () => {
     render(<ReviewCard {...mockReview} image={undefined} refetch={mockRefetch} />)
