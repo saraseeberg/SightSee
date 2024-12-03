@@ -1,8 +1,10 @@
 import EditForm from '@/components/molecules/settings/EditForm'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-
 import { useAuth } from '@/lib/context/auth-context'
+
 import { Icon } from '@iconify/react/dist/iconify.js'
+import { useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 const SettingsTabs = [
   {
@@ -20,12 +22,13 @@ const SettingsTabs = [
 
 export const Settings = () => {
   const { user } = useAuth()
+  const navigate = useNavigate()
 
-  if (!user) {
-    window.location.href = '/login'
-    return null
-  }
-
+  useEffect(() => {
+    if (!user) {
+      navigate('/login')
+    }
+  }, [user, navigate])
   return (
     <main className="flex flex-col gap-5 pt-5 md:mx-[20%] mx-3 min-h-screen ">
       <h1 className="text-4xl font-bold">Settings</h1>
