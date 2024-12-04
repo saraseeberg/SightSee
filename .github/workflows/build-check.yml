@@ -46,10 +46,9 @@ jobs:
         run: |
           npm install
           npm run build
-          
+
       - name: Run Tests
         working-directory: frontend
         run: |
           npm install
           npm run test
-        

@@ -32,30 +32,30 @@ const reviewResolver: ReviewResolvers = {
         FROM reviews r
         LEFT JOIN users u ON r.username = u.username
         WHERE r.destinationid = $1
-      `;
+      `
 
       try {
-        const { rows } = await db.query(query, [destinationid]);
+        const { rows } = await db.query(query, [destinationid])
 
-        console.log('Fetched reviews:', rows);
+        console.log('Fetched reviews:', rows)
 
         // Fetch signed URLs for user avatars if needed
         for (const review of rows) {
           if (review.user_avatar) {
             try {
-              review.user_avatar = await s3.get(review.user_avatar);
+              review.user_avatar = await s3.get(review.user_avatar)
             } catch (error) {
-              console.error('Failed to fetch user avatar from S3:', error);
-              review.user_avatar = null; // Fallback to null if S3 fetch fails
+              console.error('Failed to fetch user avatar from S3:', error)
+              review.user_avatar = null // Fallback to null if S3 fetch fails
             }
           }
         }
 
-        console.log('Processed reviews with avatars:', rows);
-        return rows;
+        console.log('Processed reviews with avatars:', rows)
+        return rows
       } catch (error) {
-        console.error('Error fetching reviews for destination:', error);
-        throw new ApolloError(`Could not get reviews for destination: ${error}`, 'INTERNAL_SERVER_ERROR');
+        console.error('Error fetching reviews for destination:', error)
+        throw new ApolloError(`Could not get reviews for destination: ${error}`, 'INTERNAL_SERVER_ERROR')
       }
     },
     getReviewsByUserID: async (_: unknown, { id }: { id: string }) => {

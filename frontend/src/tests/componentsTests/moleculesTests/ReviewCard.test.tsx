@@ -8,10 +8,9 @@ import { describe, expect, it, vi } from 'vitest'
 vi.mock('@Types/__generated__/resolvers-types', () => ({
   useDeleteReviewMutation: vi.fn(() => [
     vi.fn(() => Promise.resolve({})), // Mocked mutation function
-    { loading: false, error: undefined },  // Mocked state object
+    { loading: false, error: undefined }, // Mocked state object
   ]),
 }))
-
 
 vi.mock('@/lib/context/auth-context', () => ({
   useAuth: vi.fn(() => ({
@@ -86,25 +85,25 @@ describe('ReviewCard', () => {
   it('triggers the delete confirmation dialog and calls the onConfirm function', async () => {
     const mockDeleteReview = vi.fn(() => Promise.resolve({}))
     vi.mocked(useDeleteReviewMutation).mockReturnValue([
-      mockDeleteReview, 
+      mockDeleteReview,
       {
-        loading: false, error: undefined,
+        loading: false,
+        error: undefined,
         called: false,
         client: {} as ApolloClient<object>,
         reset: function (): void {
           throw new Error('Function not implemented.')
-        }
+        },
       },
     ])
-  
+
     render(<ReviewCard {...mockReview} refetch={mockRefetch} />)
-  
+
     const deleteButton = screen.getByRole('button', { name: 'Delete review' })
     expect(deleteButton).toBeInTheDocument()
-  
-    fireEvent.click(deleteButton) 
-  
-    expect(mockDeleteReview).toHaveBeenCalledTimes(1) 
+
+    fireEvent.click(deleteButton)
+
+    expect(mockDeleteReview).toHaveBeenCalledTimes(1)
   })
-  
 })
