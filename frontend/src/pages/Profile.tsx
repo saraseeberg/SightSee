@@ -25,12 +25,12 @@ const Profile = () => {
       <section className="flex items-center gap-10 w-full max-md:flex-col">
         <div className="flex gap-10">
           <Avatar className="size-48 max-sm:size-24">
-            <AvatarImage src={user.image as string} />
+            <AvatarImage src={user.image as string} alt="profile picture" />
             <AvatarFallback>{user.username.slice(0, 2).toUpperCase()}</AvatarFallback>
           </Avatar>
           <div className="flex flex-col justify-center">
             <h1 className="text-3xl">{user.name}</h1>
-            <p className="text-grey">{user.username}</p>
+            <p className="text-muted-foreground">{user.username}</p>
           </div>
         </div>
         <div className="flex-1 flex justify-center gap-2"></div>

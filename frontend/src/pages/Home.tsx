@@ -38,7 +38,7 @@ const Home = () => {
         </section>
 
         <section className="px-6 pb-8 mt-14">
-          <p className=" flex text-grey mb-1 md:font-bold max-sm: items-center sm: justify-start">
+          <p className=" flex text-muted-foreground mb-1 md:font-bold max-sm: items-center sm: justify-start">
             Discover your next destination
           </p>
 

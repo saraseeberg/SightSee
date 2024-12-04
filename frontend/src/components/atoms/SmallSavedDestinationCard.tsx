@@ -14,8 +14,8 @@ const SmallSavedDestinationCard = ({ destination }: { destination: Partial<Desti
         )}
         <div className="flex flex-col ml-3">
           <span className="font-medium text-lg">{destination.title || 'Untitled Destination'}</span>
-          <span className="text-sm text-gray-500">{destination.region || 'Unknown Region'}</span>
-          <span className="text-sm text-gray-500">{destination.country || 'Unknown Country'}</span>
+          <span className="text-sm text-muted-foreground">{destination.region || 'Unknown Region'}</span>
+          <span className="text-sm text-muted-foreground">{destination.country || 'Unknown Country'}</span>
         </div>
       </li>
     </Link>

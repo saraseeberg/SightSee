@@ -11,7 +11,7 @@ const SmallReviewCard = ({ review }: { review: Partial<Review> }) => {
         </div>
         <div className="flex flex-col ml-3">
           <span className="font-bold">{review.title}</span>
-          <span className="text-sm text-gray-500">Destination: {review.destinationname}</span>
+          <span className="text-sm text-muted-foreground">Destination: {review.destinationname}</span>
         </div>
       </li>
     </Link>
