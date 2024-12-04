@@ -1,25 +1,46 @@
+# SightSee 🌍
+
+_Link to our website:_ https://git.ntnu.no/IT2810-H24/T33-Project-2/ 
+> **⚠ NB**  </br>
+> Make sure you are connected to NTNU eduroam Wi-Fi og VPN
+
 ## Table of Contents
 
 1. [SightSee](#sightsee)
-2. [Hosted](#hosted)
-3. [Developer Information](#developer-information)
-4. [Features](#features)
-5. [Folder Structure](#folder-structure)
-6. [How To Run](#how-to-run)
-7. [How To Test](#how-to-test)
-8. [Design and Technology Choices](#design-and-technology-choices)
+2. [Developer Information](#developer-information)
+3. [Design Choices](#design-choices)
+4. [Technologies](#technologies)
+5. [How To Run](#how-to-run)
+6. [How To Test](#how-to-test)
 
 ## SightSee
 
-SightSee is an application designed to enhance the travel experience by providing users with detailed information about various tourist attractions. It offers features such as filtering, sorting, user reviews, and content to help travelers plan their visits effectively.The application aims to make sightseeing more enjoyable and informative by leveraging modern web technologies.
+SightSee is an application designed to enhance the travel experience by providing users with detailed information about various tourist attractions. Here you can browse through attractions, sort by categories, read and write reviews, and save your favorite destinations. The application aims to make sightseeing more enjoyable and informative by leveraging modern web technologies.
 
-## Hosted
+### The application and its different pages are explained in the following walkthrough:
 
-The website is hosted at
-[SightSee on NTNU](http://it2810-33.idi.ntnu.no/project2/) .
+#### LandingPage 
+The first page the user is met by after opening the application. It features a carousel showcasing popular destinations and a section for discovering new places. 
 
-> **⚠ NB!!** > </br>
-> This is the only place you will be able to see the whole application!
+![Homepage image] ()
+
+#### BrowsePage
+The main page where a variety of tourist attractions are displayed. It is possible to filter on different categories and countries, and sort by name or rating. By clicking on a BrowseCard the user can see more detailes about the attraction and from there navigate to the DestinationPage of the clicked attraction. 
+
+![Browsepage image] ()
+
+#### DestinationPage
+This page provides detailed information about a specific tourist attraction, including user reviews. Logged-in users can also write reviews and save the destination to their favorites. 
+
+![Destinationpage image] ()
+
+#### LoginPage
+The page where users can log in to their accounts. If the user does not have an account, they can register to create one.
+
+![Loginpage image] ()
+
+#### My Account
+The users profile page where they can view and manage their personal information, reviews and saved destinations. Users can edit 
 
 ## Developer Information
 
@@ -30,38 +51,38 @@ The website is hosted at
 - Mads Bårnes
 - Sara Seeberg-Rommetvet
 
-## Features
+## Design Choices 
 
-- **Filtering:** Easily filter categories to find exactly what you're looking for.
-- **Search:** Quickly search for specific places or countries of interest.
-- **Sorting:** Sort attractions alphabetically or by rating to find either the best- or worst-rated spots.
-- **User Reviews:** Read insights from other travelers or contribute with your own experiences to help others.
-- **Dark or Light Mode:** Switch between dark and light modes for a viewing experience that suits your preference.
-- **Detailed Information:** Discover more about any location by either searching directly or exploring browse cards in the "Browse" section, then clicking "Discover More."
+### Choice of data 
+We have filled our database with data from various sources on tourist attractions. This includes information such as attraction names, descriptions, and images. Additionally, we generated users and some reviews with ratings for each attraction. Since this data was partly randomized, there may be some inconsistencies between review text and rating (e.g., a high review with a negative comment), but they do not impack the core functionality of the application.
 
-## Folder Structure
+### Choices related to search, filtering and sorting
+We implemented comprehensive search, filtering, and sorting functionalities to enhance user experience. Users can search for destinations by text similarity, filter results by categories and countries, and sort them by various criteria such as rating and alphabetical order. These features ensures that users can easily find and organize the information they need, making the application more user-friendly and efficient. 
 
-To help navigate the codebase, here’s a quick overview of the main folders and their purpose:
+### Choices related to sustainability
+We have made several design choices to ensure the sustainability of our application:
 
-- **/backend** - Contains backend-specific code for the application.
+#### Efficient data transfer
+We minimize data transfer by optimizing our API calls and using pagination for large datasets. This reduces the amount of data sent over the network, conserving bandwidth and reducing energy consumption.
 
-  - **/src** - Holds the core server files.
-    - **/models** - Defines the data models used in the database (e.g., destination, user, review).
-    - **/resolvers** - Contains GraphQL resolver functions that handle API requests and perform operations on the data models.
+#### Lazy loading
+We implemented lazy loading for images and other media content. This means that images are only loaded when they are about to enter the viewport, reducing unnecessary data transfer. 
 
-- **/cypress** - Contains end-to-end (e2e) test setup and test files.
+#### Color choices
+Our color palette is designet to be visually appealing and energy-efficient, particulary for devices with OLED screens where darker colors consume less power. We also support dark mode to further reduce energy consumption on such devices. 
 
-  - **/e2e** - Houses specific e2e test files for different parts of the application, ensuring functionality is tested.
+### Choices related to accessibility
+To ensure our application is accessible to all usesrs, we have implemented several key measures. Firstly, we have incorporated ARIA labels to improve support for screen readers. This helps users with visuals impairments navigate the application ore effectivelt. Our color palette was designed with inclusivity in mind. It is optimized for users with different types of color blindness, ensuring all visual elements remain clear and visible, confirmed by our Lighthouse tests. Additionally, we prioritized keyboard navigation by making all interactive elements accessible through tabulation.
 
-- **/frontend** - Contains all frontend-specific code and assets.
-  - **/public** - Static assets accessible from the root URL.
-  - **/src** - Holds the main application code for the frontend.
-    - **/assets** - Contains images for the carousel.
-    - **/components** - Reusable UI components for building various parts of the interface.
-    - **/graphql** - Contains frontend GraphQL queries.
-    - **/layouts** - Shared layout components for organizing the app structure across different pages.
-    - **/lib** - Utility functions and helper code that support various features of the app.
-    - **/pages** - Page-level components corresponding to each route in the application (e.g., Home, Browse, Profile).
+### Choices related to responsive design
+We have prioritized responsive design to ensure a seamless experience across devices and screen sizes. By leveraging CSS Grid and Flexbox, our layout adapt dynamically to different screens, while media queries finetune styles like font sizes and margins for optimal readability. Responsive images adjust to device resolution, enhancing load times and visual quality. 
+
+### Choices related to global state management
+
+### Choices related to reproducible code
+To ensure others can easily understand and run the project as intended, we have focused on creating reproducible and well-documented code. This README provides detailed information about the application, including instructions for installation and running, testing procedures, and overview of the technology stack, and explanations of key design choices. Throughout the codebase, we have added descriptive comments to clairify their purpose and functionality. 
+
+## Technologies
 
 ## How To Run
 
@@ -133,34 +154,3 @@ Then run the tests from there:
 ```bash
     npm run test
 ```
-
-## Design and Technology Choices
-
-SightSee was developed to provide a smooth, interactive experience for users seeking information about tourist attractions. Below is an overview of the design and technology choices that drive the app's functionality and user experience.
-
-### Frontend
-
-- **React with TypeScript:** React enables dynamic, component-based interfaces that are efficient and scalable. TypeScript adds type safety, which reduces bugs and improves reliability in the code.
-- **shadcn/ui:** This UI component library provides a cohesive and visually appealing interface across the app, maintaining a consistent design language throughout.
-- **Dark/Light Mode:** A dark/light mode option allows users to switch display modes, enhancing usability in different lighting environments and providing a personalized experience.
-
-### Backend
-
-- **Apollo Server and GraphQL:** Apollo Server with GraphQL enables efficient data fetching, allowing only necessary data to be requested. This minimizes load times and reduces bandwidth usage, improving app performance.
-- **PostgreSQL:** PostgreSQL is used as the relational database for managing structured data and handling complex queries. It stores essential information such as user reviews and destination details.
-
-### Functionality
-
-- **Filtering, Sorting, and Search:** These features are implemented to allow users to easily filter, sort, and search for destinations based on their interests.
-- **User Reviews and Ratings:** Users can read and submit reviews, contributing to a more interactive experience. Reviews are stored in PostgreSQL and managed through Appolo server and GraphQL, ensuring efficient data handling.
-- **Responsive Design:** The frontend adapts to different screen sizes, allowing the application to work seamlessly on both desktop and mobile devices.
-
-### Testing and Quality Assurance
-
-- **Cypress:** Cypress is used for end-to-end testing to validate key features, including search, filtering, and navigation. This framework simulates user interactions to verify that the application performs as expected across various scenarios.
-
-### Overall Design Choices
-
-The application is designed to offer a clear, intuitive, and visually appealing experience that prioritizes usability. We focused on reducing visual clutter while maintaining a modern, cohesive design. By using **shadcn/ui** as the component library, we ensured a consistent look across the entire application, with all components sharing a unified style for a seamless user experience.
-
-Additionally, we prioritized accessibility by ensuring sufficient color contrast and selecting color palettes that accommodate users with color blindness, enhancing inclusivity for all users.
