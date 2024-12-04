@@ -9,7 +9,7 @@ type ReviewCardProps = Partial<Review>
 
 const ReviewCard: FC<ReviewCardProps> = ({ username, user_avatar, title, text, rating }) => {
   return (
-    <Card className="p-4 flex flex-col gap-4">
+    <Card className="p-4 flex flex-col gap-4 overflow-y-auto pt-3">
       <CardTitle className="flex flex-col justify-between gap-2">
         <div className="flex items-center space-x-3">
           <Avatar>
@@ -18,7 +18,7 @@ const ReviewCard: FC<ReviewCardProps> = ({ username, user_avatar, title, text, r
           </Avatar>
           <p className="font-semibold text-sm text-muted-foreground text-center">{username || 'Anonymous'}</p>
         </div>
-        <div className="mt-2">
+        <div className="mt-1">
           <StarRating rating={rating ?? 0} />
         </div>
       </CardTitle>

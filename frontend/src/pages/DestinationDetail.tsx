@@ -88,11 +88,16 @@ const DestinationDetailsPage = () => {
         </h2>
       </div>
 
-      <section className="grid grid-cols-1 md:grid-cols-2 gap-8 p-4">
-        <img src={destination.image} alt={destination.title} className="w-full rounded-lg shadow-lg mb-4 md:mb-0" />
-        <div className="flex flex-col justify-center">
-          <h3 className="text-xl font-bold mb-4">Description</h3>
-          <p>{destination.longdescription}</p>
+      <section className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 items-stretch p-2">
+        {/* Left Column: Image and Rating */}
+        <div className="flex flex-col items-center justify-center w-full h-full p-4">
+          <img src={destination.image} alt={destination.title} className="w-full h-auto max-w-md mb-4 rounded-md" />
+        </div>
+
+        {/* Right Column: Description */}
+        <div className="w-full h-full p-4 flex flex-col">
+          <h3 className="font-bold text-xl mb-4 text-center">Description</h3>
+          {destination.longdescription && <p className="flex-grow">{destination.longdescription}</p>}
         </div>
       </section>
 
