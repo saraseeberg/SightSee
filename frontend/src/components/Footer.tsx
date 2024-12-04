@@ -4,8 +4,8 @@ import { Link } from 'react-router-dom'
 import { Button } from './ui/button'
 import { Input } from './ui/input'
 
-const SoMeIcon = ({ icon, href }: { icon: string; href: string }) => (
-  <Link to={href}>
+const SoMeIcon = ({ icon, href, label }: { icon: string; href: string; label: string }) => (
+  <Link to={href} aria-label={label}>
     <Icon icon={icon} className="h-6 w-6 hover:scale-105 hover:text-secondary/80" />
   </Link>
 )
@@ -36,9 +36,9 @@ const Footer = () => {
           </div>
         </div>
         <div className="flex md:flex-col justify-around my-3 gap-6">
-          <SoMeIcon href="https://i.imgflip.com/70peq9.gif" icon="akar-icons:instagram-fill" aria-label="Instagram" />
-          <SoMeIcon href="https://i.imgflip.com/70peq9.gif" icon="akar-icons:twitter-fill" aria-label="Twitter" />
-          <SoMeIcon href="https://i.imgflip.com/70peq9.gif" icon="akar-icons:linkedin-fill" aria-label="LinkedIn" />
+          <SoMeIcon href="https://i.imgflip.com/70peq9.gif" icon="akar-icons:instagram-fill" label="Instagram" />
+          <SoMeIcon href="https://i.imgflip.com/70peq9.gif" icon="akar-icons:twitter-fill" label="Twitter" />
+          <SoMeIcon href="https://i.imgflip.com/70peq9.gif" icon="akar-icons:linkedin-fill" label="LinkedIn" />
         </div>
       </section>
     </footer>

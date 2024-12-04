@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react'
-import { Carousel, CarouselApi, CarouselContent, CarouselItem } from '../ui/carousel'
-import AutoPlay from 'embla-carousel-autoplay'
-import { Link } from 'react-router-dom'
 import { carouselData } from '@/lib/data/heroCarouselData'
+import AutoPlay from 'embla-carousel-autoplay'
+import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
+import { Carousel, CarouselApi, CarouselContent, CarouselItem } from '../ui/carousel'
+
 const CarouselIndicator = ({ api, current, total }: { api: CarouselApi; current: number; total: number }) => {
   return (
     <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-1">
@@ -48,6 +49,7 @@ const HeroCarousel = () => {
             <Link to="/browse" className="w-full relative flex justify-center items-center rounded-xl">
               <img
                 src={item.image}
+                rel="preload"
                 alt={`Image of a destination`}
                 className="w-full object-cover h-96 rounded-xl blur-sm lg:min-h-[500px] hover:blur-none duration-300"
               />

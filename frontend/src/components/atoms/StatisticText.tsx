@@ -12,9 +12,9 @@ const StatisticText: FC<StatisticTextProps> = ({ number, title, description }) =
       {/* Dynamic Number */}
       <h1 className="text-5xl font-bold text-white">{number}</h1>
       {/* Dynamic Title */}
-      <h2 className="text-lg font-semibold text-white/75 mt-2">{title}</h2>
+      <h2 className="text-lg font-semibold text-white mt-2">{title}</h2>
       {/* Dynamic Description */}
-      <p className="text-sm text-white/75 mt-2">{description}</p>
+      <p className="text-sm text-white mt-2">{description}</p>
     </div>
   )
 }
