@@ -10,9 +10,7 @@ import { Request, Response } from 'express'
 const authResolver: Resolvers = {
   Query: {
     me: async (_: unknown, __: unknown, { req }: { req: Request }) => {
-      console.log('Getting user from request')
       const userId = verifyToken(req)
-      console.log('User from request', userId)
       if (userId) {
         try {
           const query = 'SELECT * FROM users WHERE id = $1'

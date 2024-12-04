@@ -7,7 +7,7 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   error?: string
 }
 
-const Input = React.forwardRef<HTMLInputElement, InputProps>(({ className, error, type, ...props }, ref) => {
+const Input = React.forwardRef<HTMLInputElement, InputProps>(({ className, error, type, disabled, ...props }, ref) => {
   return (
     <>
       <input
@@ -16,8 +16,10 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(({ className, error
           'flex h-9 w-full text-content rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground placeholder:text-white focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50',
           className,
           error && 'border-red-500',
+          disabled && 'cursor-not-allowed bg-current/50 ',
         )}
         ref={ref}
+        disabled={disabled}
         {...props}
       />
       {error && <p className="text-red-500 text-xs">{error}</p>}

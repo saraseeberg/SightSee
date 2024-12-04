@@ -69,7 +69,9 @@ const Profile = () => {
           className="row-span-2 max-md:row-start-2 max-md:col-span-2"
         >
           <ul className="grid grid-cols-1 lg:grid-cols-2 gap-4 rounded-md overflow-y-scroll max-h-72 p-2">
-            {user.favorites?.map((destination) => <SmallSavedDestinationCard destination={destination} />)}
+            {user.favorites?.map((destination) => (
+              <SmallSavedDestinationCard key={destination.id} destination={destination} />
+            ))}
           </ul>
         </StatisticsCard>
       </section>

@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  deploy:
+  build:
     name: Test Build
     runs-on: self-hosted
 
@@ -46,3 +46,10 @@ jobs:
         run: |
           npm install
           npm run build
+          
+      - name: Run Tests
+        working-directory: frontend
+        run: |
+          npm install
+          npm run test
+        

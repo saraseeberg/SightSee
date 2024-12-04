@@ -27,11 +27,7 @@ const startServer = async () => {
   const app = express() as any
 
   const corsOptions = {
-    origin: [
-      'http://it2810-33.idi.ntnu.no',
-      'http://localhost:3000',
-      'https://studio.apollographql.com/sandbox/explorer',
-    ],
+    origin: ['http://it2810-33.idi.ntnu.no', 'http://localhost:3000', 'https://studio.apollographql.com'],
     credentials: true,
   }
 

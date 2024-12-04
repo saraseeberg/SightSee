@@ -18,7 +18,7 @@ import { useParams } from 'react-router-dom'
 
 const DestinationDetailsPage = () => {
   const { id } = useParams<{ id: string }>()
-  const { data, loading, error } = useGetDestinationByIdQuery({
+  const { data } = useGetDestinationByIdQuery({
     variables: { id: id as string },
   })
 
@@ -46,9 +46,6 @@ const DestinationDetailsPage = () => {
       description: 'Your review has been successfully added!',
     })
   }
-
-  if (loading || reviewRes.loading) return <p>Loading... </p>
-  if (error || reviewRes.error) return <p>Error loading destination details. {reviewRes.error?.message}</p>
 
   const destination = data?.getDestination ?? null
 
@@ -122,7 +119,7 @@ const DestinationDetailsPage = () => {
             {reviews.map((review) => {
               return (
                 <CarouselItem key={review.id} className="pl-2 md:pl-4 md:basis-1/3">
-                  <ReviewCard {...review} />
+                  <ReviewCard refetch={reviewRes.refetch} {...review} />
                 </CarouselItem>
               )
             })}

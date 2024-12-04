@@ -22,8 +22,8 @@ function Login() {
   } = useForm<LoginWriteSchema>({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
-      username: 'PrettyPony',
-      password: 'byn8rwx*qre5NTH-fck',
+      username: 'DefaultTestUser',
+      password: 'jtw9nqj7QCJ.ydm0krp',
     },
   })
 
@@ -36,10 +36,10 @@ function Login() {
       if (error instanceof ApolloError) {
         console.error(error)
         const code = error.graphQLErrors[0].extensions?.code
-        if (code === 'USERNAME_TAKEN') {
-          setError('root', { message: error.message })
-        } else {
+        if (code === 'INTERNAL_SERVER_ERROR') {
           setError('root', { message: 'Something went wrong, please try again' })
+        } else {
+          setError('root', { message: error.message })
         }
       }
     }

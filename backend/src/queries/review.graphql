@@ -16,6 +16,7 @@ query getReviewsByDestinationID($destinationid: ID!) {
     username
     user_avatar
     text
+    image
   }
 }
 
@@ -26,5 +27,11 @@ query getReviewByUserID($id: ID!) {
     text
     rating
     destinationid
+  }
+}
+
+mutation deleteReview($id: ID!) {
+  deleteReview(id: $id) {
+    id
   }
 }

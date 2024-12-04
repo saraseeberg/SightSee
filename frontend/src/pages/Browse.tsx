@@ -15,7 +15,7 @@ import {
   PaginationPrevious,
 } from '@/components/ui/pagination'
 import { Skeleton } from '@/components/ui/skeleton'
-import { useSorting } from '@/hooks/useSorting'
+import { useFilters } from '@/hooks/useFilters'
 import { Icon } from '@iconify/react/dist/iconify.js'
 import {
   Destination,
@@ -23,8 +23,7 @@ import {
   useGetAvailableCategoriesQuery,
   useGetAvailableCountriesQuery,
 } from '@Types/__generated__/resolvers-types'
-import { useEffect, useState } from 'react'
-import { useLocation, useSearchParams } from 'react-router-dom'
+import { useState } from 'react'
 
 const categoryButtonData: Omit<CategoryButtonProps, 'onClick' | 'isSelected'>[] = [
   { category: 'Activities' },
@@ -38,36 +37,24 @@ const categoryButtonData: Omit<CategoryButtonProps, 'onClick' | 'isSelected'>[] 
 const CARDS_LIMIT = 12
 
 const Browse = () => {
-  const location = useLocation()
   const [openDialog, setOpenDialog] = useState(false)
   const [selectedCard, setSelectedCard] = useState<Partial<Destination> | null>(null)
-  const [searchParams, setSearchParams] = useSearchParams()
 
-  const { selectedSorting, handleSortingSelect } = useSorting()
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([])
-  const [selectedCountries, setSelectedCountries] = useState<string[]>([])
-  const [currentPage, setCurrentPage] = useState<number>(1)
-  const [filtersApplied, setFiltersApplied] = useState<boolean>(false)
-
-  useEffect(() => {
-    const categoriesParam = searchParams.get('categories')
-    if (categoriesParam) {
-      setSelectedCategories(categoriesParam.split(','))
-    }
-
-    const countriesParam = searchParams.get('countries')
-    if (countriesParam) {
-      setSelectedCountries(countriesParam.split(','))
-    }
-
-    const pageParam = searchParams.get('page')
-    if (pageParam) {
-      const pageNumber = parseInt(pageParam, 10)
-      if (!isNaN(pageNumber)) {
-        setCurrentPage(pageNumber)
-      }
-    }
-  }, [])
+  const {
+    selectedCategories,
+    selectedCountries,
+    selectedSorting,
+    currentPage,
+    filtersApplied,
+    handleCategoryClick,
+    handleCountrySelect,
+    handleCategorySelect,
+    handleSortingSelect,
+    handleResetFilters,
+    handleNextPage,
+    handlePreviousPage,
+    handleJumpToPage,
+  } = useFilters()
 
   const { data, loading } = useGetAllDestinationsQuery({
     variables: {
@@ -93,66 +80,9 @@ const Browse = () => {
   const paginatedCards = data?.getAllDestinations ? data.getAllDestinations?.destinations : []
   const totalPages = data?.getAllDestinations ? Math.ceil(data.getAllDestinations.totalCount / CARDS_LIMIT) : 0
 
-  useEffect(() => {
-    if (location.state?.category) {
-      setSelectedCategories([location.state.category])
-    }
-    if (location.state?.country) {
-      setSelectedCountries([location.state.country])
-    }
-  }, [location.state])
-
-  useEffect(() => {
-    const hasFilters = selectedCategories.length > 0 || selectedCountries.length > 0 || selectedSorting !== 'Best Rated'
-
-    setFiltersApplied(hasFilters)
-  }, [selectedCategories, selectedCountries, selectedSorting])
-
-  const handleCategoryClick = (category: string) => {
-    let updatedCategories: string[]
-    if (selectedCategories.includes(category)) {
-      updatedCategories = selectedCategories.filter((c) => c !== category)
-    } else {
-      updatedCategories = [...selectedCategories, category]
-    }
-
-    setSelectedCategories(updatedCategories)
-    setCurrentPage(1)
-    setSearchParams(new URLSearchParams())
-  }
-
-  const handleCountrySelect = (countries: string[]) => {
-    setSelectedCountries(countries)
-    setCurrentPage(1)
-  }
-
-  const handleCategorySelect = (categories: string[]) => {
-    setSelectedCategories(categories)
-    setCurrentPage(1)
-  }
-
-  const handleResetFilters = () => {
-    setSelectedCategories([])
-    setSelectedCountries([])
-    handleSortingSelect('Best Rated')
-    setCurrentPage(1)
-  }
-
   const handleCardClick = (card: Partial<Destination>) => {
     setSelectedCard(card)
     setOpenDialog(true)
-  }
-
-  const handleNextPage = () => {
-    setCurrentPage((prev) => (prev < totalPages ? prev + 1 : prev))
-  }
-
-  const handlePreviousPage = () => {
-    setCurrentPage((prev) => (prev > 1 ? prev - 1 : prev))
-  }
-
-  const handleJumpToPage = (page: number) => {
-    setCurrentPage(page)
   }
 
   const SkeletonCard = () => <Skeleton className="w-[46%] sm:w-1/3 md:w-1/3 lg:w-1/4 h-64" />
@@ -185,10 +115,7 @@ const Browse = () => {
               selectedCountries={selectedCountries}
               availableCountries={availableCountries}
             />
-            <SortingDropdown
-              selectedSorting={selectedSorting} // From the hook
-              onSelectedSorting={handleSortingSelect} // From the hook
-            />
+            <SortingDropdown selectedSorting={selectedSorting} onSelectedSorting={handleSortingSelect} />
             <Button
               variant="ghost"
               onClick={handleResetFilters}
@@ -237,7 +164,7 @@ const Browse = () => {
         <PaginationContent className="cursor-pointer">
           <PaginationItem>
             <PaginationPrevious
-              onClick={handlePreviousPage}
+              onClick={() => handlePreviousPage()}
               className={currentPage === 1 ? 'cursor-default opacity-0' : ''}
             />
           </PaginationItem>
@@ -255,7 +182,7 @@ const Browse = () => {
 
           <PaginationItem>
             <PaginationNext
-              onClick={handleNextPage}
+              onClick={() => handleNextPage(totalPages)}
               className={currentPage === totalPages || totalPages === 0 ? 'cursor-default opacity-0' : ''}
             />
           </PaginationItem>

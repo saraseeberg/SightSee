@@ -76,15 +76,28 @@ const EditForm = () => {
           <Input id="name" type="text" {...register('name')} error={errors.name?.message as string} />
         </FormField>
         <FormField label="Username">
-          <Input id="username" type="text" {...register('username')} error={errors.username?.message as string} />
+          <Input
+            id="username"
+            type="text"
+            {...register('username')}
+            disabled={user.id === '340c0679-5f34-45e0-8189-f5929c2ebd2c'}
+            error={errors.username?.message as string}
+          />
         </FormField>
         <FormField label="Password">
-          <Input id="password" type="password" {...register('password')} error={errors.password?.message as string} />
+          <Input
+            id="password"
+            type="password"
+            disabled={user.id === '340c0679-5f34-45e0-8189-f5929c2ebd2c'}
+            {...register('password')}
+            error={errors.password?.message as string}
+          />
         </FormField>
         <FormField label="Confirm Password">
           <Input
             id="confirmPassword"
             type="password"
+            disabled={user.id === '340c0679-5f34-45e0-8189-f5929c2ebd2c'}
             {...register('confirmPassword')}
             error={errors.confirmPassword?.message as string}
           />
