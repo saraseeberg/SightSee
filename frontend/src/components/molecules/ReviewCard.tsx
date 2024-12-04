@@ -18,14 +18,15 @@ const ReviewCard: FC<ReviewCardProps> = ({ username, user_avatar, title, text, r
           </Avatar>
           <p className="font-semibold text-sm text-muted-foreground text-center">{username || 'Anonymous'}</p>
         </div>
-
-        <StarRating rating={rating ?? 0} />
+        <div className="mt-2">
+          <StarRating rating={rating ?? 0} />
+        </div>
       </CardTitle>
       <CardContent className="flex flex-col gap-2 p-0 aspect-square">
         <h2 className="text-xl font-semibold">{title}</h2>
 
         <ScrollArea className="h-[100px] w-full">
-          <p>{text}</p>
+          <p className="text-muted-foreground">{text}</p>
         </ScrollArea>
       </CardContent>
     </Card>
