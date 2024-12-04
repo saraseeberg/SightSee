@@ -10,8 +10,9 @@ _Link to our website:_ https://git.ntnu.no/IT2810-H24/T33-Project-2/
 2. [Developer Information](#developer-information)
 3. [Design Choices](#design-choices)
 4. [Technologies](#technologies)
-5. [How To Run](#how-to-run)
-6. [How To Test](#how-to-test)
+5. [Testing](#testing)
+6. [How To Run](#how-to-run)
+7. [How To Test](#how-to-test)
 
 ## SightSee
 
@@ -83,6 +84,23 @@ We have prioritized responsive design to ensure a seamless experience across dev
 To ensure others can easily understand and run the project as intended, we have focused on creating reproducible and well-documented code. This README provides detailed information about the application, including instructions for installation and running, testing procedures, and overview of the technology stack, and explanations of key design choices. Throughout the codebase, we have added descriptive comments to clairify their purpose and functionality. 
 
 ## Technologies
+
+### Frontend
+**React with TypeScript:** React enables dynamic, component-based interfaces that are efficient and scalable. TypeScript adds type safety, which reduces bugs and improves reliability in the code.
+
+**shadcn:** This UI component library provides a cohesive and visually appealing interface across the app, maintaining a consistent design language throughout.
+
+### Backend
+**Apollo Server and GraphQL:**
+Apollo Server with GraphQL enables efficient data fetching, allowing only necessary data to be requested. This minimizes load times and reduces bandwidth usage, improving app performance.
+
+**PostgreSQL:** 
+PostgreSQL is used as the relational database for managing structured data and handling complex queries. It stores essential information such as user reviews and destination details.
+
+## Testing
+**Cypress** Cypress is used for end-to-end testing to validate key features, including search, filtering, and navigation. This framework simulates user interactions to verify that the application performs as expected across various scenarios.
+
+**Unit tests**
 
 ## How To Run
 
