@@ -11,6 +11,7 @@ query getMe {
       rating
       username
       destinationid
+      destinationname
     }
     favorites {
       id

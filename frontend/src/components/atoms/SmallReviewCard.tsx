@@ -10,9 +10,8 @@ const SmallReviewCard = ({ review }: { review: Partial<Review> }) => {
           <StarRating rating={review.rating || 0} />
         </div>
         <div className="flex flex-col ml-3">
-          <span className="font-medium">{review.title}</span>
-          <span>{review.text}</span>
-          <span className="text-sm text-gray-500">Destination: TBA</span>
+          <span className="font-bold">{review.title}</span>
+          <span className="text-sm text-gray-500">Destination: {review.destinationname}</span>
         </div>
       </li>
     </Link>

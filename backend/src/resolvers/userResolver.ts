@@ -281,6 +281,16 @@ const UserResolver: Resolvers = {
       try {
         const query = 'SELECT * FROM reviews WHERE id = ANY($1)'
         const { rows } = await db.query(query, [user.reviews])
+        for (const review of rows) {
+          const nameQuery = 'SELECT title FROM destinations WHERE id = $1'
+          const { rows } = await db.query(nameQuery, [review.destinationid])
+
+          if (rows.length > 0) {
+            review.destinationname = rows[0].title
+          } else {
+            review.destinationname = 'Unknown'
+          }
+        }
         return rows
       } catch (error) {
         throw new ApolloError(`Failed to fetch reviews: ${error}`, 'INTERNAL_SERVER_ERROR')
