@@ -107,31 +107,33 @@ const DestinationDetailsPage = () => {
         />
       </div>
 
-      <div className="w-full px-4 py-6">
-        <Carousel
-          opts={{
-            align: 'start',
-            loop: true,
-          }}
-          className="w-full max-w-sm mx-auto md:max-w-5xl relative px-12"
-        >
-          <CarouselContent className="-ml-2 md:-ml-4">
-            {reviews.map((review) => {
-              return (
-                <CarouselItem key={review.id} className="pl-2 md:pl-4 md:basis-1/3">
-                  <ReviewCard refetch={reviewRes.refetch} {...review} />
-                </CarouselItem>
-              )
-            })}
-          </CarouselContent>
-          <div className="absolute left-0 top-1/2 -translate-y-1/2">
-            <CarouselPrevious className="relative left-0 translate-x-0 bg-background border border-input hover:bg-accent hover:text-accent-foreground h-8 w-8 rounded-full" />
-          </div>
-          <div className="absolute right-0 top-1/2 -translate-y-1/2">
-            <CarouselNext className="relative right-0 translate-x-0 bg-background border border-input hover:bg-accent hover:text-accent-foreground h-8 w-8 rounded-full" />
-          </div>
-        </Carousel>
-      </div>
+      {(reviews.length > 0 || reviewRes.loading) && (
+        <div className="w-full px-4 py-6">
+          <Carousel
+            opts={{
+              align: 'start',
+              loop: true,
+            }}
+            className="w-full max-w-sm mx-auto md:max-w-5xl relative px-12"
+          >
+            <CarouselContent className="-ml-2 md:-ml-4">
+              {reviews.map((review) => {
+                return (
+                  <CarouselItem key={review.id} className="pl-2 md:pl-4 md:basis-1/3">
+                    <ReviewCard refetch={reviewRes.refetch} {...review} />
+                  </CarouselItem>
+                )
+              })}
+            </CarouselContent>
+            <div className="absolute left-0 top-1/2 -translate-y-1/2">
+              <CarouselPrevious className="relative left-0 translate-x-0 bg-background border border-input hover:bg-accent hover:text-accent-foreground h-8 w-8 rounded-full" />
+            </div>
+            <div className="absolute right-0 top-1/2 -translate-y-1/2">
+              <CarouselNext className="relative right-0 translate-x-0 bg-background border border-input hover:bg-accent hover:text-accent-foreground h-8 w-8 rounded-full" />
+            </div>
+          </Carousel>
+        </div>
+      )}
       <Toaster />
     </main>
   )

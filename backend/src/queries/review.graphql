@@ -27,6 +27,7 @@ query getReviewByUserID($id: ID!) {
     text
     rating
     destinationid
+    destinationname
   }
 }
 

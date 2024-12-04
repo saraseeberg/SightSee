@@ -204,6 +204,7 @@ export type QueryGetUsersByIdArgs = {
 export type Review = {
   __typename?: 'Review'
   destinationid: Scalars['ID']['output']
+  destinationname?: Maybe<Scalars['String']['output']>
   id: Scalars['ID']['output']
   image?: Maybe<Scalars['String']['output']>
   rating: Scalars['Int']['output']
@@ -536,6 +537,7 @@ export type ReviewResolvers<
   ParentType extends ResolversParentTypes['Review'] = ResolversParentTypes['Review'],
 > = ResolversObject<{
   destinationid?: Resolver<ResolversTypes['ID'], ParentType, ContextType>
+  destinationname?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>
   image?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
   rating?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
@@ -602,6 +604,7 @@ export type GetMeQuery = {
       rating: number
       username: string
       destinationid: string
+      destinationname?: string | null
     }> | null
     favorites?: Array<{
       __typename?: 'Destination'
@@ -804,6 +807,7 @@ export type GetReviewByUserIdQuery = {
     text: string
     rating: number
     destinationid: string
+    destinationname?: string | null
   }> | null
 }
 
@@ -950,6 +954,7 @@ export const GetMeDocument = gql`
         rating
         username
         destinationid
+        destinationname
       }
       favorites {
         id
@@ -1621,6 +1626,7 @@ export const GetReviewByUserIdDocument = gql`
       text
       rating
       destinationid
+      destinationname
     }
   }
 `
