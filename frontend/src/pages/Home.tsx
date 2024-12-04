@@ -4,10 +4,10 @@ import HeroCarousel from '@/components/molecules/HeroCarousel'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Card, CardContent } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
+import { statstext } from '@/lib/data/statisticTextData'
 import { Icon } from '@iconify/react/dist/iconify.js'
 import { useGetFeaturedDestinationsQuery } from '@Types/__generated__/resolvers-types'
 import { useNavigate } from 'react-router-dom'
-import { statstext } from '@/lib/data/statisticTextData'
 
 const Home = () => {
   const navigate = useNavigate()
@@ -26,7 +26,7 @@ const Home = () => {
           <HeroCarousel />
         </section>
 
-        <section className="bg-accent-2 py-16">
+        <section className="bg-accent-1 py-16 rounded-md">
           <FlightMarquee />
           <div className="mt-8 container mx-auto">
             <div className="flex flex-wrap justify-center gap-6">
