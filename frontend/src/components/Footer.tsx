@@ -26,11 +26,11 @@ const Footer = () => {
             Subscribe
           </Button>
         </form>
-        <p className="text-accent-2 mt-4">Developed by: Aurora Nergaard, Lotte Kvalhem, Mads Bårnes, Sara Seeberg</p>
+        <p className="mt-4">Developed by: Aurora Nergaard, Lotte Kvalhem, Mads Bårnes, Sara Seeberg</p>
       </section>
       <section className="flex-1 flex max-md:flex-col">
         <div className="flex-1 flex justify-around items-start">
-          <div className="text-accent-2 flex flex-col gap-6">
+          <div className="flex flex-col gap-6">
             <Link to="/browse">Browse</Link>
             <Link to="/reviews">Reviews</Link>
           </div>

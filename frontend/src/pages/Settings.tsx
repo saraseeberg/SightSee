@@ -1,3 +1,4 @@
+import DeleteModal from '@/components/molecules/settings/DeleteModal'
 import EditForm from '@/components/molecules/settings/EditForm'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useAuth } from '@/lib/context/auth-context'
@@ -17,6 +18,7 @@ const SettingsTabs = [
     id: 'privacy',
     title: 'Privacy',
     icon: 'ic:round-lock',
+    component: <DeleteModal />,
   },
 ]
 
@@ -45,7 +47,7 @@ export const Settings = () => {
         </TabsList>
         <div className="md:w-[70%] border-[1px] border-content/20 rounded-lg p-3">
           {SettingsTabs.map((tab) => (
-            <TabsContent key={tab.id} value={tab.id}>
+            <TabsContent key={tab.id} value={tab.id} className="min-h-[500px]">
               {tab?.component}
             </TabsContent>
           ))}
