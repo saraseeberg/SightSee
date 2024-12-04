@@ -151,6 +151,9 @@ const UserResolver: Resolvers = {
             .then((res) => res.rows.length > 0 && res.rows[0].id !== user.id)
           if (isUsernameTaken) throw new ApolloError('Username is already taken', 'USERNAME_TAKEN')
         }
+      if (user.password) {
+        user.password = await bcrypt.hash(user.password, 10)
+      }
 
       try {
         console.log('Updating user with id: ', user.id)
