@@ -209,6 +209,7 @@ export type Review = {
   rating: Scalars['Int']['output']
   text: Scalars['String']['output']
   title: Scalars['String']['output']
+  user_avatar?: Maybe<Scalars['String']['output']>
   username: Scalars['String']['output']
 }
 
@@ -540,6 +541,7 @@ export type ReviewResolvers<
   rating?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
   text?: Resolver<ResolversTypes['String'], ParentType, ContextType>
   title?: Resolver<ResolversTypes['String'], ParentType, ContextType>
+  user_avatar?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
   username?: Resolver<ResolversTypes['String'], ParentType, ContextType>
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>
 }>
@@ -783,6 +785,7 @@ export type GetReviewsByDestinationIdQuery = {
     rating: number
     title: string
     username: string
+    user_avatar?: string | null
     text: string
     image?: string | null
   }> | null
@@ -1548,6 +1551,7 @@ export const GetReviewsByDestinationIdDocument = gql`
       rating
       title
       username
+      user_avatar
       text
       image
     }

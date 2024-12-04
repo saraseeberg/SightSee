@@ -1,25 +1,32 @@
+import { ScrollArea } from '@radix-ui/react-scroll-area'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Review, useDeleteReviewMutation } from '@Types/__generated__/resolvers-types'
 import { FC } from 'react'
-import { Card, CardContent, CardDescription, CardTitle } from '../ui/card'
+import { Card, CardContent, CardTitle } from '../ui/card'
 import StarRating from './StarRating'
-import { Icon } from '@iconify/react'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip'
 import { useAuth } from '@/lib/context/auth-context'
 import { useToast } from '@/hooks/use-toast'
+import ConfirmDeleteDialog from './ConfirmDeleteDialog'
 
 interface ReviewCardProps extends Partial<Review> {
   refetch: () => void
 }
 
-const ReviewCard: FC<ReviewCardProps> = ({ id, username, title, text, rating, image, refetch }) => {
+function getInitials(name: string | undefined): string {
+  if (!name) return ''
+  const names = name.trim().split(' ')
+  const firstInitial = names[0]?.charAt(0).toUpperCase() || ''
+  return `${firstInitial}`
+}
+
+const ReviewCard: FC<ReviewCardProps> = ({ id, username, user_avatar, title, text, rating, refetch }) => {
   const { user, refetchUser } = useAuth()
-  const [deleteReview] = useDeleteReviewMutation({ variables: { id: id as string } })
+  const [deleteReview] = useDeleteReviewMutation()
   const toast = useToast()
 
   const handleDeleteReview = async () => {
     try {
-      await deleteReview()
+      await deleteReview({ variables: { id: id as string } })
       refetch()
       refetchUser()
       toast.toast({
@@ -28,48 +35,37 @@ const ReviewCard: FC<ReviewCardProps> = ({ id, username, title, text, rating, im
       })
     } catch (error) {
       console.error('Error deleting review:', error)
+      toast.toast({
+        title: 'Error',
+        description: 'Failed to delete the review. Please try again.',
+      })
     }
   }
 
   return (
-    <div className="flex items-center justify-center">
-      <Card className="max-w-xs h-80 w-full pt-2 overflow-y-auto rounded-lg shadow-lg flex flex-col px-6 space-y-2">
-        {/* Profile Picture and Username */}
-        <div className="flex justify-between flex-row">
-          <div className="flex items-center space-x-3">
-            <Avatar className="w-10 h-10">
-              <AvatarImage src={image as string} alt={`${username}'s profile picture`} />
-              <AvatarFallback>CN</AvatarFallback>
+    <Card className="p-4 flex flex-col gap-4 overflow-y-auto pt-3">
+      <CardTitle className="flex flex-col justify-between gap-2">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-3 ">
+            <Avatar>
+              <AvatarImage src={user_avatar ?? undefined} />
+              <AvatarFallback>{getInitials(username)}</AvatarFallback>
             </Avatar>
-            <p className="font-semibold text-sm text-center">{username || 'Anonymous'}</p>
+            <p className="font-semibold text-sm text-muted-foreground text-center">{username || 'Anonymous'}</p>
           </div>
-          {/* Delete Button */}
-          {user?.username === username && (
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipContent className="text-primary bg-background shadow-md text-sm pl-2 pr-2 rounded-md">
-                  Delete review
-                </TooltipContent>
-                <TooltipTrigger asChild>
-                  <button onClick={() => handleDeleteReview()} className="rounded-full" aria-label="Delete review">
-                    <Icon icon="material-symbols:delete-outline" className="text-content size-8 hover:text-red-500" />
-                  </button>
-                </TooltipTrigger>
-              </Tooltip>
-            </TooltipProvider>
-          )}
+          {user?.username === username && <ConfirmDeleteDialog onConfirm={handleDeleteReview} />}
         </div>
-
-        {/* Rating */}
-        <CardContent className="flex flex-col space-y-3">
+        <div className="mt-1">
           <StarRating rating={rating ?? 0} />
-
-          {/* Review Title and Text */}
-          <CardTitle className="text-lg font-semibold">{title}</CardTitle>
-          <CardDescription>{text}</CardDescription>
-        </CardContent>
-      </Card>
-    </div>
+        </div>
+      </CardTitle>
+      <CardContent className="flex flex-col gap-2 p-0 aspect-square">
+        <h2 className="text-xl font-semibold">{title}</h2>
+        <ScrollArea className="h-[100px] w-full">
+          <p className="text-muted-foreground">{text}</p>
+        </ScrollArea>
+      </CardContent>
+    </Card>
   )
 }
 

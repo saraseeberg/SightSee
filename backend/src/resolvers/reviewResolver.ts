@@ -1,11 +1,11 @@
 import { authenticateUser } from '@/auth/utils'
+import { s3 } from '@/s3/s3Provider'
 import { ApolloContext } from '@/server'
 import { Review, ReviewResolvers } from '@Types/__generated__/resolvers-types'
 import { ReviewSchema } from '@Types/schema/reviewSchema'
 import { ApolloError } from 'apollo-server-express'
 import { ZodError } from 'zod'
 import db from '../db'
-import { s3 } from '@/s3/s3Provider'
 
 const reviewResolver: ReviewResolvers = {
   Query: {
@@ -20,30 +20,43 @@ const reviewResolver: ReviewResolvers = {
       return rows[0]
     },
     getReviewsByDestinationID: async (_: unknown, { destinationid }: Review) => {
-      const query = 'SELECT * FROM reviews WHERE destinationid = $1'
-      const {
-        rows,
-      }: {
-        rows: Review[]
-      } = await db.query(query, [destinationid])
-      if (rows.length < 1) {
-        return rows
-      }
-      console.log('this is review rows', rows)
-      for (const row of rows) {
-        const userQuery = 'SELECT image FROM users WHERE username = $1'
-        const res = await db.query(userQuery, [row.username])
-        console.log('this is review res', res)
-        if (res.rows.length < 1) {
-          row.image = null
-        } else {
-          const image = res.rows[0].image
-          console.log('this is review image', image)
-          row.image = await s3.get(image)
+      const query = `
+        SELECT 
+          r.id,
+          r.title,
+          r.text,
+          r.rating,
+          r.username,
+          r.destinationid,
+          u.image AS user_avatar
+        FROM reviews r
+        LEFT JOIN users u ON r.username = u.username
+        WHERE r.destinationid = $1
+      `
+
+      try {
+        const { rows } = await db.query(query, [destinationid])
+
+        console.log('Fetched reviews:', rows)
+
+        // Fetch signed URLs for user avatars if needed
+        for (const review of rows) {
+          if (review.user_avatar) {
+            try {
+              review.user_avatar = await s3.get(review.user_avatar)
+            } catch (error) {
+              console.error('Failed to fetch user avatar from S3:', error)
+              review.user_avatar = null // Fallback to null if S3 fetch fails
+            }
+          }
         }
+
+        console.log('Processed reviews with avatars:', rows)
+        return rows
+      } catch (error) {
+        console.error('Error fetching reviews for destination:', error)
+        throw new ApolloError(`Could not get reviews for destination: ${error}`, 'INTERNAL_SERVER_ERROR')
       }
-      console.log('this is review rows after', rows)
-      return rows
     },
     getReviewsByUserID: async (_: unknown, { id }: { id: string }) => {
       const query = 'SELECT * FROM reviews WHERE username = $1'
