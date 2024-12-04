@@ -1,3 +1,5 @@
+import { FlightMarquee } from '@/components/atoms/FlightMarquee'
+import StatisticText from '@/components/atoms/StatisticText'
 import HeroCarousel from '@/components/molecules/HeroCarousel'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Card, CardContent } from '@/components/ui/card'
@@ -5,6 +7,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { Icon } from '@iconify/react/dist/iconify.js'
 import { useGetFeaturedDestinationsQuery } from '@Types/__generated__/resolvers-types'
 import { useNavigate } from 'react-router-dom'
+import { statstext } from '@/lib/data/statisticTextData'
 
 const Home = () => {
   const navigate = useNavigate()
@@ -18,9 +21,20 @@ const Home = () => {
 
   return (
     <>
-      <main className="flex flex-col gap-8 my-6">
+      <main className="flex flex-col gap-20 my-6">
         <section className="flex w-full px-2 justify-center items-center ">
           <HeroCarousel />
+        </section>
+
+        <section className="bg-accent-2 py-16">
+          <FlightMarquee />
+          <div className="mt-8 container mx-auto">
+            <div className="flex flex-wrap justify-center gap-6">
+              {statstext.map((stat, index) => (
+                <StatisticText key={index} number={stat.number} title={stat.title} description={stat.description} />
+              ))}
+            </div>
+          </div>
         </section>
 
         <section className="px-6 pb-8 mt-14">
