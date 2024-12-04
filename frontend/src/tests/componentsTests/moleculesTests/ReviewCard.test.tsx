@@ -1,12 +1,17 @@
 import ReviewCard from '@/components/molecules/ReviewCard'
+import { ApolloClient } from '@apollo/client'
 import '@testing-library/jest-dom'
 import { fireEvent, render, screen } from '@testing-library/react'
 import { useDeleteReviewMutation } from '@Types/__generated__/resolvers-types'
 import { describe, expect, it, vi } from 'vitest'
 
 vi.mock('@Types/__generated__/resolvers-types', () => ({
-  useDeleteReviewMutation: vi.fn(() => [vi.fn(() => Promise.resolve({}))]),
+  useDeleteReviewMutation: vi.fn(() => [
+    vi.fn(() => Promise.resolve({})), // Mocked mutation function
+    { loading: false, error: undefined },  // Mocked state object
+  ]),
 }))
+
 
 vi.mock('@/lib/context/auth-context', () => ({
   useAuth: vi.fn(() => ({
@@ -78,17 +83,28 @@ describe('ReviewCard', () => {
     expect(screen.getByTestId('star-rating')).toHaveTextContent('Rating: 0')
   })
 
-  it('triggers the delete confirmation dialog and calls the onConfirm function', () => {
-    const mockDeleteReview = vi.fn()
-    vi.mocked(useDeleteReviewMutation).mockReturnValue([mockDeleteReview])
-
+  it('triggers the delete confirmation dialog and calls the onConfirm function', async () => {
+    const mockDeleteReview = vi.fn(() => Promise.resolve({}))
+    vi.mocked(useDeleteReviewMutation).mockReturnValue([
+      mockDeleteReview, 
+      {
+        loading: false, error: undefined,
+        called: false,
+        client: {} as ApolloClient<object>,
+        reset: function (): void {
+          throw new Error('Function not implemented.')
+        }
+      },
+    ])
+  
     render(<ReviewCard {...mockReview} refetch={mockRefetch} />)
-
+  
     const deleteButton = screen.getByRole('button', { name: 'Delete review' })
     expect(deleteButton).toBeInTheDocument()
-
-    fireEvent.click(deleteButton)
-
-    expect(mockDeleteReview).toHaveBeenCalledTimes(1)
+  
+    fireEvent.click(deleteButton) 
+  
+    expect(mockDeleteReview).toHaveBeenCalledTimes(1) 
   })
+  
 })
