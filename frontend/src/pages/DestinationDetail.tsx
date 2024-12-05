@@ -112,7 +112,7 @@ const DestinationDetailsPage = () => {
           <Carousel
             opts={{
               align: 'start',
-              loop: true,
+              loop: false,
             }}
             className="w-full max-w-sm mx-auto md:max-w-5xl relative px-12"
           >
