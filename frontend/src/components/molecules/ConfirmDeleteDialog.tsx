@@ -40,7 +40,7 @@ const ConfirmDeleteDialog: React.FC<ConfirmDeleteDialogProps> = ({
             <AlertDialogTrigger asChild>
               {triggerElement || (
                 <button className="rounded-full p-1 ml-auto" aria-label="Delete review">
-                  <Icon icon="material-symbols:delete-outline" className="text-content size-6 hover:text-red-500" />
+                  <Icon icon="material-symbols:delete-outline"  aria-label='delete review' className="text-content size-6 hover:text-red-500" />
                 </button>
               )}
             </AlertDialogTrigger>

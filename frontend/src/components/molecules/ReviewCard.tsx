@@ -48,7 +48,7 @@ const ReviewCard: FC<ReviewCardProps> = ({ id, username, user_avatar, title, tex
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3 ">
             <Avatar>
-              <AvatarImage src={user_avatar ?? undefined} />
+              <AvatarImage aria-label='avatar image' src={user_avatar ?? undefined} />
               <AvatarFallback>{getInitials(username)}</AvatarFallback>
             </Avatar>
             <p className="font-semibold text-sm text-muted-foreground text-center">{username || 'Anonymous'}</p>
