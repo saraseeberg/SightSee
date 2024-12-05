@@ -13,8 +13,8 @@ import {
   useGetFavoritesByUserIdQuery,
   useGetReviewsByDestinationIdQuery,
 } from '@Types/__generated__/resolvers-types'
-import { useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { useLocation, useParams } from 'react-router-dom'
 
 const DestinationDetailsPage = () => {
   const { id } = useParams<{ id: string }>()
@@ -30,6 +30,17 @@ const DestinationDetailsPage = () => {
   const toast = useToast()
 
   const [favorites, setFavorites] = useState<string[]>([])
+
+  const location = useLocation()
+
+  useEffect(() => {
+    if (location.hash) {
+      const element = document.querySelector(location.hash)
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' })
+      }
+    }
+  }, [location])
 
   const { refetch: refetchFavorites } = useGetFavoritesByUserIdQuery({
     variables: { id: user?.id || '' },
@@ -98,7 +109,7 @@ const DestinationDetailsPage = () => {
         </div>
       </section>
 
-      <div className="flex justify-center items-center">
+      <div id="reviews" className="flex justify-center items-center">
         <ReviewDialog
           destinationId={destination.id}
           refetch={reviewRes.refetch}

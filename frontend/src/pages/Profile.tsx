@@ -51,7 +51,6 @@ const Profile = () => {
               ?.slice()
               .reverse()
               .map((review) => (
-                // Change with a ReviewCard component
                 <SmallReviewCard key={review.id} review={review as Review} />
               ))}
           </ul>
