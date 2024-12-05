@@ -15,8 +15,8 @@ import {
   useGetReviewsByDestinationIdQuery,
 } from '@Types/__generated__/resolvers-types'
 import { AlertCircleIcon } from 'lucide-react'
-import { useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { useLocation, useParams } from 'react-router-dom'
 
 const DestinationDetailsPage = () => {
   const { id } = useParams<{ id: string }>()
@@ -32,6 +32,17 @@ const DestinationDetailsPage = () => {
   const toast = useToast()
 
   const [favorites, setFavorites] = useState<string[]>([])
+
+  const location = useLocation()
+
+  useEffect(() => {
+    if (location.hash) {
+      const element = document.querySelector(location.hash)
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' })
+      }
+    }
+  }, [location])
 
   const { refetch: refetchFavorites } = useGetFavoritesByUserIdQuery({
     variables: { id: user?.id || '' },
@@ -159,7 +170,7 @@ const DestinationDetailsPage = () => {
         </div>
       </section>
 
-      <div className="flex justify-center items-center">
+      <div  className="flex justify-center items-center">
         <ReviewDialog
           destinationId={destination.id}
           refetch={reviewRes.refetch}
@@ -179,11 +190,11 @@ const DestinationDetailsPage = () => {
             <Carousel
               opts={{
                 align: 'start',
-                loop: true,
+                loop: false,
               }}
               className="w-full max-w-sm mx-auto md:max-w-5xl relative px-12"
             >
-              <CarouselContent className="-ml-2 md:-ml-4">
+              <CarouselContent id="reviews" className="-ml-2 md:-ml-4 ">
                 {reviews.map((review) => (
                   <CarouselItem key={review.id} className="pl-2 md:pl-4 md:basis-1/3">
                     <ReviewCard refetch={reviewRes.refetch} {...review} />

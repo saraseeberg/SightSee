@@ -6,6 +6,7 @@ import { useAuth } from '@/lib/context/auth-context'
 import { Review } from '@Types/__generated__/resolvers-types'
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { ScrollArea } from '@/components/ui/scroll-area'
 
 const Profile = () => {
   const navigate = useNavigate()
@@ -35,7 +36,7 @@ const Profile = () => {
         </div>
         <div className="flex-1 flex justify-center gap-2"></div>
       </section>
-      <section className="md:w-full grid grid-rows-2 grid-cols-2 max-md:grid-rows-4 gap-2 ">
+      <section className="md:w-full grid grid-rows-2 grid-cols-2 gap-2 ">
         <StatisticsCard
           title="Reviews"
           description="Number of reviews you have written"
@@ -46,15 +47,14 @@ const Profile = () => {
           description="List of your recent reviews"
           className="row-span-2 max-md:row-start-2 max-md:col-span-2"
         >
-          <ul className="flex flex-col gap-2  rounded-md h-48 overflow-y-scroll scroll">
-            {user.reviews
-              ?.slice()
-              .reverse()
-              .map((review) => (
-                // Change with a ReviewCard component
-                <SmallReviewCard key={review.id} review={review as Review} />
-              ))}
-          </ul>
+          <ScrollArea type="always" className="rounded-md h-48">
+            <div className="flex flex-col gap-3">
+              {user.reviews
+                ?.slice()
+                .reverse()
+                .map((review) => <SmallReviewCard key={review.id} review={review as Review} />)}
+            </div>
+          </ScrollArea>
         </StatisticsCard>
         <StatisticsCard
           title="Burgers"
@@ -68,11 +68,13 @@ const Profile = () => {
           description="List of your saved destinations"
           className="row-span-2 max-md:row-start-2 max-md:col-span-2"
         >
-          <ul className="grid grid-cols-1 lg:grid-cols-2 gap-4 rounded-md overflow-y-scroll max-h-72 p-2">
-            {user.favorites?.map((destination) => (
-              <SmallSavedDestinationCard key={destination.id} destination={destination} />
-            ))}
-          </ul>
+          <ScrollArea type="always" className="flex h-60 rounded-md p-2">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+              {user.favorites?.map((destination) => (
+                <SmallSavedDestinationCard key={destination.id} destination={destination} />
+              ))}
+            </div>
+          </ScrollArea>
         </StatisticsCard>
       </section>
     </main>

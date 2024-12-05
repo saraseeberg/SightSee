@@ -118,7 +118,10 @@ const UserResolver: Resolvers = {
 
     updateUser: async (_: unknown, { user }: { user: UserInput }, contextValue: ApolloContext) => {
       authenticateUser(contextValue, user.id)
-      if (user.id === '340c0679-5f34-45e0-8189-f5929c2ebd2c') {
+      if (
+        user.id === '340c0679-5f34-45e0-8189-f5929c2ebd2c' &&
+        (user.password || user.username !== 'DefaultTestUser')
+      ) {
         // Cannot update password and such for the test user
         throw new ApolloError('Cannot update the test user', 'DEFAULT_USER_UPDATE')
       }

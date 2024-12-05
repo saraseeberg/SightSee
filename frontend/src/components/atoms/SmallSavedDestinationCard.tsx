@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 const SmallSavedDestinationCard = ({ destination }: { destination: Partial<Destination> }) => {
   return (
     <Link to={`/destination/${destination.id}`} key={destination.id}>
-      <li className="flex gap-2 border-2 rounded-lg border-gray-100 p-4 shadow-sm hover:shadow-md transition-shadow">
+      <li className="flex gap-2 border-2 rounded-lg border-content/10 p-4 shadow-sm hover:shadow-md transition-shadow">
         {destination.image && (
           <img
             src={destination.image}
