@@ -30,7 +30,7 @@ const Footer = () => {
       </section>
       <section className="flex-1 flex max-md:flex-col">
         <div className="flex-1 flex justify-around items-start">
-          <div className="flex flex-col py-3 gap-6">
+          <div className="flex flex-col pt-10 gap-6">
             <Link to="/browse">Browse</Link>
             <Link to="/reviews">Reviews</Link>
           </div>

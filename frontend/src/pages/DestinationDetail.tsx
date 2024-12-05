@@ -4,7 +4,9 @@ import SaveToggle from '@/components/atoms/SaveToggle'
 import ReviewCard from '@/components/molecules/ReviewCard'
 import ReviewDialog from '@/components/molecules/ReviewDialog'
 import StarRating from '@/components/molecules/StarRating'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel'
+import { Skeleton } from '@/components/ui/skeleton'
 import { Toaster } from '@/components/ui/toaster'
 import { useToast } from '@/hooks/use-toast'
 import { useAuth } from '@/lib/context/auth-context'
@@ -13,12 +15,13 @@ import {
   useGetFavoritesByUserIdQuery,
   useGetReviewsByDestinationIdQuery,
 } from '@Types/__generated__/resolvers-types'
+import { AlertCircleIcon } from 'lucide-react'
 import { useState } from 'react'
 import { useParams } from 'react-router-dom'
 
 const DestinationDetailsPage = () => {
   const { id } = useParams<{ id: string }>()
-  const { data } = useGetDestinationByIdQuery({
+  const { data, loading, error } = useGetDestinationByIdQuery({
     variables: { id: id as string },
   })
 
@@ -47,9 +50,47 @@ const DestinationDetailsPage = () => {
     })
   }
 
+  if (loading)
+    return (
+      <main>
+        <div className="flex flex-col justify-center items-center mb-8 md:mb-12">
+          <div className="flex flex-row items-center justify-center gap-2 mt-4 mb-4 text-4xl md:text-6xl">
+            <Skeleton className="w-48 h-12" />
+          </div>
+          <Skeleton className="w-32 h-8" />
+          <Skeleton className="w-64 h-6 mt-2" />
+        </div>
+
+        <section className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 items-stretch p-2">
+          {/* Left Column: Image */}
+          <div className="flex flex-col items-center justify-center w-full h-full p-4">
+            <Skeleton className="w-full h-96 max-w-md mb-4 rounded-md" />
+          </div>
+
+          {/* Right Column: Description */}
+          <div className="w-full h-full p-4 flex flex-col">
+            <h3 className="font-bold text-xl mb-4 text-center">
+              <Skeleton className="w-32 h-8" />
+            </h3>
+            <Skeleton className="flex-grow h-32" />
+          </div>
+        </section>
+      </main>
+    )
+
   const destination = data?.getDestination ?? null
 
-  if (!destination) return <p>No destination found for the provided ID.</p>
+  if (!destination)
+    return (
+      <div className="flex justify-center items-center m-44 ">
+        <Alert>
+          <AlertCircleIcon  /> 
+          <AlertTitle className='ml-3 font-bold'> Oh no! Something went wrong 🤕 </AlertTitle>
+          <AlertDescription className='ml-3'> We encountered an issue while loading the data. <br />
+            Please check your internet connection or try refreshing the page.  </AlertDescription>
+        </Alert>
+      </div>
+    )
 
   const handleToggleFavorite = async (destinationId: string, isSaved: boolean) => {
     try {
