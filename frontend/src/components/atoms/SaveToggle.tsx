@@ -13,7 +13,7 @@ type SaveToggleProps = {
 }
 
 const SaveToggle: React.FC<SaveToggleProps> = ({ destinationId, isInitiallySaved, onToggle, className }) => {
-  const { user } = useAuth()
+  const { user, refetchUser } = useAuth()
   const { toast } = useToast()
   const [isSaved, setIsSaved] = useState(isInitiallySaved)
 
@@ -45,6 +45,7 @@ const SaveToggle: React.FC<SaveToggleProps> = ({ destinationId, isInitiallySaved
       }
 
       setIsSaved(newSaveState)
+      refetchUser()
       if (onToggle) onToggle(newSaveState)
     } catch (error) {
       console.error('Error toggling save state:', error)
