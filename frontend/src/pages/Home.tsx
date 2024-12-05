@@ -1,13 +1,13 @@
 import { FlightMarquee } from '@/components/atoms/FlightMarquee'
 import StatisticText from '@/components/atoms/StatisticText'
 import HeroCarousel from '@/components/molecules/HeroCarousel'
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Card, CardContent } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
+import { statstext } from '@/lib/data/statisticTextData'
 import { Icon } from '@iconify/react/dist/iconify.js'
 import { useGetFeaturedDestinationsQuery } from '@Types/__generated__/resolvers-types'
 import { useNavigate } from 'react-router-dom'
-import { statstext } from '@/lib/data/statisticTextData'
 
 const Home = () => {
   const navigate = useNavigate()
@@ -26,7 +26,7 @@ const Home = () => {
           <HeroCarousel />
         </section>
 
-        <section className="bg-accent-2 py-16">
+        <section className="bg-accent-1 py-16 rounded-md">
           <FlightMarquee />
           <div className="mt-8 container mx-auto">
             <div className="flex flex-wrap justify-center gap-6">
@@ -38,7 +38,7 @@ const Home = () => {
         </section>
 
         <section className="px-6 pb-8 mt-14">
-          <p className=" flex text-grey mb-1 md:font-bold max-sm: items-center sm: justify-start">
+          <p className=" flex text-muted-foreground mb-1 md:font-bold max-sm: items-center sm: justify-start">
             Discover your next destination
           </p>
 
@@ -58,7 +58,7 @@ const Home = () => {
                   className="w-4 h-4 pt-0"
                   style={{ color: 'black' }}
                 />
-                <AlertTitle className=" pt-1">Error fetching data..! </AlertTitle>
+                <span className="mb-1 font-medium leading-none tracking-tight pt-1">Error fetching data..!</span>
                 <AlertDescription>Not able to fetch data 🤕 </AlertDescription>
               </Alert>
             ) : (
