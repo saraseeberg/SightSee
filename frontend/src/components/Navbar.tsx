@@ -25,7 +25,11 @@ const NavbarContent = ({ isDarkMode, toggleIcon }: { isDarkMode: boolean; toggle
         <div className="hidden md:flex">
           <SearchBar />
         </div>
-        <button className="flex items-center text-xl text-content gap-2" onClick={handleThemeToggle}>
+        <button
+          className="flex items-center text-xl text-content gap-2 "
+          onClick={handleThemeToggle}
+          aria-label={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+        >
           <p className="md:hidden">{isDarkMode ? 'Light Mode' : 'Dark Mode'}</p>
           <WordRotate
             ref={ref}
@@ -82,7 +86,7 @@ function Navbar() {
         <Sheet>
           <SheetTrigger asChild>
             <button>
-              <Icon icon="ic:round-menu" width="24" height="24" />
+              <Icon icon="ic:round-menu"  aria-label='hamburger menu' width="24" height="24" />
             </button>
           </SheetTrigger>
           <SheetContent side="left" className="text-content py-12 flex flex-col ">

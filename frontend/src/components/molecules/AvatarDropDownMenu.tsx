@@ -23,15 +23,15 @@ const AvatarDropDownMenu = () => {
 
   return (
     <DropdownMenu modal={false}>
-      <DropdownMenuTrigger>
+      <DropdownMenuTrigger aria-label="Open profile menu">
         <div className="flex gap-2 max-md:hover:bg-content/10 p-1 rounded-md">
           <Avatar className="max-md:size-16 ">
-            <AvatarImage src={user.image as string} />
+            <AvatarImage src={user.image as string} alt="profile picture" />
             <AvatarFallback>{user.name.slice(0, 2)}</AvatarFallback>
           </Avatar>
           <div className="md:hidden flex flex-col items-start justify-center">
             <p className="text-lg font-bold">{user.name}</p>
-            <p className="text-grey">{user.username}</p>
+            <p className="text-muted-foreground">{user.username}</p>
           </div>
         </div>
       </DropdownMenuTrigger>
@@ -43,6 +43,7 @@ const AvatarDropDownMenu = () => {
             <Link
               to={link.href}
               className="flex gap-2 items-center hover:bg-accent-1 w-full py-2 px-1 rounded-md hover:text-white"
+              aria-label={`Go to ${link.title}`}
             >
               <Icon icon={link.icon} />
               {link.title}
@@ -57,6 +58,7 @@ const AvatarDropDownMenu = () => {
               navigate('/')
             }}
             className="flex gap-2 items-center hover:bg-accent-1 w-full px-3 py-2 rounded-md group hover:text-white"
+            aria-label="Log out of your account"
           >
             <Icon icon="mdi:logout" className="group-hover:translate-x-1 duration-200 transition-all" />
             Logout

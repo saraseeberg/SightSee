@@ -1,7 +1,7 @@
-import Greece from '@/assets/images/carousel/Greece.jpg'
-import Japan from '@/assets/images/carousel/Japan.jpg'
-import Maldives from '@/assets/images/carousel/Maldives.jpg'
-import London from '@/assets/images/carousel/London.jpg'
+import Greece from '@/assets/images/carousel/Greece.webp'
+import Japan from '@/assets/images/carousel/Japan.webp'
+import Maldives from '@/assets/images/carousel/Maldives.webp'
+import London from '@/assets/images/carousel/London.webp'
 
 const carouselData = [
   {

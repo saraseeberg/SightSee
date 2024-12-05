@@ -1,4 +1,4 @@
-import { authenticateUser } from '@/auth/utils'
+import { authenticateUser, generateToken } from '@/auth/utils'
 import { s3 } from '@/s3/s3Provider'
 import { ApolloContext } from '@/server'
 import createUpdateQuery from '@/utils/createUpdateQuery'
@@ -83,6 +83,7 @@ const UserResolver: Resolvers = {
     createUser: async (
       _: unknown,
       { name, username, password }: { name: string; username: string; password: string },
+      contextValue: ApolloContext,
     ) => {
       console.log('Creating user with name: ', name, ' username: ', username)
       try {
@@ -107,6 +108,7 @@ const UserResolver: Resolvers = {
         console.log('Created user: ', username, ' with id: ', rows[0].id)
 
         const user = rows[0] as User
+        generateToken(contextValue.res, user)
 
         return user
       } catch (error) {
@@ -116,12 +118,18 @@ const UserResolver: Resolvers = {
 
     updateUser: async (_: unknown, { user }: { user: UserInput }, contextValue: ApolloContext) => {
       authenticateUser(contextValue, user.id)
-      if (user.id === '340c0679-5f34-45e0-8189-f5929c2ebd2c') {
+      if (
+        user.id === '340c0679-5f34-45e0-8189-f5929c2ebd2c' &&
+        (user.password || user.username !== 'DefaultTestUser')
+      ) {
         // Cannot update password and such for the test user
         throw new ApolloError('Cannot update the test user', 'DEFAULT_USER_UPDATE')
       }
       // Have to safe parse as the image is a FileUpload type and not a File type
-      const result = UpdateUserSchema.safeParse(user)
+      const result = UpdateUserSchema.safeParse({
+        ...user,
+        confirmPassword: user.password,
+      })
       let imgFile = null
 
       if (!result.success) {
@@ -133,7 +141,9 @@ const UserResolver: Resolvers = {
             throw new ApolloError('Invalid image type', 'VALIDATION_ERROR')
           }
         } else {
-          throw new ApolloError(result.error.message, 'VALIDATION_ERROR')
+          if (result.error instanceof ZodError) {
+            throw new ApolloError('Taper', 'VALIDATION_ERROR')
+          }
         }
       }
 
@@ -144,6 +154,9 @@ const UserResolver: Resolvers = {
             .then((res) => res.rows.length > 0 && res.rows[0].id !== user.id)
           if (isUsernameTaken) throw new ApolloError('Username is already taken', 'USERNAME_TAKEN')
         }
+      if (user.password) {
+        user.password = await bcrypt.hash(user.password, 10)
+      }
 
       try {
         console.log('Updating user with id: ', user.id)
@@ -250,6 +263,9 @@ const UserResolver: Resolvers = {
     },
 
     deleteUser: async (_: unknown, { id }: { id: string }, contextValue: ApolloContext) => {
+      if (id === '340c0679-5f34-45e0-8189-f5929c2ebd2c') {
+        throw new ApolloError('Cannot delete the test user', 'DEFAULT_USER_DELETE')
+      }
       authenticateUser(contextValue, id)
       try {
         const query = 'DELETE FROM users WHERE id = $1 RETURNING *'
@@ -268,6 +284,16 @@ const UserResolver: Resolvers = {
       try {
         const query = 'SELECT * FROM reviews WHERE id = ANY($1)'
         const { rows } = await db.query(query, [user.reviews])
+        for (const review of rows) {
+          const nameQuery = 'SELECT title FROM destinations WHERE id = $1'
+          const { rows } = await db.query(nameQuery, [review.destinationid])
+
+          if (rows.length > 0) {
+            review.destinationname = rows[0].title
+          } else {
+            review.destinationname = 'Unknown'
+          }
+        }
         return rows
       } catch (error) {
         throw new ApolloError(`Failed to fetch reviews: ${error}`, 'INTERNAL_SERVER_ERROR')

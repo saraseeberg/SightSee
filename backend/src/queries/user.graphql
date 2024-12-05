@@ -41,6 +41,14 @@ mutation updateUser($user: UserInput!) {
   }
 }
 
+mutation deleteUser($id: ID!) {
+  deleteUser(id: $id) {
+    id
+    name
+    username
+  }
+}
+
 mutation addFavoriteToUser($userID: ID!, $destinationID: ID!) {
   addFavoriteToUser(userID: $userID, destinationID: $destinationID) {
     id

@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 const SmallSavedDestinationCard = ({ destination }: { destination: Partial<Destination> }) => {
   return (
     <Link to={`/destination/${destination.id}`} key={destination.id}>
-      <li className="flex gap-2 border-2 rounded-lg border-gray-100 p-4 shadow-sm hover:shadow-md transition-shadow">
+      <li className="flex gap-2 border-2 rounded-lg border-content/10 p-4 shadow-sm hover:shadow-md transition-shadow">
         {destination.image && (
           <img
             src={destination.image}
@@ -14,8 +14,8 @@ const SmallSavedDestinationCard = ({ destination }: { destination: Partial<Desti
         )}
         <div className="flex flex-col ml-3">
           <span className="font-medium text-lg">{destination.title || 'Untitled Destination'}</span>
-          <span className="text-sm text-gray-500">{destination.region || 'Unknown Region'}</span>
-          <span className="text-sm text-gray-500">{destination.country || 'Unknown Country'}</span>
+          <span className="text-sm text-muted-foreground">{destination.region || 'Unknown Region'}</span>
+          <span className="text-sm text-muted-foreground">{destination.country || 'Unknown Country'}</span>
         </div>
       </li>
     </Link>
