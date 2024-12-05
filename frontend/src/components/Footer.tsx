@@ -26,7 +26,10 @@ const Footer = () => {
             Subscribe
           </Button>
         </form>
-        <p className="mt-4 text-sm">Developed by: Aurora Nergaard, Lotte Kvalhem, Mads Bårnes, Sara Seeberg </p>
+        <div className="flex flex-row items-center">
+          <Icon icon="ic:baseline-copyright" aria-label="copyright" />
+          <p className=" mx-1 text-xs"> {new Date().getFullYear()} Group 33, all rights reserved </p>
+        </div>
       </section>
       <section className="flex-1 flex max-md:flex-col">
         <div className="flex-1 flex justify-around items-start">
