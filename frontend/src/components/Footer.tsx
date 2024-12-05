@@ -26,14 +26,14 @@ const Footer = () => {
             Subscribe
           </Button>
         </form>
-        <div className="flex flex-row items-center">
+        <div className="flex flex-row items-center max-md:justify-center">
           <Icon icon="ic:baseline-copyright" aria-label="copyright" />
           <p className=" mx-1 text-xs"> {new Date().getFullYear()} Group 33, all rights reserved </p>
         </div>
       </section>
       <section className="flex-1 flex max-md:flex-col">
         <div className="flex-1 flex justify-around items-start">
-          <div className="flex flex-col pt-10 gap-6">
+          <div className="flex flex-col py-10 gap-6">
             <Link to="/browse">Browse</Link>
             <Link to="/reviews">Reviews</Link>
           </div>
