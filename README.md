@@ -1,6 +1,6 @@
 # SightSee 🌍
 
-_Link to our website:_ https://git.ntnu.no/IT2810-H24/T33-Project-2/
+_Link to our website:_ <https://git.ntnu.no/IT2810-H24/T33-Project-2/>
 
 > **⚠ NB** </br>
 > Make sure you are connected to NTNU eduroam Wi-Fi og VPN
@@ -19,7 +19,7 @@ _Link to our website:_ https://git.ntnu.no/IT2810-H24/T33-Project-2/
 
 SightSee is an application designed to enhance the travel experience by providing users with detailed information about various tourist attractions. Here you can browse through attractions, sort by categories, read and write reviews, and save your favorite destinations. The application aims to make sightseeing more enjoyable and informative by leveraging modern web technologies.
 
-### The application and its different pages are explained in the following walkthrough:
+### The application and its different pages are explained in the following walkthrough
 
 #### LandingPage
 
@@ -75,6 +75,9 @@ We have made several design choices to ensure the sustainability of our applicat
 #### Efficient data transfer
 
 We minimize data transfer by optimizing our API calls and using pagination for large datasets. This reduces the amount of data sent over the network, conserving bandwidth and reducing energy consumption.
+
+#### Debounce
+We implemented a debounce functionality in our search bar in order to improve both performance and sustainability. By delaying the API calls until the user has paused typing, we are able to minimize unnecessary requests, which reduces the server load.
 
 #### Lazy loading
 
@@ -169,13 +172,24 @@ Make sure you have [Node.js](https://nodejs.org/) and [npm](https://www.npmjs.co
 
 How to run the tests in development mode, follow these steps:
 
-1.  Run both the backend and frontend,
+1. Run both the backend and frontend,
     see **step 3 and 4 under the "How To Run"** section
-2.  **Open a `new terminal` and run the e2e test**:
+2. **Open a `new terminal` and run the e2e test**:
 
     ```bash
-    npx cypress open
+    npm run cypress:open
     ```
+
+3. Pick the E2E option on the right side
+
+   ![Pick the E2E option](frontend/src/assets/images/landing_page_e2e.webp )
+
+4. Click Chrome option
+
+   ![Click the Chrome option](frontend/src/assets/images/choose_browser.webp)
+5. Pick the `routing.cy.ts` option to start the e2e test
+
+    ![Click the routing.cy.ts](frontend/src/assets/images/navigate_to_routing.webp)
 
 ### Components tests
 
