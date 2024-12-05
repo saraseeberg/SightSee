@@ -174,12 +174,12 @@ How to run the tests in development mode, follow these steps:
 
 1. Run both the backend and frontend,
     see **step 3 and 4 under the "How To Run"** section
-2. **Open a `new terminal` and run the e2e test**:
+2. **Open a `terminal` and run the e2e test**:
 
     ```bash
     npm run cypress:open
     ```
-
+   The e2e test is using our VM url, so there is no need to run the frontend or the backend localy.
 3. Pick the E2E option on the right side
 
    ![Pick the E2E option](frontend/src/assets/images/landing_page_e2e.webp )

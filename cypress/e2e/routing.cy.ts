@@ -41,7 +41,7 @@ describe('Application Routing and Components', () => {
 
   // Visit a non-existent route
   it('should display 404 page for non-existent routes', () => {
-    cy.visit('/project2/reviews', { failOnStatusCode: false })
+    cy.visit('/reviews', { failOnStatusCode: false })
 
     cy.get('h1').should('contain.text', "Oh no, looks like you've traveled a bit to far")
   })
@@ -63,7 +63,7 @@ describe('Application Routing and Components', () => {
 
 describe('Browse Page Filters', () => {
   beforeEach(() => {
-    cy.visit('/project2/browse') 
+    cy.visit('/browse') 
   })
 
   it('should disable the Activities filter when Brazil is selected in the country dropdown', () => {
@@ -80,7 +80,7 @@ describe('Browse Page Filters', () => {
 
 describe('Browse Page Cards', () => {
   beforeEach(() => {
-    cy.visit('/project2/browse') 
+    cy.visit('/browse') 
   })
 
   it('should navigate to the correct card details when a card is clicked', () => {
@@ -110,7 +110,7 @@ describe('Search Functionality', () => {
 // Test the login page
 describe('Profile Page', () => {
   beforeEach(() => {
-    cy.visit('/project2/profile') 
+    cy.visit('/profile') 
   })
 
   it('should display the user profile page', () => {
