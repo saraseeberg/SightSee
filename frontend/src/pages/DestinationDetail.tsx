@@ -1,5 +1,4 @@
 'use client'
-
 import SaveToggle from '@/components/atoms/SaveToggle'
 import ReviewCard from '@/components/molecules/ReviewCard'
 import ReviewDialog from '@/components/molecules/ReviewDialog'
@@ -50,6 +49,7 @@ const DestinationDetailsPage = () => {
     })
   }
 
+  // Skeleton for loading the desination data
   if (loading)
     return (
       <main>
@@ -80,18 +80,38 @@ const DestinationDetailsPage = () => {
 
   const destination = data?.getDestination ?? null
 
-  if (!destination)
+  // Error handling for the destination data
+  if (error) {
     return (
-      <div className="flex justify-center items-center m-44 ">
+      <main>
         <Alert>
-          <AlertCircleIcon  /> 
-          <AlertTitle className='ml-3 font-bold'> Oh no! Something went wrong 🤕 </AlertTitle>
-          <AlertDescription className='ml-3'> We encountered an issue while loading the data. <br />
-            Please check your internet connection or try refreshing the page.  </AlertDescription>
+          <AlertCircleIcon />
+          <AlertTitle className="ml-3 font-bold"> Oh no! Something went wrong 🤕 </AlertTitle>
+          <AlertDescription className="ml-3">
+            We encountered an issue while loading the data. <br />
+            Please check your internet connection or try refreshing the page.
+          </AlertDescription>
         </Alert>
-      </div>
+      </main>
     )
+  }
 
+  // Error handling for the destination not found
+  if (!destination) {
+    return (
+      <main>
+        <Alert>
+          <AlertCircleIcon />
+          <AlertTitle className="ml-3 font-bold">Destination Not Found</AlertTitle>
+          <AlertDescription className="ml-3">
+            The destination you are looking for does not exist. Please check the URL or try again later.
+          </AlertDescription>
+        </Alert>
+      </main>
+    )
+  }
+
+  // Function to handle toggling the favorite status
   const handleToggleFavorite = async (destinationId: string, isSaved: boolean) => {
     try {
       setFavorites((prevFavorites) =>
@@ -147,33 +167,38 @@ const DestinationDetailsPage = () => {
           user={user}
         />
       </div>
-
-      {(reviews.length > 0 || reviewRes.loading) && (
-        <div className="w-full px-4 py-6">
-          <Carousel
-            opts={{
-              align: 'start',
-              loop: true,
-            }}
-            className="w-full max-w-sm mx-auto md:max-w-5xl relative px-12"
-          >
-            <CarouselContent className="-ml-2 md:-ml-4">
-              {reviews.map((review) => {
-                return (
+      {reviewRes.loading ? (
+        <div className="flex items-center justify-center grid-cols-3 gap-3">
+          {[...Array(3)].map((_, idx) => (
+            <Skeleton key={idx} className="h-96 w-64 rounded-md mt-4" />
+          ))}
+        </div>
+      ) : (
+        reviews.length > 0 && (
+          <div className="w-full px-4 py-6">
+            <Carousel
+              opts={{
+                align: 'start',
+                loop: true,
+              }}
+              className="w-full max-w-sm mx-auto md:max-w-5xl relative px-12"
+            >
+              <CarouselContent className="-ml-2 md:-ml-4">
+                {reviews.map((review) => (
                   <CarouselItem key={review.id} className="pl-2 md:pl-4 md:basis-1/3">
                     <ReviewCard refetch={reviewRes.refetch} {...review} />
                   </CarouselItem>
-                )
-              })}
-            </CarouselContent>
-            <div className="absolute left-0 top-1/2 -translate-y-1/2">
-              <CarouselPrevious className="relative left-0 translate-x-0 bg-background border border-input hover:bg-accent hover:text-accent-foreground h-8 w-8 rounded-full" />
-            </div>
-            <div className="absolute right-0 top-1/2 -translate-y-1/2">
-              <CarouselNext className="relative right-0 translate-x-0 bg-background border border-input hover:bg-accent hover:text-accent-foreground h-8 w-8 rounded-full" />
-            </div>
-          </Carousel>
-        </div>
+                ))}
+              </CarouselContent>
+              <div className="absolute left-0 top-1/2 -translate-y-1/2">
+                <CarouselPrevious className="relative left-0 translate-x-0 bg-background border border-input hover:bg-accent hover:text-accent-foreground h-8 w-8 rounded-full" />
+              </div>
+              <div className="absolute right-0 top-1/2 -translate-y-1/2">
+                <CarouselNext className="relative right-0 translate-x-0 bg-background border border-input hover:bg-accent hover:text-accent-foreground h-8 w-8 rounded-full" />
+              </div>
+            </Carousel>
+          </div>
+        )
       )}
       <Toaster />
     </main>
