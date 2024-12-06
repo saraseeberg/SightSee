@@ -1,12 +1,12 @@
+import SmallDestinationCard from '@/components/atoms/SmallDestinationCard'
 import SmallReviewCard from '@/components/atoms/SmallReviewCard'
-import SmallSavedDestinationCard from '@/components/atoms/SmallSavedDestinationCard'
 import StatisticsCard from '@/components/molecules/StatisticsCard'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { ScrollArea } from '@/components/ui/scroll-area'
 import { useAuth } from '@/lib/context/auth-context'
 import { Review } from '@Types/__generated__/resolvers-types'
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ScrollArea } from '@/components/ui/scroll-area'
 
 const Profile = () => {
   const navigate = useNavigate()
@@ -71,7 +71,7 @@ const Profile = () => {
           <ScrollArea type="always" className="flex h-60 rounded-md p-2">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
               {user.favorites?.map((destination) => (
-                <SmallSavedDestinationCard key={destination.id} destination={destination} />
+                <SmallDestinationCard key={destination.id} destination={destination} />
               ))}
             </div>
           </ScrollArea>

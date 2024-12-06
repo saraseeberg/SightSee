@@ -1,5 +1,5 @@
 import { useAuth } from '@/lib/context/auth-context'
-import { profileMenuLinks } from '@/lib/data/profileMenuLinks'
+import { profileMenuLinks } from '@/lib/links/profileMenuLinks'
 import { Icon } from '@iconify/react/dist/iconify.js'
 import { Link, useNavigate } from 'react-router-dom'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
@@ -25,7 +25,7 @@ const AvatarDropDownMenu = () => {
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger aria-label="Open profile menu">
         <div className="flex gap-2 max-md:hover:bg-content/10 p-1 rounded-md">
-          <Avatar className="max-md:size-16 ">
+          <Avatar className="max-md:size-16 border-[1px] border-content/50 ">
             <AvatarImage src={user.image as string} alt="profile picture" />
             <AvatarFallback>{user.name.slice(0, 2)}</AvatarFallback>
           </Avatar>

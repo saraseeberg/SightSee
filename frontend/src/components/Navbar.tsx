@@ -1,4 +1,5 @@
 import Logo from '@/components/atoms/Logo'
+import navLinks from '@/lib/links/navLinks'
 import { cn } from '@/lib/utils'
 import { Icon } from '@iconify/react'
 import { useEffect, useRef, useState } from 'react'
@@ -17,9 +18,11 @@ const NavbarContent = ({ isDarkMode, toggleIcon }: { isDarkMode: boolean; toggle
   return (
     <>
       <div className="md:flex-1 flex justify-start gap-10 md:gap-[15%] md:mx-24 max-md:mb-6 max-md:flex-col">
-        <Link to="/browse" className="text-xl text-content">
-          Browse
-        </Link>
+        {navLinks.map((link) => (
+          <Link key={link.title} to={link.href} className="text-xl text-content">
+            {link.title}
+          </Link>
+        ))}
       </div>
       <div className="flex gap-5 md:ml-10 max-md:flex-col max-md:justify-between max-md:flex-1">
         <div className="hidden md:flex">
@@ -36,8 +39,8 @@ const NavbarContent = ({ isDarkMode, toggleIcon }: { isDarkMode: boolean; toggle
             animateOnClick
             hidePointerEvents
             words={[
-              <Icon icon="ic:round-wb-sunny" className="h-6 w-6" />,
               <Icon icon="ic:baseline-dark-mode" className="h-6 w-6" />,
+              <Icon icon="ic:round-wb-sunny" className="h-6 w-6" />,
             ]}
           />
         </button>

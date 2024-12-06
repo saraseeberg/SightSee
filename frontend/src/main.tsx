@@ -1,10 +1,14 @@
-import { ApolloClient, ApolloLink, ApolloProvider, InMemoryCache } from '@apollo/client'
+import { ApolloClient, ApolloLink, ApolloProvider } from '@apollo/client'
+import { persistCache } from 'apollo-cache-persist'
 import createUploadLink from 'apollo-upload-client/createUploadLink.mjs'
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import App from './App.tsx'
 import { Toaster } from './components/ui/toaster.tsx'
 import './index.css'
+import resolvers from './lib/ApolloStateManegment/resolvers.ts'
+import typeDefs from './lib/ApolloStateManegment/typeDefs.ts'
+import { setupPlannerState } from './lib/utils.ts'
 
 const DATABASE_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001'
 
@@ -41,10 +45,35 @@ const uploadLink = createUploadLink({
   },
 })
 
+const cache = setupPlannerState()
+export const setUpPersistance = async () => {
+  try {
+    await persistCache({
+      cache: cache,
+      storage: {
+        getItem: (key) => {
+          const value = window.localStorage.getItem(key)
+          return value ? JSON.parse(value) : null
+        },
+        setItem: (key, data) => {
+          window.localStorage.setItem(key, JSON.stringify(data))
+        },
+        removeItem: (key) => {
+          window.localStorage.removeItem(key)
+        },
+      },
+    })
+  } catch (error) {
+    console.error('Error restoring Apollo cache', error)
+  }
+}
 const link = ApolloLink.from([afterwareLink, authLink.concat(uploadLink)])
+
 const client = new ApolloClient({
   link: link,
-  cache: new InMemoryCache(),
+  cache: cache,
+  typeDefs: typeDefs,
+  resolvers: resolvers,
 })
 
 createRoot(document.getElementById('root')!).render(

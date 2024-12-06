@@ -1,3 +1,4 @@
+import navLinks from '@/lib/links/navLinks'
 import { Icon } from '@iconify/react/dist/iconify.js'
 import { FormEvent } from 'react'
 import { Link } from 'react-router-dom'
@@ -33,9 +34,12 @@ const Footer = () => {
       </section>
       <section className="flex-1 flex max-md:flex-col">
         <div className="flex-1 flex justify-around items-start">
-          <div className="flex flex-col py-10 gap-6">
-            <Link to="/browse">Browse</Link>
-            <Link to="/reviews">Reviews</Link>
+          <div className="text-accent-2 flex flex-col gap-6">
+            {navLinks.map((link) => (
+              <Link key={link.title} to={link.href}>
+                {link.title}
+              </Link>
+            ))}
           </div>
         </div>
         <div className="flex md:flex-col justify-around my-3 gap-6">

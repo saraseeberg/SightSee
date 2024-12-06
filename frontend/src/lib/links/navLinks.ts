@@ -4,8 +4,8 @@ const navLinks = [
     href: '/browse',
   },
   {
-    title: 'Reviews',
-    href: '/Reviews',
+    title: 'Planner',
+    href: '/planner',
   },
 ]
 export default navLinks
