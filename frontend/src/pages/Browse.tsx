@@ -187,7 +187,7 @@ const Browse = () => {
             <PaginationItem>
               <PaginationLink
                 onClick={() => handleJumpToPage(1)}
-                className={`${1 === currentPage ? 'bg-primary text-white font-bold' : 'text-black'}`}
+                className={`${1 === currentPage ? 'bg-primary text-background font-bold' : 'text-background-foreground'}`}
               >
                 1
               </PaginationLink>
@@ -202,7 +202,7 @@ const Browse = () => {
                   <PaginationItem key={page}>
                     <PaginationLink
                       onClick={() => handleJumpToPage(page)}
-                      className={`${page === currentPage ? 'bg-primary text-white font-bold' : 'text-black'}`}
+                      className={`${page === currentPage ? 'bg-primary text-background font-bold' : 'text-background-foreground'}`}
                     >
                       {page}
                     </PaginationLink>
@@ -216,7 +216,7 @@ const Browse = () => {
             <PaginationItem>
               <PaginationLink
                 onClick={() => handleJumpToPage(totalPages)}
-                className={`${totalPages === currentPage ? 'bg-primary text-white font-bold' : 'text-black'}`}
+                className={`${totalPages === currentPage ? 'bg-primary text-background font-bold' : 'text-background-foreground'}`}
               >
                 {totalPages}
               </PaginationLink>
