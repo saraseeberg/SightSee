@@ -148,6 +148,9 @@ const Browse = () => {
         </section>
         {/* Results Section */}
         <section className="flex flex-wrap gap-2 sm:gap-4 justify-center">
+          <h2 id="browse-section" className="sr-only">
+            Browse Cards
+          </h2>
           {loading ? (
             Array.from({ length: CARDS_LIMIT }).map((_, index) => <SkeletonCard key={index} />)
           ) : paginatedCards.length > 0 ? (
