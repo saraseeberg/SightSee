@@ -25,29 +25,21 @@ SightSee is an application designed to enhance the travel experience by providin
 
 The first page the user is met by after opening the application. It features a carousel showcasing popular destinations and a section for discovering new places.
 
-![Homepage image] ()
-
 #### BrowsePage
 
 The main page where a variety of tourist attractions are displayed. It is possible to filter on different categories and countries, and sort by name or rating. By clicking on a BrowseCard the user can see more detailes about the attraction and from there navigate to the DestinationPage of the clicked attraction.
-
-![Browsepage image] ()
 
 #### DestinationPage
 
 This page provides detailed information about a specific tourist attraction, including user reviews. Logged-in users can also write reviews and save the destination to their favorites.
 
-![Destinationpage image] ()
-
 ### Planner
 
-The planner page gives the user the ability to plan a trip to a specific country. Here you can drag and drop activities to a timeline.
+The planner page gives the user the ability to plan a trip. Here you can drag and drop activities from any country to a timeline.
 
 #### LoginPage
 
 The page where users can log in to their accounts. If the user does not have an account, they can register to create one.
-
-![Loginpage image] ()
 
 #### My Account
 
@@ -90,11 +82,11 @@ We implemented lazy loading for images and other media content. This means that 
 
 #### Color choices
 
-Our color palette is designet to be visually appealing and energy-efficient, particulary for devices with OLED screens where darker colors consume less power. We also support dark mode to further reduce energy consumption on such devices.
+Our color palette is designed to be visually appealing and energy-efficient, particulary for devices with OLED screens where darker colors consume less power. We also support dark mode to further reduce energy consumption on such devices.
 
 ### Choices related to accessibility
 
-To ensure our application is accessible to all users, we have implemented several key measures. First, we incorporated ARIA labels to enhance screen reader support, helping users with visual impairments navigate the application more effectively. Our color palette was designed with inclusivity in mind, optimized for users with various types of color blindness, ensuring all visual elements remain clear and visible—validated by our Lighthouse tests. Additionally, we prioritized keyboard navigation, making all interactive elements accessible through tabbing.
+To ensure our application is accessible to all users, we have implemented several key measures. First, we incorporated ARIA labels to enhance screen reader support, helping users with visual impairments navigate the application more effectively. Our color palette was designed with inclusivity in mind, optimized for users with various types of color blindness, ensuring all visual elements remain clear and visible—validated by our Lighthouse tests. Additionally, we prioritized keyboard navigation, making all interactive elements accessible through tabbing. After feedback from peer reviews, we implemented functionality to gray out buttons and dropdowns when no options are available, enhancing usability.
 
 ### Choices related to responsive design
 
@@ -102,7 +94,7 @@ We have prioritized responsive design to ensure a seamless experience across dev
 
 ### Choices related to global state management
 
-The planner page uses global state management to maintain a single source of truth, ensuring consistency and seamless interaction across components. This approach simplifies data flow, reduces unnecessary re-renders, and improves scalability by allowing components to access shared data directly. It enhances performance and makes the planner page more intuitive and responsive for users.
+The planner page uses apollo state management to maintain a single source of truth, ensuring consistency and seamless interaction across components. This approach simplifies data flow, reduces unnecessary re-renders, and improves scalability by allowing components to access shared data directly. It enhances performance and makes the planner page more intuitive and responsive for users.
 
 ### Choices related to reproducible code
 
