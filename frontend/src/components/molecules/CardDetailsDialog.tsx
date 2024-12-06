@@ -14,7 +14,7 @@ const CardDetailsDialog: React.FC<CardDetailsDialogProps> = ({ selectedCard, ope
   if (!selectedCard) return null
   return (
     <Dialog open={openDialog} onOpenChange={setOpenDialog}>
-      <DialogContent className='border-none'>
+      <DialogContent className="border-none">
         <article className="flex">
           <img src={selectedCard.image} alt={selectedCard.title} className="w-48 h-64 object-cover" />
           <div className="flex flex-col gap-2 ml-4">
