@@ -84,5 +84,5 @@ const useAuth = () => {
   }
   return context
 }
-
-export { AuthProvider, useAuth }
+// eslint-disable-next-line react-refresh/only-export-components
+export { AuthProvider, useAuth } //we need to export the AuthProvider and useAuth together
