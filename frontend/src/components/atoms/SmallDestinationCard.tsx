@@ -13,7 +13,7 @@ const SmallDestinationCard: FC<SmallDestinationCardProps> = ({ destination, clas
   if (!destination) return null
   return (
     <Link to={`/destination/${destination.id}`} key={destination.id} className={className} {...props}>
-      <li key={destination.title} className="flex items-center gap-4 p-4 border rounded-md shadow-sm">
+      <li key={destination.title} className="flex items-center gap-4 p-4 border border-content/20 rounded-md shadow-sm">
         <img
           src={destination.image}
           alt={destination.title}

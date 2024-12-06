@@ -31,12 +31,12 @@ const PlannerForm: FC<PlannerFormProps> = () => {
         <div className="w-2/3 flex flex-col items-center">
           <InputTimeLine />
         </div>
-        <div className="fixed right-0 w-1/3 p-3 bg-background border h-fit rounded-lg flex flex-col">
-          <PSearchCommand className="w-fit absolute right-6 z-10 h-fit" />
+        <div className="fixed right-0 w-1/3 p-3 bg-background border border-content/20 h-fit rounded-lg flex flex-col">
+          <PSearchCommand className="w-fit absolute right-3 z-10 h-fit" />
           <h4 className="text-xl font-semibold w-full mt-16 text-center ">
             Drag and Drop destinations into the timeline
           </h4>
-          <ScrollArea className=" h-[300px] border rounded-lg">
+          <ScrollArea className=" h-[300px] border border-content/20 rounded-lg">
             {destinations?.map(
               (destination) =>
                 destination && (
