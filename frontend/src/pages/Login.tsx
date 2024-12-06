@@ -49,7 +49,8 @@ function Login() {
     if (user) {
       navigate('/')
     }
-  }, [])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []) //cannot include navigate and user in the dependency array without causing infinite loop
 
   return (
     <Card className="mx-auto max-w-sm">

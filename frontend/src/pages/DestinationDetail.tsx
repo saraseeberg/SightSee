@@ -170,7 +170,7 @@ const DestinationDetailsPage = () => {
         </div>
       </section>
 
-      <div  className="flex justify-center items-center">
+      <div className="flex justify-center items-center">
         <ReviewDialog
           destinationId={destination.id}
           refetch={reviewRes.refetch}
