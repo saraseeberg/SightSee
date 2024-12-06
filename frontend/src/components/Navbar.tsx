@@ -86,7 +86,7 @@ function Navbar() {
         <Sheet>
           <SheetTrigger asChild>
             <button>
-              <Icon icon="ic:round-menu"  aria-label='hamburger menu' width="24" height="24" />
+              <Icon icon="ic:round-menu" aria-label="hamburger menu" width="24" height="24" />
             </button>
           </SheetTrigger>
           <SheetContent side="left" className="text-content py-12 flex flex-col ">

@@ -23,21 +23,19 @@ describe('Application Routing and Components', () => {
   // Test the cards on the home page
   it('should navigate to Browse when card with Swim in Spain is clicked and apply the correct filters', () => {
     // Click on the card with "Swim in Spain"
-    cy.get('p').contains('Swim in Spain').click();
-  
-    cy.url().should('include', '/browse');
-  
-    cy.get('h2').should('have.text', 'Browse Cards');
-  
-    cy.get('button').contains('Activities').should('have.class', 'bg-accent-1');
-  
+    cy.get('p').contains('Swim in Spain').click()
+
+    cy.url().should('include', '/browse')
+
+    cy.get('h2').should('have.text', 'Browse Cards')
+
+    cy.get('button').contains('Activities').should('have.class', 'bg-accent-1')
+
     // Verify all articles contain "Spain"
     cy.get('article').each(($el) => {
-      cy.wrap($el).should('contain', 'Spain');
-    });
-  });
-  
-  
+      cy.wrap($el).should('contain', 'Spain')
+    })
+  })
 
   // Visit a non-existent route
   it('should display 404 page for non-existent routes', () => {
@@ -63,12 +61,12 @@ describe('Application Routing and Components', () => {
 
 describe('Browse Page Filters', () => {
   beforeEach(() => {
-    cy.visit('/browse') 
+    cy.visit('/browse')
   })
 
   it('should disable the Activities filter when Brazil is selected in the country dropdown', () => {
     // Open the Country Dropdown
-    cy.get('button').contains('Select countries').click();
+    cy.get('button').contains('Select countries').click()
 
     // Select Brazil from the dropdow
     cy.contains('Brazil').click()
@@ -80,7 +78,7 @@ describe('Browse Page Filters', () => {
 
 describe('Browse Page Cards', () => {
   beforeEach(() => {
-    cy.visit('/browse') 
+    cy.visit('/browse')
   })
 
   it('should navigate to the correct card details when a card is clicked', () => {
@@ -110,7 +108,7 @@ describe('Search Functionality', () => {
 // Test the login page
 describe('Profile Page', () => {
   beforeEach(() => {
-    cy.visit('/profile') 
+    cy.visit('/profile')
   })
 
   it('should display the user profile page', () => {

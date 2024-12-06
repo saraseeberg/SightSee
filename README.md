@@ -3,13 +3,13 @@
 _Link to our website:_ <https://git.ntnu.no/IT2810-H24/T33-Project-2/>
 
 > **⚠ NB** </br>
-> Make sure you are connected to NTNU eduroam Wi-Fi og VPN
+> Make sure you are connected to NTNU eduroam Wi-Fi or VPN
 
 ## Table of Contents
 
 1. [SightSee](#sightsee)
 2. [Developer Information](#developer-information)
-3. [Design Choices](#design-choices)
+3. [Choices](#choices)
 4. [Technologies](#technologies)
 5. [Testing](#testing)
 6. [How To Run](#how-to-run)
@@ -39,6 +39,10 @@ This page provides detailed information about a specific tourist attraction, inc
 
 ![Destinationpage image] ()
 
+### Planner
+
+The planner page gives the user the ability to plan a trip to a specific country. Here you can drag and drop activities to a timeline.
+
 #### LoginPage
 
 The page where users can log in to their accounts. If the user does not have an account, they can register to create one.
@@ -47,7 +51,7 @@ The page where users can log in to their accounts. If the user does not have an 
 
 #### My Account
 
-The users profile page where they can view and manage their personal information, reviews and saved destinations. Users can edit
+When logged in, users can click on their profile picture to access their profile page. Here, they can view their reviews and saved destinations. The settings page is also available, allowing users to view and manage their personal information.
 
 ## Developer Information
 
@@ -58,7 +62,7 @@ The users profile page where they can view and manage their personal information
 - Mads Bårnes
 - Sara Seeberg-Rommetvet
 
-## Design Choices
+## Choices
 
 ### Choice of data
 
@@ -77,6 +81,7 @@ We have made several design choices to ensure the sustainability of our applicat
 We minimize data transfer by optimizing our API calls and using pagination for large datasets. This reduces the amount of data sent over the network, conserving bandwidth and reducing energy consumption.
 
 #### Debounce
+
 We implemented a debounce functionality in our search bar in order to improve both performance and sustainability. By delaying the API calls until the user has paused typing, we are able to minimize unnecessary requests, which reduces the server load.
 
 #### Lazy loading
@@ -89,13 +94,15 @@ Our color palette is designet to be visually appealing and energy-efficient, par
 
 ### Choices related to accessibility
 
-To ensure our application is accessible to all usesrs, we have implemented several key measures. Firstly, we have incorporated ARIA labels to improve support for screen readers. This helps users with visuals impairments navigate the application ore effectivelt. Our color palette was designed with inclusivity in mind. It is optimized for users with different types of color blindness, ensuring all visual elements remain clear and visible, confirmed by our Lighthouse tests. Additionally, we prioritized keyboard navigation by making all interactive elements accessible through tabulation.
+To ensure our application is accessible to all users, we have implemented several key measures. First, we incorporated ARIA labels to enhance screen reader support, helping users with visual impairments navigate the application more effectively. Our color palette was designed with inclusivity in mind, optimized for users with various types of color blindness, ensuring all visual elements remain clear and visible—validated by our Lighthouse tests. Additionally, we prioritized keyboard navigation, making all interactive elements accessible through tabbing.
 
 ### Choices related to responsive design
 
 We have prioritized responsive design to ensure a seamless experience across devices and screen sizes. By leveraging CSS Grid and Flexbox, our layout adapt dynamically to different screens, while media queries finetune styles like font sizes and margins for optimal readability. Responsive images adjust to device resolution, enhancing load times and visual quality.
 
 ### Choices related to global state management
+
+The planner page uses global state management to maintain a single source of truth, ensuring consistency and seamless interaction across components. This approach simplifies data flow, reduces unnecessary re-renders, and improves scalability by allowing components to access shared data directly. It enhances performance and makes the planner page more intuitive and responsive for users.
 
 ### Choices related to reproducible code
 
@@ -119,16 +126,21 @@ PostgreSQL is used as the relational database for managing structured data and h
 
 ## Testing
 
-**Cypress** Cypress is used for end-to-end testing to validate key features, including search, filtering, and navigation. This framework simulates user interactions to verify that the application performs as expected across various scenarios.
+### End-to-End Testing
 
-**Unit tests**
+We use **Cypress** for end-to-end testing to validate key features such as search, filtering, and navigation. Cypress simulates user interactions, ensuring the application behaves as expected across various scenarios.
+
+### Component Testing
+
+**Vitest** is utilized for testing individual components, ensuring their functionality and integration within the application.
+
+### Code Structure and Type Safety
+
+To maintain clean and well-structured code, we use **Prettier** for formatting and **ESLint** for enforcing type safety and coding standards.
 
 ## How To Run
 
 To run the application in development mode, follow these steps:
-
-> **💡 Note** </br>
-> You will not be able to start the backend server without access to our `.env` file. As a result, you can still run the frontend, but the application will display no data, and much of the functionality will be unavailable. This is a security measure to protect our database from unauthorized access or modifications.
 
 1. **Clone the repository**:
 
@@ -154,9 +166,9 @@ To run the application in development mode, follow these steps:
    npm run dev:backend
    ```
 
-   Runs on [localhost:4000/graphql](localhost:4000/graphql)
+   Runs on [localhost:3001/graphql](localhost:3001/graphql)
 
-4. **Open a `new ternimal` and start the frontend development server**:
+4. **Open a `new terminal` and start the frontend development server**:
 
    ```bash
    npm run dev:frontend
@@ -170,24 +182,27 @@ Make sure you have [Node.js](https://nodejs.org/) and [npm](https://www.npmjs.co
 
 ### End to end tests
 
-How to run the tests in development mode, follow these steps:
+To run the tests in development mode, follow these steps:
 
 1. **Open a `terminal` and run the e2e test**:
 
-    ```bash
-    npm run cypress:open
-    ```
+   ```bash
+   npm run cypress:open
+   ```
+
    The e2e test is using our VM url, so there is no need to run the frontend or the backend localy.
+
 2. Pick the E2E option on the right side
 
-   ![Pick the E2E option](frontend/src/assets/images/readme/landing_page_e2e.webp )
+   ![Pick the E2E option](frontend/src/assets/images/readme/landing_page_e2e.webp)
 
 3. Click Chrome option
 
    ![Click the Chrome option](frontend/src/assets/images/readme/choose_browser.webp)
+
 4. Pick the `routing.cy.ts` option to start the e2e test
 
-    ![Click the routing.cy.ts](frontend/src/assets/images/readme/navigate_to_routing.webp)
+   ![Click the routing.cy.ts](frontend/src/assets/images/readme/navigate_to_routing.webp)
 
 ### Components tests
 

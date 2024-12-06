@@ -56,7 +56,7 @@ const CountryDropdown: React.FC<CountryDropdownProps> = ({
                 return (
                   <CommandItem
                     key={country}
-                    role="countryitem" 
+                    role="countryitem"
                     onSelect={() => isAvailable && handleToggleCountry(country)}
                     disabled={!isAvailable}
                     className={cn(
