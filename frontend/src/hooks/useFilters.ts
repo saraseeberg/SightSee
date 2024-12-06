@@ -37,7 +37,7 @@ export const useFilters = () => {
         setCurrentPage(pageNumber)
       }
     }
-  }, [])
+  }, [searchParams])
 
   // Update URL parameters when filters or page change
   useEffect(() => {
@@ -56,7 +56,7 @@ export const useFilters = () => {
       params.set('page', currentPage.toString())
     }
     setSearchParams(params)
-  }, [selectedCategories, selectedCountries, selectedSorting, currentPage])
+  }, [selectedCategories, selectedCountries, selectedSorting, currentPage, setSearchParams])
 
   // Handle filters from location.state (e.g., when navigating from another page)
   useEffect(() => {
