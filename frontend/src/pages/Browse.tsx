@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button'
 import {
   Pagination,
   PaginationContent,
+  PaginationEllipsis,
   PaginationItem,
   PaginationLink,
   PaginationNext,
@@ -16,7 +17,6 @@ import {
 } from '@/components/ui/pagination'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useFilters } from '@/hooks/useFilters'
-import { Icon } from '@iconify/react/dist/iconify.js'
 import {
   Destination,
   useGetAllDestinationsQuery,
@@ -34,12 +34,15 @@ const categoryButtonData: Omit<CategoryButtonProps, 'onClick' | 'isSelected'>[] 
   { category: 'Sights' },
 ]
 
+// The number of cards to display per page
 const CARDS_LIMIT = 12
 
 const Browse = () => {
+  // State for managing the dialog visibility and selected card details
   const [openDialog, setOpenDialog] = useState(false)
   const [selectedCard, setSelectedCard] = useState<Partial<Destination> | null>(null)
 
+  // Filters and pagination logic from the useFilters custom hook
   const {
     selectedCategories,
     selectedCountries,
@@ -56,6 +59,7 @@ const Browse = () => {
     handleJumpToPage,
   } = useFilters()
 
+  // Fetch destinations based on applied filters
   const { data, loading } = useGetAllDestinationsQuery({
     variables: {
       page: currentPage,
@@ -66,6 +70,7 @@ const Browse = () => {
     },
   })
 
+  // Fetch available categories and countries for filtering
   const { data: availableCategoriesData } = useGetAvailableCategoriesQuery({
     variables: { countries: selectedCountries.length > 0 ? selectedCountries : null },
   })
@@ -74,23 +79,32 @@ const Browse = () => {
     variables: { categories: selectedCategories.length > 0 ? selectedCategories : null },
   })
 
+  // Create sets for quick lookup of available filters
   const availableCategories = new Set(availableCategoriesData?.getAvailableCategories || [])
   const availableCountries = new Set(availableCountriesData?.getAvailableCountries || [])
 
-  const paginatedCards = data?.getAllDestinations ? data.getAllDestinations?.destinations : []
-  const totalPages = data?.getAllDestinations ? Math.ceil(data.getAllDestinations.totalCount / CARDS_LIMIT) : 0
-
+  // Handles the action when a user clicks on a card
   const handleCardClick = (card: Partial<Destination>) => {
     setSelectedCard(card)
     setOpenDialog(true)
   }
+  // Calculate pagination details
+  const totalPages = data?.getAllDestinations ? Math.ceil(data.getAllDestinations.totalCount / CARDS_LIMIT) : 0
+  const paginatedCards = data?.getAllDestinations ? data.getAllDestinations?.destinations : []
 
+  // Determine if the current page is the first or last
+  const isFirstPage = currentPage === 1
+  const isLastPage = currentPage === totalPages
+
+  // Skeleton component to display during loading state
   const SkeletonCard = () => <Skeleton className="w-[46%] sm:w-1/3 md:w-1/3 lg:w-1/4 h-64" />
 
   return (
     <>
       <main className="flex flex-col gap-8">
+        {/* Filter Section */}
         <section aria-labelledby="category-section" className="flex w-full p-4 justify-center items-center">
+          {/* Category buttons for large screens */}
           <div className="flex flex-wrap gap-4">
             <div className="hidden md:flex flex-wrap gap-4">
               {categoryButtonData.map((item, index) => (
@@ -103,6 +117,7 @@ const Browse = () => {
                 />
               ))}
             </div>
+            {/* Category dropdown for small screens */}
             <div className="block md:hidden">
               <CategoryDropdown
                 onSelectCategories={handleCategorySelect}
@@ -110,12 +125,15 @@ const Browse = () => {
                 availableCategories={availableCategories}
               />
             </div>
+            {/* Country filter dropdown */}
             <CountryDropdown
               onSelectCountries={handleCountrySelect}
               selectedCountries={selectedCountries}
               availableCountries={availableCountries}
             />
+            {/* Sorting dropdown */}
             <SortingDropdown selectedSorting={selectedSorting} onSelectedSorting={handleSortingSelect} />
+            {/* Reset filters button */}
             <Button
               variant="ghost"
               onClick={handleResetFilters}
@@ -128,11 +146,8 @@ const Browse = () => {
             </Button>
           </div>
         </section>
-        <section aria-labelledby="browse-section" className="flex flex-wrap gap-2 sm:gap-4 justify-center">
-          <h2 id="browse-section" className="sr-only">
-            Browse Cards
-          </h2>
-
+        {/* Results Section */}
+        <section className="flex flex-wrap gap-2 sm:gap-4 justify-center">
           {loading ? (
             Array.from({ length: CARDS_LIMIT }).map((_, index) => <SkeletonCard key={index} />)
           ) : paginatedCards.length > 0 ? (
@@ -146,48 +161,71 @@ const Browse = () => {
             ))
           ) : (
             <Alert className="bg-red-100 border-red-400 w-2/4 text-black" role="alert">
-              <Icon
-                icon="ic:baseline-sentiment-very-dissatisfied"
-                className="w-4 h-4 pt-0"
-                style={{ color: 'black' }}
-              />
-              <AlertTitle className="pt-1"> Hmmm... </AlertTitle>
-              <AlertDescription> No results found for your selected filters. 🤕 </AlertDescription>
+              <AlertTitle>No results found</AlertTitle>
+              <AlertDescription>Try adjusting your filters.</AlertDescription>
             </Alert>
           )}
         </section>
       </main>
 
+      {/* Dialog for Card Details */}
       <CardDetailsDialog selectedCard={selectedCard} openDialog={openDialog} setOpenDialog={setOpenDialog} />
 
-      <Pagination className="my-4">
-        <PaginationContent className="cursor-pointer">
-          <PaginationItem>
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <Pagination className="my-4">
+          {/* Pagination controls */}
+          <PaginationContent className="cursor-pointer">
+            {/* Gray out when there is no previous card, to give the user feedback */}
             <PaginationPrevious
-              onClick={() => handlePreviousPage()}
-              className={currentPage === 1 ? 'cursor-default opacity-0' : ''}
+              onClick={() => !isFirstPage && handlePreviousPage()}
+              className={`cursor-pointer ${isFirstPage ? 'cursor-not-allowed opacity-50' : ''}`}
             />
-          </PaginationItem>
-
-          {[...Array(totalPages)].map((_, index) => (
-            <PaginationItem key={index} className="cursorPointer">
+            <PaginationItem>
               <PaginationLink
-                onClick={() => handleJumpToPage(index + 1)}
-                className={currentPage === index + 1 ? 'font-bold text-xl cursor-pointer' : ''}
+                onClick={() => handleJumpToPage(1)}
+                className={`${1 === currentPage ? 'bg-primary text-white font-bold' : 'text-black'}`}
               >
-                {index + 1}
+                1
               </PaginationLink>
             </PaginationItem>
-          ))}
+            {/* Calculating when the Ellepsis is going to show */}
+            {currentPage > 4 && <PaginationEllipsis />}
 
-          <PaginationItem>
+            {Array.from({ length: 5 }, (_, index) => {
+              const page = currentPage - 2 + index
+              if (page > 1 && page < totalPages) {
+                return (
+                  <PaginationItem key={page}>
+                    <PaginationLink
+                      onClick={() => handleJumpToPage(page)}
+                      className={`${page === currentPage ? 'bg-primary text-white font-bold' : 'text-black'}`}
+                    >
+                      {page}
+                    </PaginationLink>
+                  </PaginationItem>
+                )
+              }
+              return null
+            })}
+            {/* Calculating when the Ellepsis is going to show */}
+            {currentPage < totalPages - 3 && <PaginationEllipsis />}
+            <PaginationItem>
+              <PaginationLink
+                onClick={() => handleJumpToPage(totalPages)}
+                className={`${totalPages === currentPage ? 'bg-primary text-white font-bold' : 'text-black'}`}
+              >
+                {totalPages}
+              </PaginationLink>
+            </PaginationItem>
+            {/* Gray out when there is no next card, to give the user feedback */}
             <PaginationNext
-              onClick={() => handleNextPage(totalPages)}
-              className={currentPage === totalPages || totalPages === 0 ? 'cursor-default opacity-0' : ''}
+              onClick={() => !isLastPage && handleNextPage(totalPages)}
+              className={`cursor-pointer ${isLastPage ? 'cursor-not-allowed opacity-50' : ''}`}
             />
-          </PaginationItem>
-        </PaginationContent>
-      </Pagination>
+          </PaginationContent>
+        </Pagination>
+      )}
     </>
   )
 }
