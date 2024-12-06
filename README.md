@@ -172,24 +172,22 @@ Make sure you have [Node.js](https://nodejs.org/) and [npm](https://www.npmjs.co
 
 How to run the tests in development mode, follow these steps:
 
-1. Run both the backend and frontend,
-    see **step 3 and 4 under the "How To Run"** section
-2. **Open a `terminal` and run the e2e test**:
+1. **Open a `terminal` and run the e2e test**:
 
     ```bash
     npm run cypress:open
     ```
    The e2e test is using our VM url, so there is no need to run the frontend or the backend localy.
-3. Pick the E2E option on the right side
+2. Pick the E2E option on the right side
 
-   ![Pick the E2E option](frontend/src/assets/images/landing_page_e2e.webp )
+   ![Pick the E2E option](frontend/src/assets/images/readme/landing_page_e2e.webp )
 
-4. Click Chrome option
+3. Click Chrome option
 
-   ![Click the Chrome option](frontend/src/assets/images/choose_browser.webp)
-5. Pick the `routing.cy.ts` option to start the e2e test
+   ![Click the Chrome option](frontend/src/assets/images/readme/choose_browser.webp)
+4. Pick the `routing.cy.ts` option to start the e2e test
 
-    ![Click the routing.cy.ts](frontend/src/assets/images/navigate_to_routing.webp)
+    ![Click the routing.cy.ts](frontend/src/assets/images/readme/navigate_to_routing.webp)
 
 ### Components tests
 
