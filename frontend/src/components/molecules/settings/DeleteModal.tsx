@@ -85,7 +85,7 @@ const DeleteModal = () => {
 
 export const PrivacyModule = (props: { title: string; description?: string; children: ReactNode }) => {
   return (
-    <section className="border p-4 rounded-lg m-2">
+    <section className="border border-content/20 p-4 rounded-lg m-2">
       <div className="space-y-2 mb-6">
         <h3 className="text-2xl font-bold">{props.title}</h3>
         <p className="text-sm text-muted-foreground">{props.description}</p>
