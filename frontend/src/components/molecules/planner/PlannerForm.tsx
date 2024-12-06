@@ -36,7 +36,7 @@ const PlannerForm: FC<PlannerFormProps> = () => {
           <h4 className="text-xl font-semibold w-full mt-16 text-center ">
             Drag and Drop destinations into the timeline
           </h4>
-          <ScrollArea className=" h-[300px] border border-content/20 rounded-lg">
+          <ScrollArea className=" h-[300px] rounded-lg">
             {destinations?.map(
               (destination) =>
                 destination && (
