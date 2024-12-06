@@ -34,12 +34,15 @@ const categoryButtonData: Omit<CategoryButtonProps, 'onClick' | 'isSelected'>[] 
   { category: 'Sights' },
 ]
 
+// The number of cards to display per page
 const CARDS_LIMIT = 12
 
 const Browse = () => {
+  // State for managing the dialog visibility and selected card details
   const [openDialog, setOpenDialog] = useState(false)
   const [selectedCard, setSelectedCard] = useState<Partial<Destination> | null>(null)
 
+  // Filters and pagination logic from the useFilters custom hook
   const {
     selectedCategories,
     selectedCountries,
@@ -56,6 +59,7 @@ const Browse = () => {
     handleJumpToPage,
   } = useFilters()
 
+  // Fetch destinations based on applied filters
   const { data, loading } = useGetAllDestinationsQuery({
     variables: {
       page: currentPage,
@@ -66,7 +70,7 @@ const Browse = () => {
     },
   })
 
-  // Fetch available categories and countries
+  // Fetch available categories and countries for filtering
   const { data: availableCategoriesData } = useGetAvailableCategoriesQuery({
     variables: { countries: selectedCountries.length > 0 ? selectedCountries : null },
   })
@@ -75,29 +79,32 @@ const Browse = () => {
     variables: { categories: selectedCategories.length > 0 ? selectedCategories : null },
   })
 
+  // Create sets for quick lookup of available filters
   const availableCategories = new Set(availableCategoriesData?.getAvailableCategories || [])
   const availableCountries = new Set(availableCountriesData?.getAvailableCountries || [])
 
-  // Card click handler
+  // Handles the action when a user clicks on a card
   const handleCardClick = (card: Partial<Destination>) => {
     setSelectedCard(card)
     setOpenDialog(true)
   }
-  //  Pagination logic
+  // Calculate pagination details
   const totalPages = data?.getAllDestinations ? Math.ceil(data.getAllDestinations.totalCount / CARDS_LIMIT) : 0
   const paginatedCards = data?.getAllDestinations ? data.getAllDestinations?.destinations : []
 
-  // Pagination controls
+  // Determine if the current page is the first or last
   const isFirstPage = currentPage === 1
   const isLastPage = currentPage === totalPages
 
-  // Skeleton card
+  // Skeleton component to display during loading state
   const SkeletonCard = () => <Skeleton className="w-[46%] sm:w-1/3 md:w-1/3 lg:w-1/4 h-64" />
 
   return (
     <>
       <main className="flex flex-col gap-8">
+        {/* Filter Section */}
         <section aria-labelledby="category-section" className="flex w-full p-4 justify-center items-center">
+          {/* Category buttons for large screens */}
           <div className="flex flex-wrap gap-4">
             <div className="hidden md:flex flex-wrap gap-4">
               {categoryButtonData.map((item, index) => (
@@ -110,6 +117,7 @@ const Browse = () => {
                 />
               ))}
             </div>
+            {/* Category dropdown for small screens */}
             <div className="block md:hidden">
               <CategoryDropdown
                 onSelectCategories={handleCategorySelect}
@@ -117,12 +125,15 @@ const Browse = () => {
                 availableCategories={availableCategories}
               />
             </div>
+            {/* Country filter dropdown */}
             <CountryDropdown
               onSelectCountries={handleCountrySelect}
               selectedCountries={selectedCountries}
               availableCountries={availableCountries}
             />
+            {/* Sorting dropdown */}
             <SortingDropdown selectedSorting={selectedSorting} onSelectedSorting={handleSortingSelect} />
+            {/* Reset filters button */}
             <Button
               variant="ghost"
               onClick={handleResetFilters}
@@ -135,6 +146,7 @@ const Browse = () => {
             </Button>
           </div>
         </section>
+        {/* Results Section */}
         <section className="flex flex-wrap gap-2 sm:gap-4 justify-center">
           {loading ? (
             Array.from({ length: CARDS_LIMIT }).map((_, index) => <SkeletonCard key={index} />)
@@ -156,12 +168,15 @@ const Browse = () => {
         </section>
       </main>
 
+      {/* Dialog for Card Details */}
       <CardDetailsDialog selectedCard={selectedCard} openDialog={openDialog} setOpenDialog={setOpenDialog} />
 
-      {/* Pagination logic that gives the user feedback when there is no  */}
+      {/* Pagination */}
       {totalPages > 1 && (
         <Pagination className="my-4">
+          {/* Pagination controls */}
           <PaginationContent className="cursor-pointer">
+            {/* Gray out when there is no previous card, to give the user feedback */}
             <PaginationPrevious
               onClick={() => !isFirstPage && handlePreviousPage()}
               className={`cursor-pointer ${isFirstPage ? 'cursor-not-allowed opacity-50' : ''}`}
@@ -174,7 +189,7 @@ const Browse = () => {
                 1
               </PaginationLink>
             </PaginationItem>
-
+            {/* Calculating when the Ellepsis is going to show */}
             {currentPage > 4 && <PaginationEllipsis />}
 
             {Array.from({ length: 5 }, (_, index) => {
@@ -193,6 +208,7 @@ const Browse = () => {
               }
               return null
             })}
+            {/* Calculating when the Ellepsis is going to show */}
             {currentPage < totalPages - 3 && <PaginationEllipsis />}
             <PaginationItem>
               <PaginationLink
@@ -202,6 +218,7 @@ const Browse = () => {
                 {totalPages}
               </PaginationLink>
             </PaginationItem>
+            {/* Gray out when there is no next card, to give the user feedback */}
             <PaginationNext
               onClick={() => !isLastPage && handleNextPage(totalPages)}
               className={`cursor-pointer ${isLastPage ? 'cursor-not-allowed opacity-50' : ''}`}
