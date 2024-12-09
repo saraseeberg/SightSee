@@ -21,7 +21,7 @@ function App() {
     setUpPersistance()
   }, [])
   return (
-    <BrowserRouter basename="/project2">
+    <BrowserRouter>
       <AuthProvider>
         <DndProvider backend={HTML5Backend}>
           <Routes>
