@@ -1,10 +1,5 @@
 # SightSee 🌍
 
-_Link to our website:_ <https://git.ntnu.no/IT2810-H24/T33-Project-2/>
-
-> **⚠ NB** </br>
-> Make sure you are connected to NTNU eduroam Wi-Fi or VPN
-
 ## Table of Contents
 
 1. [SightSee](#sightsee)
